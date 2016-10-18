@@ -82,51 +82,51 @@ html {
       color: #FFF; }
 
 .headline {
-  background-color: #FFF; }
+  background-color: #303030; }
   @media only screen and (min-width: 768px) {
-    #home .headline {
+    #home .headline.headline-loaded {
       background: url("/assets/images/bgs/robot.jpg") no-repeat 0 15%;
       background-size: cover; } }
   @media only screen and (min-width: 768px) {
-    #about .headline {
+    #about .headline.headline-loaded {
       background: url("/assets/images/bgs/rings.jpg") no-repeat 0 60%;
       background-size: cover; } }
   @media only screen and (min-width: 768px) {
-    #projects .headline {
+    #projects .headline.headline-loaded {
       background: url("/assets/images/bgs/yellow_flower_sky.jpg") no-repeat 0 55%;
       background-size: cover; } }
+  @media only screen and (min-width: 320px) {
+    #home .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/robot.jpg"); } }
+  @media only screen and (min-width: 480px) {
+    #home .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/robot.jpg"); } }
+  @media only screen and (min-width: 768px) {
+    #home .headline.headline-loaded .container {
+      background-image: none; } }
+  @media only screen and (min-width: 320px) {
+    #about .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/rings.jpg"); } }
+  @media only screen and (min-width: 480px) {
+    #about .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/rings.jpg"); } }
+  @media only screen and (min-width: 768px) {
+    #about .headline.headline-loaded .container {
+      background-image: none; } }
+  @media only screen and (min-width: 320px) {
+    #projects .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/yellow_flower_sky.jpg"); } }
+  @media only screen and (min-width: 480px) {
+    #projects .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/yellow_flower_sky.jpg"); } }
+  @media only screen and (min-width: 768px) {
+    #projects .headline.headline-loaded .container {
+      background-image: none; } }
   .headline .container {
     background-size: cover;
     font-weight: bold;
     padding-top: 1.5em;
     padding-bottom: 5em; }
-    @media only screen and (min-width: 320px) {
-      #home .headline .container {
-        background-image: url("/assets/images/bgs/robot.jpg"); } }
-    @media only screen and (min-width: 480px) {
-      #home .headline .container {
-        background-image: url("/assets/images/bgs/robot.jpg"); } }
-    @media only screen and (min-width: 768px) {
-      #home .headline .container {
-        background-image: none; } }
-    @media only screen and (min-width: 320px) {
-      #about .headline .container {
-        background-image: url("/assets/images/bgs/rings.jpg"); } }
-    @media only screen and (min-width: 480px) {
-      #about .headline .container {
-        background-image: url("/assets/images/bgs/rings.jpg"); } }
-    @media only screen and (min-width: 768px) {
-      #about .headline .container {
-        background-image: none; } }
-    @media only screen and (min-width: 320px) {
-      #projects .headline .container {
-        background-image: url("/assets/images/bgs/yellow_flower_sky.jpg"); } }
-    @media only screen and (min-width: 480px) {
-      #projects .headline .container {
-        background-image: url("/assets/images/bgs/yellow_flower_sky.jpg"); } }
-    @media only screen and (min-width: 768px) {
-      #projects .headline .container {
-        background-image: none; } }
     .headline .container section {
       opacity: 0.75;
       transform: rotate(-2deg); }

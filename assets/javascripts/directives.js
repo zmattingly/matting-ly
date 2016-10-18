@@ -1,21 +1,43 @@
 (function (angular) {
 
-    // var expandParentToTrueHeight = ['$scope',
-    //     function ($scope) {
-    //         return {
-    //             link: function (scope, elem, attrs) {
-    //                 var elem = elem[0],
-    //                     parent = elem.parent();
-    //
-    //                 parent.css("minHeight", function() {
-    //                     return elem.getBoundingClientRect().height;
-    //                 })
-    //             },
-    //         }
-    //     }
-    // ];
-    //
-    // angular.module('matting-ly')
-    //     .directive('expandParentToTrueHeight', expandParentToTrueHeight);
+    var delayDisplayTilImageLoaded = [function() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                element.addClass("ng-hide");
+                var image = new Image();
+                image.onload = function() {
+                    scope.$apply(function () {
+                        element.removeClass("ng-hide");
+                    });
+                };
+                image.src = attrs.delayDisplayTilImageLoaded;
+           }
+       }
+    }];
+
+    var delayClassTilImageLoaded = [function() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                var image = new Image();
+                image.onload = function() {
+                    scope.$apply(function () {
+                        element.addClass(attrs.delayedClasses);
+                        // element.addClass('animated');
+                        // element.addClass('fadeIn');
+                    });
+                };
+                image.src = attrs.delayClassTilImageLoaded;
+           }
+       }
+    }];
+
+    angular.module('matting-ly')
+        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded)
+        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded)
+    ;
 
 })(window.angular);

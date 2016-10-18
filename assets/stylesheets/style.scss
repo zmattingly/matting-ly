@@ -57,28 +57,28 @@ html {
 
 // Headline
 .headline {
-    background-color: $headline-wrapper;
+    background-color: darken($banner, 25%);
 
-    #home & {
+    #home &.headline-loaded {
         @include respond-to(medium-screens) {
             background: url("/assets/images/bgs/robot.jpg") no-repeat 0 15%;
             background-size: cover;
         }
     }
-    #about & {
+    #about &.headline-loaded {
         @include respond-to(medium-screens) {
             background: url("/assets/images/bgs/rings.jpg") no-repeat 0 60%;
             background-size: cover;
         }
     }
-    #projects & {
+    #projects &.headline-loaded {
         @include respond-to(medium-screens) {
             background: url("/assets/images/bgs/yellow_flower_sky.jpg") no-repeat 0 55%;
             background-size: cover;
         }
     }
 
-    .container {
+    &.headline-loaded .container {
 
         #home & {
             @include respond-to(tiny-screens) {
@@ -113,7 +113,9 @@ html {
                 background-image: none;
             }
         }
+    }
 
+    .container {
         background-size: cover;
         font-weight: bold;
         padding-top: 1.5em;

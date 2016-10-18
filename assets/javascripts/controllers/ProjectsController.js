@@ -6,6 +6,7 @@
                     header: 'Projects',
                     byline: 'A few things I\'ve worked on...'
                 };
+                $scope.headlineImage = '/assets/images/bgs/yellow_flower_sky.jpg';
                 $scope.projects = [];
 
                 $scope.init = function() {

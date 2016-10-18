@@ -6,6 +6,7 @@
                     header: 'Zane Mattingly',
                     byline: 'Full-stack Developer'
                 };
+                $scope.headlineImage = '/assets/images/bgs/robot.jpg';
                 $scope.posts = [];
 
                 $scope.init = function() {

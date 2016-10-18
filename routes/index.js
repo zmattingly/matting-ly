@@ -27,6 +27,7 @@ router.get('*', function(req, res, next) {
             // Main
             {src: staticDir + '/javascripts/main.js'},
             {src: staticDir + '/javascripts/routing.js'},
+            {src: staticDir + '/javascripts/directives.js'},
             {src: staticDir + '/javascripts/filters.js'},
             // Controllers
             {src: staticDir + '/javascripts/controllers/MainController.js'},

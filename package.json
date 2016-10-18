@@ -1,7 +1,12 @@
 {
-  "name": "matting.ly",
-  "version": "0.0.0",
+  "name": "matting-ly",
+  "version": "0.0.1",
+  "description": "A simple Webzone for my Blag.",
+  "main": "app.js",
   "private": true,
+  "engines": {
+    "node": "6.8.0"
+  },
   "scripts": {
     "start": "node ./bin/www"
   },
@@ -14,5 +19,12 @@
     "morgan": "~1.7.0",
     "pug": "^2.0.0-beta6",
     "serve-favicon": "~2.3.0"
-  }
+  },
+  "keywords": [
+    "Node.js",
+    "Express",
+    "AngularJS"
+  ],
+  "author": "Zane Mattingly",
+  "license": "MIT"
 }
