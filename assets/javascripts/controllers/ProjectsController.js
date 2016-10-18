@@ -17,7 +17,6 @@
                     $http.get('/api/projects.json?start='+startVal)
                         .success(function(data) {
                             $scope.projects = data;
-                            console.log(data);
                         })
                         .error(function(data, status, error, config) {
                             $scope.projects = [

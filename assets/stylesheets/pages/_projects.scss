@@ -5,11 +5,16 @@
         &:first-child {
           margin-top: 0px;
         }
-        a {
-            color: $base-black;
-            text-decoration: none;
-        }
         header {
+            h2 {
+              padding-bottom: 5px;
+              a {
+                color: $base-black;
+              }
+              a:hover {
+                text-decoration: none;
+              }
+            }
             .date {
                 display: inline-block;
                 border-bottom: solid 2px $base-black;

@@ -12,7 +12,7 @@ router.get('/posts.json', function(req, res, next) {
                      '<p>Nothing too fancy, just a quick spot to stick stuff online. Projects, things that come into my head, etc.</p>' +
                      '<p>For simplicity\'s sake, right now this is hardcoded but I\'m hoping to move the blog entries to a datastore with a basic admin interface for adding new content.</p>' +
                      '<p>You\'ll see an update here when that\'s ready. For now, poke around and feel free to check out the full source at <a href="https://github.com/zmattingly/matting-ly">Github</a>!</p>'
-        },
+        }
     ];
 
     res.setHeader('Content-Type', 'application/json');
@@ -28,14 +28,15 @@ router.get('/projects.json', function(req, res, next) {
             link: 'https://github.com/zmattingly/matting-ly',
             date: "2016-10-18T00:00:00",
             content: '<p>A simple Webzone for my Blag.</p>' +
-                     '<p>Built using Node.js, Express and AngularJS off-and-on over three days.</p>' +
+                     '<p>Built using Node.js, Express and AngularJS off-and-on over three days. Hosted via Heroku.</p>' +
                      '<p>Features:</p>' +
                      '<ul>' +
                         '<li>Three whole pages.</li>' +
                         '<li>A blog post.</li>' +
                         '<li>This sentence.</li>' +
                         '<li>Links and stuff I guess...</li>' +
-                     '</ul>',
+                     '</ul>' +
+                     '<p>Source available on <a href="https://github.com/zmattingly/matting-ly" title="Github: matting-ly">Github</a>.</p>',
             photos: [
                 {
                     alt: 'Code - HTML',
@@ -66,8 +67,8 @@ router.get('/projects.json', function(req, res, next) {
                         '<li>A sequence of 5 cunning puzzles in series.</li>' +
                         '<li>A context-aware, responsive soundtrack (original music: Valve\'s).</li>' +
                         '<li>Lasers, Repulsion Gel, Cubes, Deadly Slime.</li>' +
-                        '<li>Stuffs and Things.</li>' +
-                     '</ul>',
+                     '</ul>' +
+                     '<p>Available at the <a href="http://steamcommunity.com/sharedfiles/filedetails/?id=68680897" title="Test Area Zeta: Chamber 01">Steam Workshop</a>.</p>',
             photos: [
                 {
                     alt: 'Zeta 01 - 01',
@@ -78,7 +79,7 @@ router.get('/projects.json', function(req, res, next) {
                     src: '/assets/images/projects/test_area_zeta/02.jpg'
                 }
             ]
-        },
+        }
     ];
 
     res.setHeader('Content-Type', 'application/json');
