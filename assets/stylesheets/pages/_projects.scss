@@ -1,0 +1,27 @@
+#projects {
+    article {
+        margin-top: 50px;
+
+        &:first-child {
+          margin-top: 0px;
+        }
+        a {
+            color: $base-black;
+            text-decoration: none;
+        }
+        header {
+            .date {
+                display: inline-block;
+                border-bottom: solid 2px $base-black;
+            }
+        }
+        .entry {
+            font-size: 20px;
+            line-height: 22px;
+        }
+        img {
+          width: 100%;
+          margin: 10px 0;
+        }
+    }
+}

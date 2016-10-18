@@ -1,0 +1,129 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+body {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+html {
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+
+a:hover, a:visited, a:link, a:active {
+  text-decoration: none; }
+
+/* Header */
+.header {
+  background-color: #2E3C56;
+  margin: 0; }
+  .header .container {
+    padding: 0; }
+
+.header a {
+  display: inline-block;
+  font-size: 1.5em;
+  padding: .25em .75em; }
+
+.header nav a {
+  background-color: black; }
+
+.header nav a:last-child {
+  margin-right: 0; }
+
+.header .landing-link a {
+  color: #FFF;
+  font-size: 1.5em; }
+
+/* Headline */
+.headline .container {
+  background-image: url("/assets/images/bgs/robot.jpg");
+  background-size: cover;
+  padding-top: 1.5em;
+  padding-bottom: 5em; }
+
+.headline h1 {
+  font-size: 5em; }
+
+.headline p {
+  font-size: 1.5em; }
+
+.headline h1, .headline p {
+  font-weight: bold; }
+
+.headline h1 span,
+.headline p span {
+  background-color: white;
+  padding: .05em .15em; }
+
+.headline section {
+  opacity: 0.75;
+  transform: rotate(-2deg); }
+
+/* Content */
+.content section {
+  background-color: white;
+  transform: translate(0, -2em);
+  border-radius: 1em 3em 0 0; }
+
+.content aside {
+  background-color: #ddd;
+  transform: translate(0, 2em); }
+
+.content aside h3 {
+  margin: 20px 0; }
+
+.content aside h3 span {
+  color: white;
+  background-color: black;
+  padding: .15em .25em;
+  font-weight: bold;
+  margin-top: 0; }
+
+/* Footer */
+
+/*# sourceMappingURL=main.css.map */

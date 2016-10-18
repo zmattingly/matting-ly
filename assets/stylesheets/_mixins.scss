@@ -1,0 +1,24 @@
+// @respond-to($media)
+$break-tiny: 320px;
+$break-small: 480px;
+$break-medium: 768px;
+$break-large: 992px;
+$break-wide: 1200px;
+
+@mixin respond-to($media) {
+  @if $media == tiny-screens {
+    @media only screen and (min-width : $break-tiny) { @content; }
+  }
+  @else if $media == small-screens {
+    @media only screen and (min-width : $break-small) { @content; }
+  }
+  @else if $media == medium-screens {
+    @media only screen and (min-width : $break-medium) { @content; }
+  }
+  @else if $media == large-screens {
+    @media only screen and (min-width : $break-large) { @content; }
+  }
+  @else if $media == wide-screens {
+    @media only screen and (min-width : $break-wide) { @content; }
+  }
+}

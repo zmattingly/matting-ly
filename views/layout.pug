@@ -1,0 +1,15 @@
+doctype html
+html
+  head
+    title= title
+    base(href="/")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    each ss in stylesheets
+      link(rel='stylesheet', href=ss.href)
+
+  body(ng-app="matting-ly")
+    block content
+    each js in libJavascripts
+        script(src=js.src)
+    each js in javascripts
+        script(src=js.src)

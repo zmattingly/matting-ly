@@ -1,0 +1,21 @@
+<!-- Content -->
+<div id="projects" ng-init="init()">
+    <div ng-include src="'/assets/partials/common/headline.html'"></div>
+
+    <div class="content">
+        <div class="container">
+            <section class="col-md-12 blog" ng-show="projects.length">
+                <article ng-repeat="project in projects">
+                    <header>
+                        <h2><a href="{{ project.link }}">{{ project.heading }}</a></h2>
+                        <p>{{ project.summary }}</p>
+                    </header>
+                    <div class="entry" ng-bind-html="project.content | trust"></div>
+                    <div class="photos" ng-if="project.photos.length">
+                        <img ng-repeat="photo in project.photos" alt="{{photo.alt}}" src="{{photo.src}}" class="img-rounded img-responsive" />
+                    </div>
+                </article>
+            </section>
+        </div>
+    </div>
+</div>

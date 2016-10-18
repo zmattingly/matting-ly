@@ -1,0 +1,213 @@
+// ======================
+// Mixins
+// ======================
+@import "_variables.scss";
+@import "_mixins.scss";
+
+// ======================
+// Reset and Global
+// ======================
+@import "_reset.scss";
+@import "_global.scss";
+
+// ======================
+// The Good Stuff
+// ======================
+
+// Base
+html {
+    background-color: $banner;
+}
+
+// Header
+.header {
+    background-color: $banner;
+    margin: 0;
+
+    .container {
+        padding: 0;
+        a {
+            display: inline-block;
+            font-size: 20px;
+            padding: 5px 10px;
+        }
+
+        nav a {
+            color: $base-white;
+            font-family: $arial-black;
+
+            &:last-child {
+                margin-right: 0;
+            }
+
+            &:hover {
+                text-decoration: none;
+            }
+
+            &.active {
+                background-color: darken($banner, 10%);
+            }
+        }
+
+        .landing-link a {
+            color: $base-white;
+        }
+    }
+}
+
+// Headline
+.headline {
+    background-color: $headline-wrapper;
+
+    #home & {
+        @include respond-to(medium-screens) {
+            background: url("/assets/images/bgs/robot.jpg") no-repeat 0 15%;
+            background-size: cover;
+        }
+    }
+    #about & {
+        @include respond-to(medium-screens) {
+            background: url("/assets/images/bgs/rings.jpg") no-repeat 0 60%;
+            background-size: cover;
+        }
+    }
+    #projects & {
+        @include respond-to(medium-screens) {
+            background: url("/assets/images/bgs/yellow_flower_sky.jpg") no-repeat 0 55%;
+            background-size: cover;
+        }
+    }
+
+    .container {
+
+        #home & {
+            @include respond-to(tiny-screens) {
+                background-image: url("/assets/images/bgs/robot.jpg");
+            }
+            @include respond-to(small-screens) {
+                background-image: url("/assets/images/bgs/robot.jpg");
+            }
+            @include respond-to(medium-screens) {
+                background-image: none;
+            }
+        }
+        #about & {
+            @include respond-to(tiny-screens) {
+                background-image: url("/assets/images/bgs/rings.jpg");
+            }
+            @include respond-to(small-screens) {
+                background-image: url("/assets/images/bgs/rings.jpg");
+            }
+            @include respond-to(medium-screens) {
+                background-image: none;
+            }
+        }
+        #projects & {
+            @include respond-to(tiny-screens) {
+                background-image: url("/assets/images/bgs/yellow_flower_sky.jpg");
+            }
+            @include respond-to(small-screens) {
+                background-image: url("/assets/images/bgs/yellow_flower_sky.jpg");
+            }
+            @include respond-to(medium-screens) {
+                background-image: none;
+            }
+        }
+
+        background-size: cover;
+        font-weight: bold;
+        padding-top: 1.5em;
+        padding-bottom: 5em;
+
+        section {
+            opacity: 0.75;
+            transform: rotate(-2deg);
+            h1 {
+                font-size: 5em;
+            }
+            p {
+                font-size: 1.5em;
+            }
+            span {
+                background-color: $base-white;
+                padding: .05em .15em;
+            }
+        }
+    }
+}
+
+// Content
+.content {
+    background-color: $content-wrapper;
+
+    section {
+        background-color: $base-white;
+        border: solid 5px $base-black;
+        border-radius: 1em 3em 0 0;
+        margin-bottom: 15px;
+        @include respond-to(tiny-screens) {
+            margin-top: -70px;
+        }
+        @include respond-to(small-screens) {
+            margin-top: -40px;
+        }
+        @include respond-to(large-screens) {
+            margin-top: -30px;
+        }
+
+        h2 {
+            font-size: 56px;
+            border-bottom: solid 5px $base-black;
+            margin-bottom: 5px;
+        }
+
+        .entry {
+            ul {
+                margin-left: 40px;
+                list-style: disc;
+            }
+        }
+    }
+}
+
+.footer {
+    background-color: $banner;
+    margin: 0;
+
+    .container {
+        padding: 0;
+        a {
+            color: lighten($base-black, 15%);
+        }
+        img {
+            height: 32px;
+        }
+        p {
+            margin-bottom: 0;
+        }
+        .social-navs a {
+            display: inline-block;
+            padding: 0 5px;
+            line-height: 48px;
+        }
+        .powered-by {
+
+            @include respond-to(tiny-screens) {
+                text-align: left;
+                line-height: 24px;
+            }
+            @include respond-to(large-screens) {
+                text-align: right;
+                line-height: 48px;
+            }
+        }
+
+    }
+
+}
+
+// Page Specifics
+@import "pages/_404.scss";
+@import "pages/_home.scss";
+@import "pages/_about.scss";
+@import "pages/_projects.scss";

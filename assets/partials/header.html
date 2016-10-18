@@ -1,0 +1,10 @@
+<div class="header" role="banner">
+    <header class="container">
+        <div class="landing-link pull-left">
+            <a ui-sref="landing"><span class="glyphicon glyphicon-eye-open" /></a>
+        </div>
+        <nav class="pull-right">
+            <a ng-repeat="nav in stateNavs" ui-sref="{{nav.uisref}}" ui-sref-active="active">{{ nav.text }}</a>
+        </nav>
+    </header>
+</div>

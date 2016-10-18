@@ -1,0 +1,17 @@
+#home .blog {
+    article {
+        header {
+            .date {
+                display: inline-block;
+                border-bottom: solid 2px $base-black;
+            }
+        }
+        .entry {
+            font-size: 20px;
+            line-height: 22px;
+        }
+        footer {
+            border-top: solid 2px $base-black;
+        }
+    }
+}

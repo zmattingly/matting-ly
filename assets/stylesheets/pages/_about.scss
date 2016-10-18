@@ -1,0 +1,85 @@
+#about .content section {
+  font-size: 20px;
+  line-height: 22px;
+}
+
+#about .skills {
+
+  @include respond-to(tiny-screens) {
+    background-color: $base-white;
+    border: solid 5px $base-black;
+    border-radius: 1em 3em 0 0;
+    margin-bottom: 15px;
+  }
+  @include respond-to(large-screens) {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+  }
+
+  h2 {
+    font-size: 48px;
+  }
+  h3 {
+    padding-left: 56px;
+    line-height: 48px;
+    font-size: 32px;
+    margin: 5px 0;
+    background-position: center left;
+    background-repeat: no-repeat;
+
+    &.html5-css3 {
+      background-image: url('/assets/images/tech_logos/markup.png');
+    }
+    &.javascript {
+      background-image: url('/assets/images/tech_logos/javascript.png');
+    }
+    &.python {
+      background-image: url('/assets/images/tech_logos/python.png');
+    }
+    &.testing {
+      background-image: url('/assets/images/tech_logos/software_testing.png');
+    }
+  }
+
+  ul {
+    margin-left: 56px;
+    font-size: 24px;
+    line-height: 32px;
+
+    li {
+      padding-left: 40px;
+      background-position: center left;
+      background-repeat: no-repeat;
+
+      // HTML5/CSS3
+      &.sass {
+        background-image: url('/assets/images/tech_logos/sass.png');
+      }
+      // JavaScript
+      &.node {
+        background-image: url('/assets/images/tech_logos/node.png');
+      }
+      &.angular {
+        background-image: url('/assets/images/tech_logos/angular.png');
+      }
+      &.react {
+        background-image: url('/assets/images/tech_logos/react.png');
+      }
+      &.jquery {
+        background-image: url('/assets/images/tech_logos/jquery.png');
+      }
+      // Python
+      &.django {
+        background-image: url('/assets/images/tech_logos/django.png');
+      }
+      // Testing
+      &.selenium {
+        background-image: url('/assets/images/tech_logos/selenium.png');
+      }
+      &.jenkins {
+        background-image: url('/assets/images/tech_logos/jenkins.png');
+      }
+    }
+  }
+}

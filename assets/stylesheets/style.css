@@ -1,0 +1,275 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+body {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+html {
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+
+a:hover, a:visited, a:link, a:active {
+  text-decoration: none; }
+
+html {
+  background-color: #707070; }
+
+.header {
+  background-color: #707070;
+  margin: 0; }
+  .header .container {
+    padding: 0; }
+    .header .container a {
+      display: inline-block;
+      font-size: 20px;
+      padding: 5px 10px; }
+    .header .container nav a {
+      color: #FFF;
+      font-family: "Arial Black", "Arial Bold", Gadget, sans-serif !important; }
+      .header .container nav a:last-child {
+        margin-right: 0; }
+      .header .container nav a:hover {
+        text-decoration: none; }
+      .header .container nav a.active {
+        background-color: #575757; }
+    .header .container .landing-link a {
+      color: #FFF; }
+
+.headline {
+  background-color: #FFF; }
+  @media only screen and (min-width: 768px) {
+    #home .headline {
+      background: url("/assets/images/bgs/robot.jpg") no-repeat 0 15%;
+      background-size: cover; } }
+  @media only screen and (min-width: 768px) {
+    #about .headline {
+      background: url("/assets/images/bgs/rings.jpg") no-repeat 0 60%;
+      background-size: cover; } }
+  @media only screen and (min-width: 768px) {
+    #projects .headline {
+      background: url("/assets/images/bgs/yellow_flower_sky.jpg") no-repeat 0 55%;
+      background-size: cover; } }
+  .headline .container {
+    background-size: cover;
+    font-weight: bold;
+    padding-top: 1.5em;
+    padding-bottom: 5em; }
+    @media only screen and (min-width: 320px) {
+      #home .headline .container {
+        background-image: url("/assets/images/bgs/robot.jpg"); } }
+    @media only screen and (min-width: 480px) {
+      #home .headline .container {
+        background-image: url("/assets/images/bgs/robot.jpg"); } }
+    @media only screen and (min-width: 768px) {
+      #home .headline .container {
+        background-image: none; } }
+    @media only screen and (min-width: 320px) {
+      #about .headline .container {
+        background-image: url("/assets/images/bgs/rings.jpg"); } }
+    @media only screen and (min-width: 480px) {
+      #about .headline .container {
+        background-image: url("/assets/images/bgs/rings.jpg"); } }
+    @media only screen and (min-width: 768px) {
+      #about .headline .container {
+        background-image: none; } }
+    @media only screen and (min-width: 320px) {
+      #projects .headline .container {
+        background-image: url("/assets/images/bgs/yellow_flower_sky.jpg"); } }
+    @media only screen and (min-width: 480px) {
+      #projects .headline .container {
+        background-image: url("/assets/images/bgs/yellow_flower_sky.jpg"); } }
+    @media only screen and (min-width: 768px) {
+      #projects .headline .container {
+        background-image: none; } }
+    .headline .container section {
+      opacity: 0.75;
+      transform: rotate(-2deg); }
+      .headline .container section h1 {
+        font-size: 5em; }
+      .headline .container section p {
+        font-size: 1.5em; }
+      .headline .container section span {
+        background-color: #FFF;
+        padding: .05em .15em; }
+
+.content {
+  background-color: #DDD; }
+  .content section {
+    background-color: #FFF;
+    border: solid 5px #111;
+    border-radius: 1em 3em 0 0;
+    margin-bottom: 15px; }
+    @media only screen and (min-width: 320px) {
+      .content section {
+        margin-top: -70px; } }
+    @media only screen and (min-width: 480px) {
+      .content section {
+        margin-top: -40px; } }
+    @media only screen and (min-width: 992px) {
+      .content section {
+        margin-top: -30px; } }
+    .content section h2 {
+      font-size: 56px;
+      border-bottom: solid 5px #111;
+      margin-bottom: 5px; }
+    .content section .entry ul {
+      margin-left: 40px;
+      list-style: disc; }
+
+.footer {
+  background-color: #707070;
+  margin: 0; }
+  .footer .container {
+    padding: 0; }
+    .footer .container a {
+      color: #373737; }
+    .footer .container img {
+      height: 32px; }
+    .footer .container p {
+      margin-bottom: 0; }
+    .footer .container .social-navs a {
+      display: inline-block;
+      padding: 0 5px;
+      line-height: 48px; }
+    @media only screen and (min-width: 320px) {
+      .footer .container .powered-by {
+        text-align: left;
+        line-height: 24px; } }
+    @media only screen and (min-width: 992px) {
+      .footer .container .powered-by {
+        text-align: right;
+        line-height: 48px; } }
+
+.four-oh-four h1 {
+  font-size: 216px; }
+
+#home .blog article header .date {
+  display: inline-block;
+  border-bottom: solid 2px #111; }
+#home .blog article .entry {
+  font-size: 20px;
+  line-height: 22px; }
+#home .blog article footer {
+  border-top: solid 2px #111; }
+
+#about .content section {
+  font-size: 20px;
+  line-height: 22px; }
+
+@media only screen and (min-width: 320px) {
+  #about .skills {
+    background-color: #FFF;
+    border: solid 5px #111;
+    border-radius: 1em 3em 0 0;
+    margin-bottom: 15px; } }
+@media only screen and (min-width: 992px) {
+  #about .skills {
+    background-color: transparent;
+    border: none;
+    border-radius: 0; } }
+#about .skills h2 {
+  font-size: 48px; }
+#about .skills h3 {
+  padding-left: 56px;
+  line-height: 48px;
+  font-size: 32px;
+  margin: 5px 0;
+  background-position: center left;
+  background-repeat: no-repeat; }
+  #about .skills h3.html5-css3 {
+    background-image: url("/assets/images/tech_logos/markup.png"); }
+  #about .skills h3.javascript {
+    background-image: url("/assets/images/tech_logos/javascript.png"); }
+  #about .skills h3.python {
+    background-image: url("/assets/images/tech_logos/python.png"); }
+  #about .skills h3.testing {
+    background-image: url("/assets/images/tech_logos/software_testing.png"); }
+#about .skills ul {
+  margin-left: 56px;
+  font-size: 24px;
+  line-height: 32px; }
+  #about .skills ul li {
+    padding-left: 40px;
+    background-position: center left;
+    background-repeat: no-repeat; }
+    #about .skills ul li.sass {
+      background-image: url("/assets/images/tech_logos/sass.png"); }
+    #about .skills ul li.node {
+      background-image: url("/assets/images/tech_logos/node.png"); }
+    #about .skills ul li.angular {
+      background-image: url("/assets/images/tech_logos/angular.png"); }
+    #about .skills ul li.react {
+      background-image: url("/assets/images/tech_logos/react.png"); }
+    #about .skills ul li.jquery {
+      background-image: url("/assets/images/tech_logos/jquery.png"); }
+    #about .skills ul li.django {
+      background-image: url("/assets/images/tech_logos/django.png"); }
+    #about .skills ul li.selenium {
+      background-image: url("/assets/images/tech_logos/selenium.png"); }
+    #about .skills ul li.jenkins {
+      background-image: url("/assets/images/tech_logos/jenkins.png"); }
+
+#projects article {
+  margin-top: 50px; }
+  #projects article:first-child {
+    margin-top: 0px; }
+  #projects article a {
+    color: #111;
+    text-decoration: none; }
+  #projects article header .date {
+    display: inline-block;
+    border-bottom: solid 2px #111; }
+  #projects article .entry {
+    font-size: 20px;
+    line-height: 22px; }
+  #projects article img {
+    width: 100%;
+    margin: 10px 0; }
+
+/*# sourceMappingURL=style.css.map */
