@@ -12,7 +12,7 @@
         };
     }];
 
-    var stripHtmlToPlaintext = [function() {
+    var htmlToPlaintext = [function() {
         return function(text) {
           return  text ? String(text).replace(/<[^>]+>/gm, '') : '';
         };
@@ -21,7 +21,7 @@
     angular.module("matting-ly")
         .filter("trust", trust)
         .filter("yesNo", yesNo)
-        .filter("stripHtmlToPlaintext", stripHtmlToPlaintext)
+        .filter("htmlToPlaintext", htmlToPlaintext)
     ;
 
 })(window.angular);

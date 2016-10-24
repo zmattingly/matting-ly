@@ -7,7 +7,7 @@
                 // Root binding for AlertService
                 $rootScope.closeAlert = AlertService.closeAlert;
 
-                $scope.stripHtmlToPlaintext = function($html) {
+                $scope.htmlToPlaintext = function($html) {
                     return $filter('htmlToPlaintext')($html);
                 }
             }

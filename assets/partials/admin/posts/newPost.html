@@ -51,7 +51,7 @@
                             <label for="content" class="col-sm-1 control-label">Content</label>
                             <div class="col-sm-11">
                                 <text-angular id="content" focus="editingContent" ng-model="model.post.content"
-                                              ta-paste="stripHtmlToPlaintext($html)"
+                                              ta-paste="htmlToPlaintext($html)"
                                               ta-toolbar="[
                                                  ['h1','h2','h3'],['p','pre','quote'],['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol'],
                                                  ['indent', 'outdent'], ['clear', 'html', 'insertImage','insertLink', 'insertVideo'], ['wordcount', 'charcount']
