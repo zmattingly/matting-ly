@@ -1,0 +1,75 @@
+<div id="new-post" ng-init="init()">
+    <div ng-include src="'/assets/partials/common/headline.html'"></div>
+
+    <div class="content">
+        <div class="container">
+            <section class="col-md-12 blog">
+                <article ng-hide="model.postSubmitting">
+                    <h2>Add A New Post</h2>
+                    <form class="new-post-form form-horizontal" ng-submit="submitPost(model.post)">
+                        <div class="form-group">
+                            <label for="heading" class="col-sm-1 control-label">Heading</label>
+                            <div class="col-sm-11">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><span class="glyphicon glyphicon-pencil" /></div>
+                                    <input ng-model="model.post.heading" type="text" class="form-control" id="heading" placeholder="Heading" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="author" class="col-sm-1 control-label">Author</label>
+                            <div class="col-sm-11">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><span class="glyphicon glyphicon-user" /></div>
+                                    <input ng-model="model.post.author" type="text" class="form-control" id="author" placeholder="Author" />
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="date" class="col-sm-1 control-label">Date</label>
+                            <div class="col-sm-11">
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="datePickerOpen()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                    <input type="text" id="date" class="form-control" uib-datepicker-popup="{{model.defaultFormat}}" is-open="model.datePickerOpen" ng-model="model.post.date" ng-required="true" date-options="{{model.dateOptions}}" alt-input-formats="{{model.formats}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="publish" class="col-sm-1 control-label">Publish?</label>
+                            <div class="col-sm-11">
+                                <div class="checkbox">
+                                    <label>
+                                        <input ng-model="model.post.published" id="publish" type="checkbox">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="content" class="col-sm-1 control-label">Content</label>
+                            <div class="col-sm-11">
+                                <text-angular id="content" focus="editingContent" ng-model="model.post.content"
+                                              ta-paste="stripHtmlToPlaintext($html)"
+                                              ta-toolbar="[
+                                                 ['h1','h2','h3'],['p','pre','quote'],['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol'],
+                                                 ['indent', 'outdent'], ['clear', 'html', 'insertImage','insertLink', 'insertVideo'], ['wordcount', 'charcount']
+                                              ]">
+                                </text-angular>
+                            </div>
+                        </div>
+                        <div class="admin-controls text-center">
+                            <button class="btn btn-lg" ui-sref="admin.viewPosts">Back</button>
+                            <button type="submit" class="btn btn-success btn-lg">Submit New Post</button>
+                        </div>
+                    </form>
+
+                </article>
+                <div ng-show="model.postSubmitting" class="text-center spinner">
+                    <div ng-include="'/assets/partials/misc/sk-cube-grid.html'"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

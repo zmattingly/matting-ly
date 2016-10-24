@@ -1,7 +1,7 @@
 <div ui-view="header"></div>
 
 <div class="container">
-    <div uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)"
+    <div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'warning')" type="{{alert.type}}" close="closeAlert($index)"
          dismiss-on-timeout="{{alert.dismiss ? alert.dismiss : ''}}">
         {{ alert.msg }}
     </div>

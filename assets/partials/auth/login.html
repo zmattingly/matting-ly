@@ -1,0 +1,25 @@
+<div id="login" ng-init="init()">
+
+    <div class="content">
+        <div class="container">
+            <div class="col-md-4 col-md-offset-4">
+              <h1>Login</h1>
+              <div ng-show="model.error" class="alert alert-danger">{{ error }}</div>
+              <form class="form" ng-submit="login()">
+                <div class="form-group">
+                  <label>Username</label>
+                  <input type="text" class="form-control" name="username" ng-model="model.loginForm.username" required>
+                </div>
+                <div class="form-group">
+                  <label>Password</label>
+                    <input type="password" class="form-control" name="password" ng-model="model.loginForm.password" required>
+                  </div>
+                  <div>
+                    <button type="submit" class="btn btn-default" ng-disabled="model.disabled">Login</button>
+                  </div>
+              </form>
+            </div>
+        </div>
+    </div>
+
+</div>

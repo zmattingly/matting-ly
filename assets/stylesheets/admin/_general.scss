@@ -1,0 +1,41 @@
+.footer img {
+  filter: grayscale(100%);
+}
+
+selection-table thead th {
+  font-weight: bold;
+  background-color: $content-wrapper;
+}
+
+selection-table .selected td {
+  color: $base-white;
+  background-color: $banner;
+}
+
+selection-table:focus,
+selection-table table:focus {
+  border-color: $banner;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+.admin-controls {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.btn-success {
+  background-color: $banner-darker;
+}
+.btn-danger {
+  font-weight: bold;
+  color: $base-white;
+}
+.btn-info {
+  background-color: lighten($banner, 10%);
+  border-color: lighten($banner, 10%);
+}
+.btn-primary {
+  font-weight: bold;
+  background-color: $banner;
+}

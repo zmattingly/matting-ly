@@ -1,0 +1,29 @@
+<div id="view-posts" ng-init="init()">
+    <div ng-include src="'/assets/partials/common/headline.html'"></div>
+
+    <div class="content">
+        <div class="container">
+            <section class="col-md-12 blog">
+                <div ng-show="model.allPosts.length">
+                    <h2>All Posts</h2>
+                    <selection-table class="selection-table" id="all-posts"
+                                     selection-mode="'single'" ng-model="model.allPosts"
+                                     initial-order-by="date" on-enter="selectAndGoToPost"
+                                     selected-items="model.selectedPost">
+                        <selection-table-column key="heading">Heading</selection-table-column>
+                        <selection-table-column key="date" filter="date:longDate">Date</selection-table-column>
+                        <selection-table-column key="author">Author</selection-table-column>
+                        <selection-table-column key="published" filter="yesNo">Published?</selection-table-column>
+                    </selection-table>
+                    <div class="admin-controls text-center">
+                        <button class="btn btn-lg" ng-click="selectAndGoToPost()">Go To Post</button>
+                        <button class="btn btn-lg btn-success" ui-sref="admin.newPost">Create New Post</button>
+                    </div>
+                </div>
+                <div ng-hide="model.allPosts.length">
+                    <div ng-include="'/assets/partials/misc/sk-cube-grid.html'"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

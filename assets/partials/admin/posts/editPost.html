@@ -1,0 +1,74 @@
+<div id="edit-post" ng-init="init()">
+    <div ng-include src="'/assets/partials/common/headline.html'"></div>
+
+    <div class="content">
+        <div class="container">
+            <section class="col-md-12 blog">
+                <article ng-hide="model.postLoading">
+                    <header>
+                        <div class="heading-editable">
+                            <h2 ng-hide="editingHeading" ng-click="editingHeading = true">{{ model.post.heading }}</h2>
+                            <form ng-show="editingHeading" ng-submit="editingHeading = false">
+                                <input ng-model="model.post.heading" when-focus="editingHeading" ng-blur="editingHeading = false" class="form-control" />
+                            </form>
+                        </div>
+
+                        <div class="date-editable">
+                            <p class="date" ng-hide="editingDate" ng-click="editingDate = true">{{ model.post.date | date:'longDate' }}</p>
+                            <form class="form-inline" ng-show="editingDate" ng-submit="editingDate = false">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" uib-datepicker-popup="{{model.defaultFormat}}" is-open="model.datePickerOpen" ng-model="model.post.date" ng-required="true" date-options="{{model.dateOptions}}" alt-input-formats="{{model.formats}}">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="datePickerOpen()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </header>
+
+                    <div class="content-editable">
+                        <div ng-hide="editingContent" ng-click="editingContent = true; focusOnTextAngular();" class="entry" ng-bind-html="model.post.content | trust"></div>
+                        <div ng-show="editingContent">
+                            <text-angular focus="editingContent" ng-model="model.post.content" ng-blur="editingContent = false"
+                                          ta-paste="stripHtmlToPlaintext($html)"
+                                          ta-toolbar="[
+                                             ['h1','h2','h3'],['p','pre','quote'],['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol'],
+                                             ['indent', 'outdent'], ['clear', 'html', 'insertImage','insertLink', 'insertVideo'], ['wordcount', 'charcount']
+                                          ]">
+                            </text-angular>
+                        </div>
+                    </div>
+
+                    <footer class="clearfix">
+                        <div class="published-editable">
+                            <p class="pull-left" ng-hide="editingPublished" ng-click="editingPublished = true">Published? {{ model.post.published | yesNo }}</p>
+                            <form class="pull-left" ng-show="editingPublished" ng-submit="editingPublished = false">
+                                <div class="checkbox">
+                                    <label>Published? <input type="checkbox" ng-model="model.post.published" when-focus="editingPublished" ng-blur="editingPublished = false" /></label>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="author-editable">
+                            <p class="pull-right" ng-hide="editingAuthor" ng-click="editingAuthor = true"> - {{ model.post.author }}</p>
+                            <form ng-show="editingAuthor" ng-submit="editingAuthor = false">
+                                <p class="pull-right"> - <input ng-model="model.post.author" when-focus="editingAuthor" ng-blur="editingAuthor = false" /></p>
+                            </form>
+                        </div>
+                    </footer>
+
+                    <div class="admin-controls text-center">
+                        <button class="btn btn-lg" ui-sref="admin.viewPosts">Back</button>
+                        <button class="btn btn-info btn-lg" ng-click="getPost()">Revert Edits</button>
+                        <button class="btn btn-danger btn-lg" ng-click="deletePost(model.post)">Delete Post</button>
+                        <button class="btn btn-primary btn-lg" ng-click="submitEdits(model.post)">Submit Edits</button>
+                    </div>
+                </article>
+                <div ng-show="model.postLoading" class="text-center spinner">
+                    <div ng-include="'/assets/partials/misc/sk-cube-grid.html'"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

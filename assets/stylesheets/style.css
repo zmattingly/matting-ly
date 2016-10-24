@@ -55,7 +55,7 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
 
 a, a:hover, a:visited, a:link, a:active {
-  text-decoration: none; }
+  text-decoration: none !important; }
 
 html {
   background-color: #707070; }
@@ -63,6 +63,18 @@ html {
 .header {
   background-color: #707070;
   margin: 0; }
+  .header .dropdown-menu a {
+    width: 100%; }
+    .header .dropdown-menu a.active {
+      background-color: #ececec; }
+  .header .login-dropdown-form .dropdown-menu {
+    background-color: #DDD;
+    padding: 0 20px 20px;
+    min-width: 320px; }
+  .header .login-dropdown-menu .dropdown-menu {
+    background-color: #DDD; }
+    .header .login-dropdown-menu .dropdown-menu span {
+      margin-right: 10px; }
   .header .container {
     padding: 0; }
     .header .container a {
@@ -78,7 +90,7 @@ html {
         text-decoration: none; }
       .header .container nav a.active {
         background-color: #575757; }
-    .header .container .landing-link a {
+    .header .container .eye {
       color: #FFF; }
 
 .headline {
@@ -186,93 +198,152 @@ html {
         text-align: right;
         line-height: 48px; } }
 
-.four-oh-four h1 {
+#public .error-page h1 {
   font-size: 216px; }
-
-#home .blog article header .date {
+#public .error-page span {
+  font-size: 32px; }
+#public .error-page .oops h1 {
+  font-size: 148px; }
+#public #home .blog article header .date {
   display: inline-block;
   border-bottom: solid 2px #111; }
-#home .blog article .entry {
+#public #home .blog article .entry {
   font-size: 20px;
-  line-height: 22px; }
-#home .blog article footer {
+  line-height: 24px; }
+#public #home .blog article footer {
   border-top: solid 2px #111; }
-
-#about .content section {
+#public #about .content section {
   font-size: 20px;
   line-height: 22px; }
-
 @media only screen and (min-width: 320px) {
-  #about .skills {
+  #public #about .skills {
     background-color: #FFF;
     border: solid 5px #111;
     border-radius: 1em 3em 0 0;
     margin-bottom: 15px; } }
 @media only screen and (min-width: 992px) {
-  #about .skills {
+  #public #about .skills {
     background-color: transparent;
     border: none;
     border-radius: 0; } }
-#about .skills h2 {
+#public #about .skills h2 {
   font-size: 48px; }
-#about .skills h3 {
+#public #about .skills h3 {
   padding-left: 56px;
   line-height: 48px;
   font-size: 32px;
   margin: 5px 0;
   background-position: center left;
   background-repeat: no-repeat; }
-  #about .skills h3.html5-css3 {
+  #public #about .skills h3.html5-css3 {
     background-image: url("/assets/images/tech_logos/markup.png"); }
-  #about .skills h3.javascript {
+  #public #about .skills h3.javascript {
     background-image: url("/assets/images/tech_logos/javascript.png"); }
-  #about .skills h3.python {
+  #public #about .skills h3.python {
     background-image: url("/assets/images/tech_logos/python.png"); }
-  #about .skills h3.testing {
+  #public #about .skills h3.testing {
     background-image: url("/assets/images/tech_logos/software_testing.png"); }
-#about .skills ul {
+#public #about .skills ul {
   margin-left: 56px;
   font-size: 24px;
   line-height: 32px; }
-  #about .skills ul li {
+  #public #about .skills ul li {
     padding-left: 40px;
     background-position: center left;
     background-repeat: no-repeat; }
-    #about .skills ul li.sass {
+    #public #about .skills ul li.sass {
       background-image: url("/assets/images/tech_logos/sass.png"); }
-    #about .skills ul li.node {
+    #public #about .skills ul li.node {
       background-image: url("/assets/images/tech_logos/node.png"); }
-    #about .skills ul li.angular {
+    #public #about .skills ul li.angular {
       background-image: url("/assets/images/tech_logos/angular.png"); }
-    #about .skills ul li.react {
+    #public #about .skills ul li.react {
       background-image: url("/assets/images/tech_logos/react.png"); }
-    #about .skills ul li.jquery {
+    #public #about .skills ul li.jquery {
       background-image: url("/assets/images/tech_logos/jquery.png"); }
-    #about .skills ul li.django {
+    #public #about .skills ul li.django {
       background-image: url("/assets/images/tech_logos/django.png"); }
-    #about .skills ul li.selenium {
+    #public #about .skills ul li.selenium {
       background-image: url("/assets/images/tech_logos/selenium.png"); }
-    #about .skills ul li.jenkins {
+    #public #about .skills ul li.jenkins {
       background-image: url("/assets/images/tech_logos/jenkins.png"); }
-
-#projects article {
+#public #projects article {
   margin-top: 50px; }
-  #projects article:first-child {
+  #public #projects article:first-child {
     margin-top: 0px; }
-  #projects article header h2 {
+  #public #projects article header h2 {
     padding-bottom: 5px; }
-    #projects article header h2 a {
+    #public #projects article header h2 a {
       color: #111; }
-    #projects article header h2 a:hover {
+    #public #projects article header h2 a:hover {
       text-decoration: none; }
-  #projects article header .date {
+  #public #projects article header .date {
     display: inline-block;
     border-bottom: solid 2px #111; }
-  #projects article .entry {
+  #public #projects article .entry {
     font-size: 20px;
-    line-height: 22px; }
-  #projects article img {
+    line-height: 24px; }
+  #public #projects article img {
     width: 100%;
     margin: 10px 0; }
+
+#admin .footer img {
+  filter: grayscale(100%); }
+#admin selection-table thead th {
+  font-weight: bold;
+  background-color: #DDD; }
+#admin selection-table .selected td {
+  color: #FFF;
+  background-color: #707070; }
+#admin selection-table:focus,
+#admin selection-table table:focus {
+  border-color: #707070;
+  box-shadow: none;
+  -webkit-box-shadow: none; }
+#admin .admin-controls {
+  display: block;
+  margin-bottom: 20px; }
+#admin .btn-success {
+  background-color: #303030; }
+#admin .btn-danger {
+  font-weight: bold;
+  color: #FFF; }
+#admin .btn-info {
+  background-color: #8a8a8a;
+  border-color: #8a8a8a; }
+#admin .btn-primary {
+  font-weight: bold;
+  background-color: #707070; }
+#admin #edit-post article .heading-editable input {
+  margin-top: 20px;
+  font-size: 56px;
+  margin-bottom: 5px;
+  border-bottom: solid 5px #111;
+  padding: 5px 0;
+  line-height: 1.1;
+  height: 60px; }
+#admin #edit-post article .date-editable form .input-group {
+  border-bottom: solid 2px #111; }
+#admin #edit-post article header .date {
+  display: inline-block;
+  border-bottom: solid 2px #111; }
+#admin #edit-post article .entry {
+  font-size: 20px;
+  line-height: 24px; }
+#admin #edit-post article footer {
+  border-top: solid 2px #111; }
+#admin #edit-post article .checkbox {
+  margin: 0; }
+  #admin #edit-post article .checkbox label {
+    padding-left: 0;
+    padding-right: 20px; }
+  #admin #edit-post article .checkbox input[type=checkbox] {
+    margin: 0;
+    display: inline-block;
+    position: relative; }
+#admin #new-post form.input[type=text] {
+  background-image: none !important; }
+#admin #new-post form.new-post-form {
+  margin-top: 20px; }
 
 /*# sourceMappingURL=style.css.map */

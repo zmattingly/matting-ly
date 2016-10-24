@@ -75,7 +75,7 @@ a:hover, a:visited, a:link, a:active {
 .header nav a:last-child {
   margin-right: 0; }
 
-.header .landing-link a {
+.header .backdoor a {
   color: #FFF;
   font-size: 1.5em; }
 

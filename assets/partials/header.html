@@ -1,10 +1,47 @@
 <div class="header" role="banner">
     <header class="container">
-        <div class="landing-link pull-left">
-            <a ui-sref="landing"><span class="glyphicon glyphicon-eye-open" /></a>
+        <div class="pull-left" ng-controller="LoginController" ng-init="dropdownInit()">
+            <div ng-if="model.isLoggedIn">
+                <span uib-dropdown auto-close="outsideClick" class="login-dropdown-menu">
+                    <a class="eye" href uib-dropdown-toggle><span class="glyphicon glyphicon-eye-open" /></a>
+                    <ul uib-dropdown-menu>
+                        <li>
+                            <a class="home" ui-sref="admin.viewPosts" ui-sref-active="active"><span class="glyphicon glyphicon-home"></span> Posts</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="logout" href ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Log Out</a>
+                        </li>
+                    </ul>
+                </span>
+            </div ng>
+            <div ng-if="!model.isLoggedIn" ng-controller="LoginController">
+                <span uib-dropdown auto-close="outsideClick" class="login-dropdown-form">
+                    <a class="eye" href uib-dropdown-toggle><span class="glyphicon glyphicon-eye-open" /></a>
+                    <ul uib-dropdown-menu>
+                        <li>
+                            <h1>Login</h1>
+                            <div ng-show="model.error" class="alert alert-danger">{{ model.error }}</div>
+                            <form class="form" ng-submit="login()">
+                                <div class="form-group">
+                                    <label>Username</label>
+                                    <input type="text" class="form-control" name="username" ng-model="model.loginForm.username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" class="form-control" name="password" ng-model="model.loginForm.password" required>
+                                </div>
+                                <div class="pull-right">
+                                    <button type="submit" class="btn btn-default btn-lg" ng-disabled="model.disabled">Login</button>
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                </span>
+            </div>
         </div>
-        <nav class="pull-right">
-            <a ng-repeat="nav in stateNavs" ui-sref="{{nav.uisref}}" ui-sref-active="active">{{ nav.text }}</a>
+        <nav class="statenavs pull-right">
+            <a ng-repeat="nav in model.stateNavs" ui-sref="{{nav.sref}}" ui-sref-active="active">{{ nav.text }}</a>
         </nav>
     </header>
 </div>

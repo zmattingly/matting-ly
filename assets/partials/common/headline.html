@@ -1,8 +1,8 @@
-<div class="headline" delay-class-til-image-loaded="{{ headlineImage }}" delayed-classes="headline-loaded animated fadeIn">
+<div class="headline" delay-class-til-image-loaded="{{ model.headlineImage }}" delayed-classes="headline-loaded animated fadeIn">
     <div class="container">
         <section class="col-md-12">
-            <h1><span>{{ model.header }}</span></h1>
-            <p><span>{{ model.byline }}</span></p>
+            <h1 ng-show="model.header"><span>{{ model.header }}</span></h1>
+            <p ng-show="model.byline"><span>{{ model.byline }}</span></p>
         </section>
     </div>
 </div>

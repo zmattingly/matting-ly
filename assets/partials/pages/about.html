@@ -1,0 +1,40 @@
+<div id="about" ng-init="init()">
+    <div ng-include src="'/assets/partials/common/headline.html'"></div>
+
+    <div class="content">
+        <div class="container">
+            <section ng-show="model.bio" class="col-md-8">
+                <div>
+                    <h2>{{ model.bio.heading }}</h2>
+                    <div ng-bind-html="model.bio.content | trust" />
+                </div>
+            </section>
+            <aside ng-show="model.bio" class="col-md-4 skills">
+                <h2>Skills</h2>
+                <h3 class="html5-css3">HTML/CSS</h3>
+                <ul>
+                    <li class="sass">Sass</li>
+                </ul>
+                <h3 class="javascript">JavaScript</h3>
+                <ul>
+                    <li class="node">Node.js</li>
+                    <li class="angular">AngularJS</li>
+                    <li class="react">React</li>
+                    <li class="jquery">jQuery</li>
+                </ul>
+                <h3 class="python">Python</h3>
+                <ul>
+                    <li class="django">Django</li>
+                </ul>
+                <h3 class="testing">Testing</h3>
+                <ul>
+                    <li class="selenium">Selenium</li>
+                    <li class="jenkins">Jenkins</li>
+                </ul>
+            </aside>
+            <div ng-hide="model.bio">
+                <div ng-include="'/assets/partials/misc/sk-cube-grid.html'"></div>
+            </div>
+        </div>
+    </div>
+</div>

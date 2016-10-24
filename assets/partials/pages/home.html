@@ -1,0 +1,23 @@
+<div id="home" ng-init="init()" class="foobar">
+    <div ng-include src="'/assets/partials/common/headline.html'"></div>
+
+    <div class="content">
+        <div class="container">
+            <section class="col-md-12 blog" ng-show="model.posts.length">
+                <article ng-repeat="post in model.posts">
+                    <header>
+                        <h2>{{ post.heading }}</h2>
+                        <p class="date">{{ post.date | date:'longDate' }}</p>
+                    </header>
+                    <div class="entry" ng-bind-html="post.content | trust"></div>
+                    <footer>
+                        <p class="text-right">- {{ post.author }}</p>
+                    </footer>
+                </article>
+            </section>
+            <div ng-hide="model.posts.length">
+                <div ng-include="'/assets/partials/misc/sk-cube-grid.html'"></div>
+            </div>
+        </div>
+    </div>
+</div>

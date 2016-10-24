@@ -1,0 +1,51 @@
+#edit-post {
+  article {
+
+    .heading-editable {
+      input {
+        margin-top: 20px;
+        font-size: 56px;
+        margin-bottom: 5px;
+        border-bottom: solid 5px $base-black;
+        padding: 5px 0;
+        line-height: 1.1;
+        height: 60px;
+      }
+    }
+
+    .date-editable {
+      form .input-group {
+        border-bottom: solid 2px $base-black;
+      }
+    }
+
+    header {
+      .date {
+        display: inline-block;
+        border-bottom: solid 2px $base-black;
+      }
+    }
+
+    .entry {
+      font-size: 20px;
+      line-height: 24px;
+    }
+
+    footer {
+      border-top: solid 2px $base-black;
+    }
+
+    .checkbox {
+      margin: 0;
+      label {
+        padding-left: 0;
+        padding-right: 20px;
+      }
+      input[type=checkbox] {
+        margin: 0;
+        display: inline-block;
+        position: relative;
+      }
+    }
+  }
+}
