@@ -75,18 +75,7 @@
                         templateUrl: 'assets/partials/common/publicWrapper.html',
                         url: '/auth'
                     })
-                    .state('auth.login', {
-                        url: '/login',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/auth/login.html',
-                                controller: 'LoginController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
+                    // Registration, etc, for non-admin users to come to later
 
                     // Admin
                     .state('admin', {

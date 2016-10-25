@@ -1,6 +1,6 @@
 {
   "name": "matting-ly",
-  "version": "0.0.2",
+  "version": "0.2.0",
   "description": "A simple Webzone for my Blag.",
   "main": "app.js",
   "private": true,
