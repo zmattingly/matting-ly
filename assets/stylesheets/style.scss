@@ -225,7 +225,27 @@ html {
         }
 
     }
+}
 
+img.img-responsive {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.iframe-responsive {
+    position: relative;
+    height: 0;
+    overflow: hidden;
+}
+.iframe-responsive iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+}
+.iframe-16x9 {
+    padding-bottom: 56.25%;
 }
 
 // Pages - All

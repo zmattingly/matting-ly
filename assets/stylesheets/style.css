@@ -198,6 +198,25 @@ html {
         text-align: right;
         line-height: 48px; } }
 
+img.img-responsive {
+  width: 100%;
+  margin: 20px 0; }
+
+.iframe-responsive {
+  position: relative;
+  height: 0;
+  overflow: hidden; }
+
+.iframe-responsive iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
+
+.iframe-16x9 {
+  padding-bottom: 56.25%; }
+
 #public .error-page h1 {
   font-size: 216px; }
 #public .error-page span {
@@ -283,9 +302,6 @@ html {
   #public #projects article .entry {
     font-size: 20px;
     line-height: 24px; }
-  #public #projects article img {
-    width: 100%;
-    margin: 10px 0; }
 
 #admin .footer img {
   filter: grayscale(100%); }

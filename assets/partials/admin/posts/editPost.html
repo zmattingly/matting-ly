@@ -29,7 +29,7 @@
                     </header>
 
                     <div class="content-editable">
-                        <div ng-hide="editingContent" ng-click="editingContent = true; focusOnTextAngular();" class="entry" ng-bind-html="model.post.content | trust"></div>
+                        <div ng-hide="editingContent" ng-click="editingContent = true" class="entry" ng-bind-html="model.post.content | trust"></div>
                         <div ng-show="editingContent">
                             <text-angular focus="editingContent" ng-model="model.post.content" ng-blur="editingContent = false"
                                           ta-paste="htmlToPlaintext($html)"
