@@ -1,10 +1,10 @@
-<div id="home" ng-init="init()" class="foobar">
+<div id="home" ng-init="init()">
     <div ng-include src="'/assets/partials/common/headline.html'"></div>
 
     <div class="content">
         <div class="container">
-            <section class="col-md-12 blog" ng-show="model.posts.length">
-                <article ng-repeat="post in model.posts">
+            <section class="col-md-12 blog" ng-repeat="post in model.posts" ng-show="model.posts.length">
+                <article>
                     <header>
                         <h2>{{ post.heading }}</h2>
                         <p class="date">{{ post.date | date:'longDate' }}</p>

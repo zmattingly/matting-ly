@@ -18,7 +18,7 @@ router.get('*', function(req, res, next) {
             {href: 'https://cdnjs.cloudflare.com/ajax/libs/spinkit/1.2.5/spinners/9-cube-grid.min.css'}
         ],
         libJavascripts: [
-            {src: 'https://use.fontawesome.com/c8ace3af90.js'},
+            {src: '//cdn.tinymce.com/4/tinymce.min.js'},
             {src: 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js'},
             {src: 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-animate.min.js'},
             {src: 'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-touch.min.js'},
@@ -26,15 +26,12 @@ router.get('*', function(req, res, next) {
             {src: 'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap.min.js'},
             {src: 'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.2.0/ui-bootstrap-tpls.min.js'},
             {src: 'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js'},
-            // matting-ly.selectionTable
+            // Local Libs
             {src: staticDir + '/javascripts/libs/angular-scroll/angular-scroll.min.js'},
             {src: staticDir + '/javascripts/libs/angular-selection-model/matting-ly-selection-model.js'},
             {src: staticDir + '/javascripts/libs/angu-fixed-header-table/angu-fixed-header-table.js'},
             {src: staticDir + '/javascripts/libs/matting-ly-selectiontable/matting-ly-selectiontable.js'},
-            // textAngular
-            {src: 'http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.12/textAngular-rangy.min.js'},
-            {src: 'http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.12/textAngular-sanitize.min.js'},
-            {src: 'http://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.12/textAngular.min.js'},
+            {src: staticDir + '/javascripts/libs/angular-ui-tinymce/tinymce.min.js'},
         ],
         staticDir: '/assets',
         javascripts: [

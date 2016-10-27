@@ -5,7 +5,7 @@
         'ngResource',                // $sce
         'ui.bootstrap',              // Angular UI Bootstrap
         'ui.bootstrap.tpls',         // Angular UI Bootstrap Default Templates
-        'textAngular'                // textAngular WYSIWYG
+        'ui.tinymce'                 // Angular UI
     ]);
 
     var run = ['$rootScope', '$state', 'AuthService',

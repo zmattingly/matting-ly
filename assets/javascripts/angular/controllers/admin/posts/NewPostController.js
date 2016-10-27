@@ -19,7 +19,7 @@
                     dateFormats: [
                         'longDate', 'dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy'
                     ],
-                    defaultFormat: 'longDate'
+                    defaultDateFormat: 'longDate',
                 };
 
                 $scope.init = function() {};

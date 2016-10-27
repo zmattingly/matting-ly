@@ -18,7 +18,7 @@
                             <form class="form-inline" ng-show="editingDate" ng-submit="editingDate = false">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" uib-datepicker-popup="{{model.defaultFormat}}" is-open="model.datePickerOpen" ng-model="model.post.date" ng-required="true" date-options="{{model.dateOptions}}" alt-input-formats="{{model.formats}}">
+                                        <input type="text" class="form-control" uib-datepicker-popup="{{model.defaultDateFormat}}" is-open="model.datePickerOpen" ng-model="model.post.date" ng-required="true" date-options="{{model.dateOptions}}" alt-input-formats="{{model.formats}}">
                                         <span class="input-group-btn">
                                             <button type="button" class="btn btn-default" ng-click="datePickerOpen()"><i class="glyphicon glyphicon-calendar"></i></button>
                                         </span>
@@ -31,14 +31,7 @@
                     <div class="content-editable">
                         <div ng-hide="editingContent" ng-click="editingContent = true" class="entry" ng-bind-html="model.post.content | trust"></div>
                         <div ng-show="editingContent">
-                            <text-angular focus="editingContent" ng-model="model.post.content" ng-blur="editingContent = false"
-                                          ta-paste="htmlToPlaintext($html)"
-                                          ta-unsafe-sanitizer="true"
-                                          ta-toolbar="[
-                                              ['h1','h2','h3'],['p','pre','quote'],['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol'],
-                                              ['indent', 'outdent'], ['clear', 'html', 'insertImage','insertLink', 'insertVideo'], ['wordcount', 'charcount']
-                                          ]">
-                            </text-angular>
+                            <textarea ui-tinymce="defaultTinymceOptions" ng-model="model.post.content"></textarea>
                         </div>
                     </div>
 

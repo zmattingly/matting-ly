@@ -15,7 +15,7 @@
                     dateFormats: [
                         'longDate', 'dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy'
                     ],
-                    defaultFormat: 'longDate'
+                    defaultDateFormat: 'longDate',
                 };
 
                 $scope.init = function() {
@@ -58,7 +58,7 @@
                             console.error(data);
                             $state.go('error.500');
                         });
-                }
+                };
 
                 $scope.deletePost = function(post) {
                     $http.delete('/api/posts/' + post._id)
@@ -70,7 +70,7 @@
                             console.error(data);
                             $state.go('error.500');
                         });
-                }
+                };
             }
     ]);
 })();
