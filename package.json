@@ -26,6 +26,15 @@
     "pug": "^2.0.0-beta6",
     "serve-favicon": "~2.3.0"
   },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-jshint": "^2.0.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
+    "gulp-uglify": "^2.0.0",
+    "jshint": "^2.9.4"
+  },
   "keywords": [
     "Node.js",
     "Express",

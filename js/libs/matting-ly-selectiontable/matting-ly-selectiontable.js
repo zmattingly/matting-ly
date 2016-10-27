@@ -116,7 +116,7 @@
                 controllerAs: 'vm',
                 bindToController: true,
                 // TODO: Determine why $templateCache version of this doesn't load the selection-model properly
-                templateUrl: '/assets/javascripts/libs/matting-ly-selectiontable/matting-ly-selectiontable.html',
+                templateUrl: '/assets/partials/directives/matting-ly-selectiontable.html',
                 //templateUrl: 'mattingly/selectionTable/template/selectionTable.html',
                 transclude: true
             };

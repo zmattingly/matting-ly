@@ -48,8 +48,11 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // mongoose
-mongoose.connect(process.env.MONGO_URI);
-
+if (app.get('env') === 'testing') {
+    mongoose.connect(process.env.MONGO_URI_TESTING);
+} else {
+    mongoose.connect(process.env.MONGO_URI);
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

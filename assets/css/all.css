@@ -1,0 +1,407 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+body {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+html {
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+
+a, a:hover, a:visited, a:link, a:active {
+  text-decoration: none !important; }
+
+html {
+  background-color: #707070; }
+
+.header {
+  background-color: #707070;
+  margin: 0; }
+  .header .dropdown-menu a {
+    width: 100%; }
+    .header .dropdown-menu a.active {
+      background-color: #ececec; }
+  .header .login-dropdown-form .dropdown-menu {
+    background-color: #DDD;
+    padding: 0 20px 20px;
+    min-width: 320px; }
+  .header .login-dropdown-menu .dropdown-menu {
+    background-color: #DDD; }
+    .header .login-dropdown-menu .dropdown-menu span {
+      margin-right: 10px; }
+  .header .container {
+    padding: 0; }
+    .header .container a {
+      display: inline-block;
+      font-size: 20px;
+      padding: 5px 10px; }
+    .header .container nav a {
+      color: #FFF;
+      font-family: "Arial Black", "Arial Bold", Gadget, sans-serif !important; }
+      .header .container nav a:last-child {
+        margin-right: 0; }
+      .header .container nav a:hover {
+        text-decoration: none; }
+      .header .container nav a.active {
+        background-color: #575757; }
+    .header .container .eye {
+      color: #FFF; }
+
+.headline {
+  background-color: #303030; }
+  @media only screen and (min-width: 768px) {
+    #home .headline.headline-loaded {
+      background: url("/assets/images/bgs/robot.jpg") no-repeat 0 15%;
+      background-size: cover; } }
+  @media only screen and (min-width: 768px) {
+    #about .headline.headline-loaded {
+      background: url("/assets/images/bgs/rings.jpg") no-repeat 0 60%;
+      background-size: cover; } }
+  @media only screen and (min-width: 768px) {
+    #projects .headline.headline-loaded {
+      background: url("/assets/images/bgs/yellow_flower_sky.jpg") no-repeat 0 55%;
+      background-size: cover; } }
+  @media only screen and (min-width: 320px) {
+    #home .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/robot.jpg"); } }
+  @media only screen and (min-width: 480px) {
+    #home .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/robot.jpg"); } }
+  @media only screen and (min-width: 768px) {
+    #home .headline.headline-loaded .container {
+      background-image: none; } }
+  @media only screen and (min-width: 320px) {
+    #about .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/rings.jpg"); } }
+  @media only screen and (min-width: 480px) {
+    #about .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/rings.jpg"); } }
+  @media only screen and (min-width: 768px) {
+    #about .headline.headline-loaded .container {
+      background-image: none; } }
+  @media only screen and (min-width: 320px) {
+    #projects .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/yellow_flower_sky.jpg"); } }
+  @media only screen and (min-width: 480px) {
+    #projects .headline.headline-loaded .container {
+      background-image: url("/assets/images/bgs/yellow_flower_sky.jpg"); } }
+  @media only screen and (min-width: 768px) {
+    #projects .headline.headline-loaded .container {
+      background-image: none; } }
+  .headline .container {
+    background-size: cover;
+    font-weight: bold;
+    padding-top: 1.5em;
+    padding-bottom: 5em; }
+    .headline .container section {
+      opacity: 0.75;
+      transform: rotate(-2deg); }
+      .headline .container section h1 {
+        font-size: 5em; }
+      .headline .container section p {
+        font-size: 1.5em; }
+      .headline .container section span {
+        background-color: #FFF;
+        padding: .05em .15em; }
+
+.content {
+  background-color: #DDD; }
+  .content section {
+    background-color: #FFF;
+    border: solid 5px #111;
+    border-radius: 1em 3em 0 0;
+    margin-bottom: 15px; }
+    @media only screen and (min-width: 320px) {
+      .content section {
+        margin-top: -70px;
+        margin-bottom: 105 px; } }
+    @media only screen and (min-width: 480px) {
+      .content section {
+        margin-top: -40px;
+        margin-bottom: 60px; } }
+    @media only screen and (min-width: 992px) {
+      .content section {
+        margin-top: -30px;
+        margin-bottom: 45px; } }
+    @media only screen and (min-width: 320px) {
+      .content section:last-of-type {
+        margin-bottom: 35px; } }
+    @media only screen and (min-width: 480px) {
+      .content section:last-of-type {
+        margin-bottom: 20px; } }
+    @media only screen and (min-width: 992px) {
+      .content section:last-of-type {
+        margin-bottom: 15px; } }
+    .content section h2 {
+      font-size: 56px;
+      border-bottom: solid 5px #111;
+      margin-bottom: 5px; }
+    .content section .entry ul {
+      margin-left: 40px;
+      list-style: disc; }
+
+.footer {
+  background-color: #707070;
+  margin: 0; }
+  .footer .container {
+    padding: 0; }
+    .footer .container a {
+      color: #373737; }
+    .footer .container img {
+      height: 32px; }
+    .footer .container p {
+      margin-bottom: 0; }
+    .footer .container .social-navs a {
+      display: inline-block;
+      padding: 0 5px;
+      line-height: 48px; }
+    @media only screen and (min-width: 320px) {
+      .footer .container .powered-by {
+        text-align: left;
+        line-height: 24px; } }
+    @media only screen and (min-width: 992px) {
+      .footer .container .powered-by {
+        text-align: right;
+        line-height: 48px; } }
+
+img.img-responsive {
+  width: 100%;
+  margin: 20px 0; }
+
+.iframe-responsive {
+  position: relative;
+  height: 0;
+  overflow: hidden; }
+
+.iframe-responsive iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
+
+.iframe-16x9 {
+  padding-bottom: 56.25%; }
+
+video {
+  width: 100% !important;
+  height: auto !important; }
+
+#public .error-page h1 {
+  font-size: 216px; }
+
+#public .error-page span {
+  font-size: 32px; }
+
+#public .error-page .oops h1 {
+  font-size: 148px; }
+
+#public #home .blog article header .date {
+  display: inline-block;
+  border-bottom: solid 2px #111; }
+
+#public #home .blog article .entry {
+  font-size: 20px;
+  line-height: 24px; }
+
+#public #home .blog article footer {
+  border-top: solid 2px #111; }
+
+#public #about .content section {
+  font-size: 20px;
+  line-height: 22px; }
+
+@media only screen and (min-width: 320px) {
+  #public #about .skills {
+    background-color: #FFF;
+    border: solid 5px #111;
+    border-radius: 1em 3em 0 0;
+    margin-bottom: 15px; } }
+
+@media only screen and (min-width: 992px) {
+  #public #about .skills {
+    background-color: transparent;
+    border: none;
+    border-radius: 0; } }
+
+#public #about .skills h2 {
+  font-size: 48px; }
+
+#public #about .skills h3 {
+  padding-left: 56px;
+  line-height: 48px;
+  font-size: 32px;
+  margin: 5px 0;
+  background-position: center left;
+  background-repeat: no-repeat; }
+  #public #about .skills h3.html5-css3 {
+    background-image: url("/assets/images/tech_logos/markup.png"); }
+  #public #about .skills h3.javascript {
+    background-image: url("/assets/images/tech_logos/javascript.png"); }
+  #public #about .skills h3.python {
+    background-image: url("/assets/images/tech_logos/python.png"); }
+  #public #about .skills h3.testing {
+    background-image: url("/assets/images/tech_logos/software_testing.png"); }
+
+#public #about .skills ul {
+  margin-left: 56px;
+  font-size: 24px;
+  line-height: 32px; }
+  #public #about .skills ul li {
+    padding-left: 40px;
+    background-position: center left;
+    background-repeat: no-repeat; }
+    #public #about .skills ul li.sass {
+      background-image: url("/assets/images/tech_logos/sass.png"); }
+    #public #about .skills ul li.node {
+      background-image: url("/assets/images/tech_logos/node.png"); }
+    #public #about .skills ul li.angular {
+      background-image: url("/assets/images/tech_logos/angular.png"); }
+    #public #about .skills ul li.react {
+      background-image: url("/assets/images/tech_logos/react.png"); }
+    #public #about .skills ul li.jquery {
+      background-image: url("/assets/images/tech_logos/jquery.png"); }
+    #public #about .skills ul li.django {
+      background-image: url("/assets/images/tech_logos/django.png"); }
+    #public #about .skills ul li.selenium {
+      background-image: url("/assets/images/tech_logos/selenium.png"); }
+    #public #about .skills ul li.jenkins {
+      background-image: url("/assets/images/tech_logos/jenkins.png"); }
+
+#public #projects article {
+  margin-top: 50px; }
+  #public #projects article:first-child {
+    margin-top: 0px; }
+  #public #projects article header h2 {
+    padding-bottom: 5px; }
+    #public #projects article header h2 a {
+      color: #111; }
+    #public #projects article header h2 a:hover {
+      text-decoration: none; }
+  #public #projects article header .date {
+    display: inline-block;
+    border-bottom: solid 2px #111; }
+  #public #projects article .entry {
+    font-size: 20px;
+    line-height: 24px; }
+
+#admin .footer img {
+  filter: grayscale(100%); }
+
+#admin selection-table thead th {
+  font-weight: bold;
+  background-color: #DDD; }
+
+#admin selection-table .selected td {
+  color: #FFF;
+  background-color: #707070; }
+
+#admin selection-table:focus,
+#admin selection-table table:focus {
+  border-color: #707070;
+  box-shadow: none;
+  -webkit-box-shadow: none; }
+
+#admin .admin-controls {
+  display: block;
+  margin-bottom: 20px; }
+
+#admin .btn-success {
+  background-color: #303030; }
+
+#admin .btn-danger {
+  font-weight: bold;
+  color: #FFF; }
+
+#admin .btn-info {
+  background-color: #8a8a8a;
+  border-color: #8a8a8a; }
+
+#admin .btn-primary {
+  font-weight: bold;
+  background-color: #707070; }
+
+#admin #edit-post article .heading-editable input {
+  margin-top: 20px;
+  font-size: 56px;
+  margin-bottom: 5px;
+  border-bottom: solid 5px #111;
+  padding: 5px 0;
+  line-height: 1.1;
+  height: 60px; }
+
+#admin #edit-post article .date-editable form .input-group {
+  border-bottom: solid 2px #111; }
+
+#admin #edit-post article header .date {
+  display: inline-block;
+  border-bottom: solid 2px #111; }
+
+#admin #edit-post article .entry {
+  font-size: 20px;
+  line-height: 24px; }
+
+#admin #edit-post article footer {
+  border-top: solid 2px #111; }
+
+#admin #edit-post article .checkbox {
+  margin: 0; }
+  #admin #edit-post article .checkbox label {
+    padding-left: 0;
+    padding-right: 20px; }
+  #admin #edit-post article .checkbox input[type=checkbox] {
+    margin: 0;
+    display: inline-block;
+    position: relative; }
+
+#admin #new-post form.input[type=text] {
+  background-image: none !important; }
+
+#admin #new-post form.new-post-form {
+  margin-top: 20px; }
