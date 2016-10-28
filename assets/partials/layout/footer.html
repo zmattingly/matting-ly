@@ -1,0 +1,17 @@
+<div class="footer" role="banner" ng-init="init()">
+    <footer class="container">
+        <nav class="col-xs-12 col-md-4">
+            <nav class="social-navs">
+                <a ng-repeat="nav in model.socialNavs" href="{{ nav.href }}" ><img alt="{{ nav.alt }}" src="{{ nav.img_src }}" /></a>
+            </nav>
+        </nav>
+        <nav class="col-xs-12 col-md-8">
+            <div class="powered-by">
+                <p>
+                    Powered by <a href="https://nodejs.org/en/">Node.js</a>, <a href="https://expressjs.com/">Express</a>,
+                    <a href="https://angularjs.org/">AngularJS</a>, <a href="http://mongoosejs.com">Mongoose</a> and {{ model.poweredBy }}.
+                </p>
+            </div>
+        </nav>
+    </footer>
+</div>

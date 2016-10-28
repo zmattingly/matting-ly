@@ -17,11 +17,11 @@
                 $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
                 var header = {
-                    templateUrl: 'assets/partials/header.html',
+                    templateUrl: 'assets/partials/layout/header.html',
                     controller: 'HeaderController'
                 };
                 var footer = {
-                    templateUrl: 'assets/partials/footer.html',
+                    templateUrl: 'assets/partials/layout/footer.html',
                     controller: 'FooterController'
                 };
 
@@ -30,7 +30,7 @@
                     // Basic Pages
                     .state('pages', {
                         abstract: true,
-                        templateUrl: 'assets/partials/common/publicWrapper.html'
+                        templateUrl: 'assets/partials/layout/publicWrapper.html'
                     })
                     .state('pages.home', {
                         url: '/home',
@@ -72,7 +72,7 @@
                     // Auth
                     .state('auth', {
                         abstract: true,
-                        templateUrl: 'assets/partials/common/publicWrapper.html',
+                        templateUrl: 'assets/partials/layout/publicWrapper.html',
                         url: '/auth'
                     })
                     // Registration, etc, for non-admin users to come to later
@@ -80,7 +80,7 @@
                     // Admin
                     .state('admin', {
                         abstract: true,
-                        templateUrl: 'assets/partials/common/adminWrapper.html',
+                        templateUrl: 'assets/partials/layout/adminWrapper.html',
                         url: '/admin',
                     })
                     .state('admin.viewPosts', {
@@ -123,7 +123,7 @@
                     // Error
                     .state('error', {
                         abstract: true,
-                        templateUrl: 'assets/partials/common/publicWrapper.html'
+                        templateUrl: 'assets/partials/layout/publicWrapper.html'
                     })
                     .state('error.oops', {
                         url: '/uhoh',

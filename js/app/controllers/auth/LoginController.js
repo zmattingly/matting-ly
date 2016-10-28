@@ -51,7 +51,6 @@
             };
 
             $scope.logout = function() {
-                console.log("Logout")
                 AuthService.logout()
                     // handle success
                     .then(function() {

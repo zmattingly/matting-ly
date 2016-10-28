@@ -8,27 +8,25 @@
         'ui.tinymce'                 // Angular UI
     ]);
 
-    var run = ['$rootScope', '$state', 'AuthService',
-        function ($rootScope, $state, AuthService) {
-            $rootScope.$state = $state;
+    run.$inject = ['$rootScope', '$state', 'AuthService'];
+    function run($rootScope, $state, AuthService) {
+        $rootScope.$state = $state;
 
-            $rootScope.$on('$stateChangeStart',
-                function (event, toState, toParams, fromState, fromParams, options) {
+        $rootScope.$on('$stateChangeStart',
+            function (event, toState, toParams, fromState, fromParams, options) {
 
-                    AuthService.getAccountStatus()
-                        .then(function(){
-                            if (toState.access.restricted && !AuthService.isLoggedIn()) {
-                                event.preventDefault();
-                                $state.go('pages.home');
-                            }
-                        });
-                }
-            );
-        }
-    ];
+                AuthService.getAccountStatus()
+                    .then(function(){
+                        if (toState.access.restricted && !AuthService.isLoggedIn()) {
+                            event.preventDefault();
+                            $state.go('pages.home');
+                        }
+                    });
+            }
+        );
+    }
 
     app.run(run)
-        .value('duScrollOffset', 64) // Header is 64px tall
         ;
 })(window.angular);
 /**
@@ -857,6 +855,7 @@ angular.module('matting-ly.selectionModel').service('uuidGen', function() {
 });
 
 angular.module("selectionModel",[]),angular.module("selectionModel").directive("selectionModelIgnore",[function(){"use strict";return{restrict:"A",link:function(a,b,c){var d=function(a){a.selectionModelIgnore=!0,a.originalEvent&&(a.originalEvent.selectionModelIgnore=!0)};b.on("click",function(b){(!c.selectionModelIgnore||a.$eval(c.selectionModelIgnore))&&d(b)})}}}]),angular.module("selectionModel").directive("selectionModel",["selectionStack","uuidGen","selectionModelOptions",function(a,b,c){"use strict";return{restrict:"A",link:function(d,e,f){var g=c.get(),h=g.selectedAttribute,i=g.selectedClass,j=g.type,k=g.mode,l=g.cleanupStrategy,m=d.$eval(f.selectionModelType)||j,n=d.$eval(f.selectionModelMode)||k,o=/^multi(ple)?(-additive)?$/.test(n),p=/^multi(ple)?-additive/.test(n),q=d.$eval(f.selectionModelSelectedAttribute)||h,r=d.$eval(f.selectionModelSelectedClass)||i,s=d.$eval(f.selectionModelCleanupStrategy)||l,t=f.selectionModelOnChange,u=f.ngRepeat;if(!u)throw"selectionModel must be used along side ngRepeat";var v=d.$eval(f.selectionModelSelectedItems),w=function(){if(!o)return null;var a="data-selection-model-stack-id",c=e.attr(a);return c?c:(c=e.parent().attr(a))?(e.attr(a,c),c):(c=b.create(),e.attr(a,c),e.parent().attr(a,c),c)}(),x=u.split(/\sin\s|\strack\sby\s/g),y=d.$eval(x[0]),z=x.length>2,A=function(){if(y[q]?e.addClass(r):e.removeClass(r),"checkbox"===m){var a=[];angular.forEach(e.find("input"),function(b){b=angular.element(b),"checkbox"===b.attr("type")&&a.push(b)}),a.length&&a[0].prop("checked",y[q])}},B=function(){return d.$eval(x[1])},C=function(){return d.$eval(x[1].split(/[|=]/)[0])},D=function(a){var b,c=angular.isArray(v),d=angular.isArray(a)&&2===a.length,e=C(),f=0,g=!1;c&&(v.length=0),angular.forEach(e,function(e){d?(b=a.indexOf(e),b>-1?(f++,g=!1,a.splice(b,1)):g=1!==f):g=e!==a,g?e[q]=!1:c&&e[q]&&v.push(e)})},E=function(a){var b=(B(),!1),c=!1;a=a||y,angular.forEach(B(),function(d){c=c||d===y,b=b||d===a;var e=b+c===1;(e||d===y||d===a)&&(d[q]=!0)})},F=function(b){if(!(b.selectionModelIgnore||b.originalEvent&&b.originalEvent.selectionModelIgnore||b.selectionModelClickHandled||b.originalEvent&&b.originalEvent.selectionModelClickHandled)){b.selectionModelClickHandled=!0,b.originalEvent&&(b.originalEvent.selectionModelClickHandled=!0);var c=b.ctrlKey||b.metaKey||p,f=b.shiftKey,g=b.target||b.srcElement,h="checkbox"===m&&"INPUT"===g.tagName&&"checkbox"===g.type;if("LABEL"===g.tagName){var i=angular.element(g).attr("for");if(i){var j,k=e[0].getElementsByTagName("INPUT");for(j=k.length;j--;)if(k[j].id===i)return}else if(g.getElementsByTagName("INPUT").length)return}if(f&&o&&!h)return c||d.$apply(function(){D([y,a.peek(w)])}),E(a.peek(w)),void d.$apply();if(c||f||h){var l=!y[q];return o||D(y),y[q]=l,y[q]&&a.push(w,y),void d.$apply()}D(y),d.$apply(),y[q]=!0,a.push(w,y),d.$apply()}},G=function(){if(angular.isArray(v)){var a=v.indexOf(y);y[q]?-1===a&&v.push(y):a>-1&&v.splice(a,1)}};if(e.on("click",F),"checkbox"===m){var H=e.find("input");H[0]&&"checkbox"===H[0].type&&e.find("input").on("click",F)}A(),G(),"deselect"===s&&d.$on("$destroy",function(){var a=y[q];y[q]=!1,G(),t&&a&&d.$eval(t)}),d.$watch(x[0]+"."+q,function(a,b){a!==b&&(o||!a||b||(D(y),y[q]=!0),A(),G(),t&&d.$eval(t))}),z&&d.$watch(x[0],function(a){y=a})}}}]),angular.module("selectionModel").provider("selectionModelOptions",[function(){"use strict";var a={selectedAttribute:"selected",selectedClass:"selected",type:"basic",mode:"single",cleanupStrategy:"none"};this.set=function(b){angular.extend(a,b)},this.$get=function(){var b={get:function(){return angular.copy(a)}};return b}}]),angular.module("selectionModel").service("selectionStack",function(){"use strict";var a={},b=1e3,c={};return a.push=function(a,d){c.hasOwnProperty(a)||(c[a]=[]);var e=c[a];for(e.push(d);e.length>b;)e.shift();return e.length},a.pop=function(a){c.hasOwnProperty(a)||(c[a]=[]);var b=c[a];return b.pop()},a.peek=function(a){c.hasOwnProperty(a)||(c[a]=[]);var b=c[a];return b.length?b[b.length-1]:void 0},a}),angular.module("selectionModel").service("uuidGen",function(){"use strict";var a={},b=["0","0","0"];return a.create=function(){for(var a,c=b.length;c;){if(c--,a=b[c].charCodeAt(0),57===a)return b[c]="A",b.join("");if(90!==a)return b[c]=String.fromCharCode(a+1),b.join("");b[c]="0"}return b.unshift("0"),b.join("")},a});
+angular.module("ui.tinymce",[]).value("uiTinymceConfig",{}).directive("uiTinymce",["$rootScope","$compile","$timeout","$window","$sce","uiTinymceConfig",function(a,b,c,d,e,f){f=f||{};var g="ui-tinymce";return f.baseUrl&&(tinymce.baseURL=f.baseUrl),{require:["ngModel","^?form"],priority:599,link:function(h,i,j,k){function l(a){a?(m(),o&&o.getBody().setAttribute("contenteditable",!1)):(m(),o&&!o.settings.readonly&&o.getDoc()&&o.getBody().setAttribute("contenteditable",!0))}function m(){o||(o=tinymce.get(j.id))}if(d.tinymce){var n,o,p=k[0],q=k[1]||null,r={debounce:!0},s=function(b){var c=b.getContent({format:r.format}).trim();c=e.trustAsHtml(c),p.$setViewValue(c),a.$$phase||h.$digest()};j.$set("id",g+"-"+(new Date).valueOf()),n={},angular.extend(n,h.$eval(j.uiTinymce));var t=function(a){var b;return function(d){c.cancel(b),b=c(function(){return function(a){a.isDirty()&&(a.save(),s(a))}(d)},a)}}(400),u={setup:function(b){b.on("init",function(){p.$render(),p.$setPristine(),p.$setUntouched(),q&&q.$setPristine()}),b.on("ExecCommand change NodeChange ObjectResized",function(){return r.debounce?void t(b):(b.save(),void s(b))}),b.on("blur",function(){i[0].blur(),p.$setTouched(),a.$$phase||h.$digest()}),b.on("remove",function(){i.remove()}),f.setup&&f.setup(b,{updateView:s}),n.setup&&n.setup(b,{updateView:s})},format:n.format||"html",selector:"#"+j.id};angular.extend(r,f,n,u),c(function(){r.baseURL&&(tinymce.baseURL=r.baseURL);var a=tinymce.init(r);a&&"function"==typeof a.then?a.then(function(){l(h.$eval(j.ngDisabled))}):l(h.$eval(j.ngDisabled))}),p.$formatters.unshift(function(a){return a?e.trustAsHtml(a):""}),p.$parsers.unshift(function(a){return a?e.getTrustedHtml(a):""}),p.$render=function(){m();var a=p.$viewValue?e.getTrustedHtml(p.$viewValue):"";o&&o.getDoc()&&(o.setContent(a),o.fire("change"))},j.$observe("disabled",l),h.$on("$tinymce:refresh",function(a,c){var d=j.id;if(angular.isUndefined(c)||c===d){var e=i.parent(),f=i.clone();f.removeAttr("id"),f.removeAttr("style"),f.removeAttr("aria-hidden"),tinymce.execCommand("mceRemoveEditor",!1,d),e.append(b(f)(h))}}),h.$on("$destroy",function(){m(),o&&(o.remove(),o=null)})}}}}]);
 (function(angular) {
 
     angular.module('matting-ly.selectionTable', [
@@ -1068,95 +1067,105 @@ angular.module("selectionModel",[]),angular.module("selectionModel").directive("
     // }]);
 
 })(window.angular);
-angular.module("ui.tinymce",[]).value("uiTinymceConfig",{}).directive("uiTinymce",["$rootScope","$compile","$timeout","$window","$sce","uiTinymceConfig",function(a,b,c,d,e,f){f=f||{};var g="ui-tinymce";return f.baseUrl&&(tinymce.baseURL=f.baseUrl),{require:["ngModel","^?form"],priority:599,link:function(h,i,j,k){function l(a){a?(m(),o&&o.getBody().setAttribute("contenteditable",!1)):(m(),o&&!o.settings.readonly&&o.getDoc()&&o.getBody().setAttribute("contenteditable",!0))}function m(){o||(o=tinymce.get(j.id))}if(d.tinymce){var n,o,p=k[0],q=k[1]||null,r={debounce:!0},s=function(b){var c=b.getContent({format:r.format}).trim();c=e.trustAsHtml(c),p.$setViewValue(c),a.$$phase||h.$digest()};j.$set("id",g+"-"+(new Date).valueOf()),n={},angular.extend(n,h.$eval(j.uiTinymce));var t=function(a){var b;return function(d){c.cancel(b),b=c(function(){return function(a){a.isDirty()&&(a.save(),s(a))}(d)},a)}}(400),u={setup:function(b){b.on("init",function(){p.$render(),p.$setPristine(),p.$setUntouched(),q&&q.$setPristine()}),b.on("ExecCommand change NodeChange ObjectResized",function(){return r.debounce?void t(b):(b.save(),void s(b))}),b.on("blur",function(){i[0].blur(),p.$setTouched(),a.$$phase||h.$digest()}),b.on("remove",function(){i.remove()}),f.setup&&f.setup(b,{updateView:s}),n.setup&&n.setup(b,{updateView:s})},format:n.format||"html",selector:"#"+j.id};angular.extend(r,f,n,u),c(function(){r.baseURL&&(tinymce.baseURL=r.baseURL);var a=tinymce.init(r);a&&"function"==typeof a.then?a.then(function(){l(h.$eval(j.ngDisabled))}):l(h.$eval(j.ngDisabled))}),p.$formatters.unshift(function(a){return a?e.trustAsHtml(a):""}),p.$parsers.unshift(function(a){return a?e.getTrustedHtml(a):""}),p.$render=function(){m();var a=p.$viewValue?e.getTrustedHtml(p.$viewValue):"";o&&o.getDoc()&&(o.setContent(a),o.fire("change"))},j.$observe("disabled",l),h.$on("$tinymce:refresh",function(a,c){var d=j.id;if(angular.isUndefined(c)||c===d){var e=i.parent(),f=i.clone();f.removeAttr("id"),f.removeAttr("style"),f.removeAttr("aria-hidden"),tinymce.execCommand("mceRemoveEditor",!1,d),e.append(b(f)(h))}}),h.$on("$destroy",function(){m(),o&&(o.remove(),o=null)})}}}}]);
 (function (angular) {
-    angular.module('matting-ly')
-        .controller('FooterController', ['$scope',
-            function ($scope) {
-                $scope.socialNavs = [
-                    {
-                        alt: 'LinkedIn',
-                        img_src: '/assets/images/social_logos/linkedin.png',
-                        href: 'https://linkedin.com/in/zanemattingly'
-                    },
-                    {
-                        alt: 'Github',
-                        img_src: '/assets/images/social_logos/github.png',
-                        href: 'https://github.com/zmattingly'
-                    },
-                    {
-                        alt: 'Instagram',
-                        img_src: '/assets/images/social_logos/instagram.png',
-                        href: 'https://instagram.com/zmattingly'
-                    },
-                    {
-                        alt: 'Twitter',
-                        img_src: '/assets/images/social_logos/twitter.png',
-                        href: 'https://twitter.com/z_mattingly'
-                    }
-                ];
-                $scope.poweredBy = '';
 
-                var poweredByLines = [
-                    "viewers like you",
-                    "the efforts of a small, earnest bird",
-                    "curious electromagnetic behavior",
-                    "a chest-mounted arc reactor",
-                    "thirteen tubas sounding in rhythm",
-                    "IMMENSE hydraulic pressure",
-                    "pressurized, super-heated steam",
-                    "a power-generating stationary bike",
-                    "bees. Hundreds of bees",
-                    "a potato",
-                    "the love inside you",
-                    "our insect overlords",
-                    "funky yeasts",
-                    "three hundred dogs synced in parallel",
-                    "static electricity",
-                    "the harnessed gravity of a black hole",
-                ];
-                $scope.init = function() {
-                    $scope.poweredBy = $scope.getPoweredBy();
-                }
-                $scope.getPoweredBy = function() {
-                    return poweredByLines[Math.floor(Math.random()*(poweredByLines.length - 1))];
+    var delayDisplayTilImageLoaded = [function() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                element.addClass("ng-hide");
+                var image = new Image();
+                image.onload = function() {
+                    scope.$apply(function () {
+                        element.removeClass("ng-hide");
+                    });
                 };
-            }
-    ]);
+                image.src = attrs.delayDisplayTilImageLoaded;
+           }
+       }
+    }];
+
+    var delayClassTilImageLoaded = [function() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                var image = new Image();
+                image.onload = function() {
+                    scope.$apply(function () {
+                        element.addClass(attrs.delayedClasses);
+                        // element.addClass('animated');
+                        // element.addClass('fadeIn');
+                    });
+                };
+                image.src = attrs.delayClassTilImageLoaded;
+           }
+       }
+    }];
+
+    var whenFocus = ['$timeout', function($timeout) {
+        return {
+            scope: {
+                whenFocus: '='
+            },
+            link: function (scope, element, attrs) {
+                scope.$watch('whenFocus', function (shouldFocus) {
+                    if (shouldFocus) {
+                        $timeout(function () {
+                            element[0].focus();
+                        })
+                    }
+                })
+            },
+        };
+    }];
+
+    var backButton = ['$window', function($window) {
+        return {
+            restrict: 'A',
+            scope: {},
+            link: function(scope, element, attrs) {
+                element.on('click', function() {
+                    $window.history.back();
+                });
+            },
+        };
+    }];
+
+    angular.module('matting-ly')
+        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded)
+        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded)
+        .directive('whenFocus', whenFocus)
+        .directive('backButton', backButton)
+    ;
+
+})(window.angular);
+
+(function (angular) {
+
+    var trust = ['$sce', function($sce) {
+        return function(htmlCode) {
+            return $sce.trustAsHtml(htmlCode);
+        }
+    }];
+
+    angular.module("matting-ly")
+        .filter("trust", trust);
+
 })(window.angular);
 (function (angular) {
-    angular.module('matting-ly')
-        .controller('HeaderController', ['$scope', '$state', 'AuthService',
-            function ($scope, $state, AuthService) {
-                $scope.$state = $state;
-                $scope.model = {
-                    stateNavs: [
-                        {
-                            'sref': 'pages.home',
-                            'text': 'Home'
-                        },
-                        {
-                            'sref': 'pages.about',
-                            'text': 'About'
-                        },
-                        {
-                            'sref': 'pages.projects',
-                            'text': 'Projects'
-                        }
-                    ],
-                    adminButton: {
-                        adminButton: {
-                            'sref': 'auth.login'
-                        }
-                    },
-                    isLoggedIn: function() {}
-                };
 
-                $scope.init = function() {
-                    $scope.model.isLoggedIn = AuthService.returnFullLoginInStatus();
-                }
-            }
-    ]);
+    var yesNo = [function() {
+        return function (input) {
+            return input ? 'Yes' : 'No';
+        };
+    }];
+
+    angular.module("matting-ly")
+        .filter("yesNo", yesNo)
+    ;
+
 })(window.angular);
 (function (angular) {
     angular.module('matting-ly')
@@ -1185,204 +1194,97 @@ angular.module("ui.tinymce",[]).value("uiTinymceConfig",{}).directive("uiTinymce
             }
     ]);
 })(window.angular);
-(function() {
-
-    angular.module('matting-ly.routing', ['ui.router'])
-        .config(['$urlRouterProvider', '$locationProvider', '$httpProvider', '$stateProvider',
-            function ($urlRouterProvider, $locationProvider, $httpProvider, $stateProvider) {
-                // urlRouter
-                $urlRouterProvider
-                    .when('/', '/home')
-                    .otherwise('/404');
-
-                $locationProvider.html5Mode({
-                    enabled: true,
-                    rewriteLinks: false
-                });
-
-                // $httpProvider
-                $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-                var header = {
-                    templateUrl: 'assets/partials/header.html',
-                    controller: 'HeaderController'
-                };
-                var footer = {
-                    templateUrl: 'assets/partials/footer.html',
-                    controller: 'FooterController'
-                };
-
-                // Set up the states
-                $stateProvider
-                    // Basic Pages
-                    .state('pages', {
-                        abstract: true,
-                        templateUrl: 'assets/partials/common/publicWrapper.html'
-                    })
-                    .state('pages.home', {
-                        url: '/home',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/pages/home.html',
-                                controller: 'HomeController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-                    .state('pages.about', {
-                        url: '/about',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/pages/about.html',
-                                controller: 'AboutController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-                    .state('pages.projects', {
-                        url: '/projects',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/pages/projects.html',
-                                controller: 'ProjectsController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-
-                    // Auth
-                    .state('auth', {
-                        abstract: true,
-                        templateUrl: 'assets/partials/common/publicWrapper.html',
-                        url: '/auth'
-                    })
-                    // Registration, etc, for non-admin users to come to later
-
-                    // Admin
-                    .state('admin', {
-                        abstract: true,
-                        templateUrl: 'assets/partials/common/adminWrapper.html',
-                        url: '/admin',
-                    })
-                    .state('admin.viewPosts', {
-                        url: '/posts',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/admin/posts/viewPosts.html',
-                                controller: 'ViewPostsController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: true}
-                    })
-                    .state('admin.newPost', {
-                        url: '/posts/new',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/admin/posts/newPost.html',
-                                controller: 'NewPostController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: true}
-                    })
-                    .state('admin.editPost', {
-                        url: '/posts/:postId',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/admin/posts/editPost.html',
-                                controller: 'EditPostController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: true}
-                    })
-
-                    // Error
-                    .state('error', {
-                        abstract: true,
-                        templateUrl: 'assets/partials/common/publicWrapper.html'
-                    })
-                    .state('error.oops', {
-                        url: '/uhoh',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/errors/oops.html',
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-                    .state('error.404', {
-                        url: '/404',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/errors/404.html',
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-                    .state('error.403', {
-                        url: '/403',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/errors/403.html',
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-                    .state('error.500', {
-                        url: '/500',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/errors/500.html',
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-            }]
-        );
-
-})();
 (function (angular) {
 
-    var trust = ['$sce', function($sce) {
-        return function(htmlCode) {
-            return $sce.trustAsHtml(htmlCode);
-        }
-    }];
+    FooterController.$inject = ['$scope'];
+    function FooterController($scope) {
+        $scope.model = {
+            socialNavs: [],
+            poweredByLines: [],
+            poweredBy: ''
+        };
+        $scope.init = function() {
+            $scope.model.socialNavs = [
+                {
+                    alt: 'LinkedIn',
+                    img_src: '/assets/images/social_logos/linkedin.png',
+                    href: 'https://linkedin.com/in/zanemattingly'
+                },
+                {
+                    alt: 'Github',
+                    img_src: '/assets/images/social_logos/github.png',
+                    href: 'https://github.com/zmattingly'
+                },
+                {
+                    alt: 'Instagram',
+                    img_src: '/assets/images/social_logos/instagram.png',
+                    href: 'https://instagram.com/zmattingly'
+                },
+                {
+                    alt: 'Twitter',
+                    img_src: '/assets/images/social_logos/twitter.png',
+                    href: 'https://twitter.com/z_mattingly'
+                }
+            ];
+            $scope.model.poweredByLines = [
+                "viewers like you",
+                "the efforts of a small, earnest bird",
+                "curious electromagnetic behavior",
+                "a chest-mounted arc reactor",
+                "thirteen tubas sounding in rhythm",
+                "IMMENSE hydraulic pressure",
+                "pressurized, super-heated steam",
+                "a power-generating stationary bike",
+                "bees. Hundreds of bees",
+                "a potato",
+                "the love inside you",
+                "our insect overlords",
+                "funky yeasts",
+                "three hundred dogs synced in parallel",
+                "static electricity",
+                "the harnessed gravity of a black hole",
+            ];
+            $scope.model.poweredBy = $scope.getPoweredBy();
+        };
+        $scope.getPoweredBy = function() {
+            return $scope.model.poweredByLines[Math.floor(Math.random()*($scope.model.poweredByLines.length - 1))];
+        };
+    }
 
-    angular.module("matting-ly")
-        .filter("trust", trust);
+    angular.module('matting-ly')
+        .controller('FooterController', FooterController);
 
 })(window.angular);
 (function (angular) {
 
-    var yesNo = [function() {
-        return function (input) {
-            return input ? 'Yes' : 'No';
+    HeaderController.$inject = ['$scope', 'AuthService'];
+    function HeaderController ($scope, AuthService) {
+        $scope.model = {
+            stateNavs: [],
+            isLoggedIn: false
         };
-    }];
 
-    angular.module("matting-ly")
-        .filter("yesNo", yesNo)
-    ;
+        $scope.init = function() {
+            $scope.model.stateNavs = [
+                {
+                    'sref': 'pages.home',
+                    'text': 'Home'
+                },
+                {
+                    'sref': 'pages.about',
+                    'text': 'About'
+                },
+                {
+                    'sref': 'pages.projects',
+                    'text': 'Projects'
+                }
+            ];
+            $scope.model.isLoggedIn = AuthService.returnFullLoginStatus();
+        };
+    }
+
+    angular.module('matting-ly')
+        .controller('HeaderController', HeaderController);
 
 })(window.angular);
 (function () {
@@ -1528,81 +1430,181 @@ angular.module("ui.tinymce",[]).value("uiTinymceConfig",{}).directive("uiTinymce
         }
     }]);
 })();
-(function (angular) {
+(function() {
 
-    var delayDisplayTilImageLoaded = [function() {
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope, element, attrs) {
-                element.addClass("ng-hide");
-                var image = new Image();
-                image.onload = function() {
-                    scope.$apply(function () {
-                        element.removeClass("ng-hide");
-                    });
-                };
-                image.src = attrs.delayDisplayTilImageLoaded;
-           }
-       }
-    }];
+    angular.module('matting-ly.routing', ['ui.router'])
+        .config(['$urlRouterProvider', '$locationProvider', '$httpProvider', '$stateProvider',
+            function ($urlRouterProvider, $locationProvider, $httpProvider, $stateProvider) {
+                // urlRouter
+                $urlRouterProvider
+                    .when('/', '/home')
+                    .otherwise('/404');
 
-    var delayClassTilImageLoaded = [function() {
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope, element, attrs) {
-                var image = new Image();
-                image.onload = function() {
-                    scope.$apply(function () {
-                        element.addClass(attrs.delayedClasses);
-                        // element.addClass('animated');
-                        // element.addClass('fadeIn');
-                    });
-                };
-                image.src = attrs.delayClassTilImageLoaded;
-           }
-       }
-    }];
-
-    var whenFocus = ['$timeout', function($timeout) {
-        return {
-            scope: {
-                whenFocus: '='
-            },
-            link: function (scope, element, attrs) {
-                scope.$watch('whenFocus', function (shouldFocus) {
-                    if (shouldFocus) {
-                        $timeout(function () {
-                            element[0].focus();
-                        })
-                    }
-                })
-            },
-        };
-    }];
-
-    var backButton = ['$window', function($window) {
-        return {
-            restrict: 'A',
-            scope: {},
-            link: function(scope, element, attrs) {
-                element.on('click', function() {
-                    $window.history.back();
+                $locationProvider.html5Mode({
+                    enabled: true,
+                    rewriteLinks: false
                 });
-            },
-        };
-    }];
 
-    angular.module('matting-ly')
-        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded)
-        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded)
-        .directive('whenFocus', whenFocus)
-        .directive('backButton', backButton)
-    ;
+                // $httpProvider
+                $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-})(window.angular);
+                var header = {
+                    templateUrl: 'assets/partials/layout/header.html',
+                    controller: 'HeaderController'
+                };
+                var footer = {
+                    templateUrl: 'assets/partials/layout/footer.html',
+                    controller: 'FooterController'
+                };
 
+                // Set up the states
+                $stateProvider
+                    // Basic Pages
+                    .state('pages', {
+                        abstract: true,
+                        templateUrl: 'assets/partials/layout/publicWrapper.html'
+                    })
+                    .state('pages.home', {
+                        url: '/home',
+                        views: {
+                            header: header,
+                            content: {
+                                templateUrl: 'assets/partials/pages/home.html',
+                                controller: 'HomeController'
+                            },
+                            footer: footer
+                        },
+                        access: {restricted: false}
+                    })
+                    .state('pages.about', {
+                        url: '/about',
+                        views: {
+                            header: header,
+                            content: {
+                                templateUrl: 'assets/partials/pages/about.html',
+                                controller: 'AboutController'
+                            },
+                            footer: footer
+                        },
+                        access: {restricted: false}
+                    })
+                    .state('pages.projects', {
+                        url: '/projects',
+                        views: {
+                            header: header,
+                            content: {
+                                templateUrl: 'assets/partials/pages/projects.html',
+                                controller: 'ProjectsController'
+                            },
+                            footer: footer
+                        },
+                        access: {restricted: false}
+                    })
+
+                    // Auth
+                    .state('auth', {
+                        abstract: true,
+                        templateUrl: 'assets/partials/layout/publicWrapper.html',
+                        url: '/auth'
+                    })
+                    // Registration, etc, for non-admin users to come to later
+
+                    // Admin
+                    .state('admin', {
+                        abstract: true,
+                        templateUrl: 'assets/partials/layout/adminWrapper.html',
+                        url: '/admin',
+                    })
+                    .state('admin.viewPosts', {
+                        url: '/posts',
+                        views: {
+                            header: header,
+                            content: {
+                                templateUrl: 'assets/partials/admin/posts/viewPosts.html',
+                                controller: 'ViewPostsController'
+                            },
+                            footer: footer
+                        },
+                        access: {restricted: true}
+                    })
+                    .state('admin.newPost', {
+                        url: '/posts/new',
+                        views: {
+                            header: header,
+                            content: {
+                                templateUrl: 'assets/partials/admin/posts/newPost.html',
+                                controller: 'NewPostController'
+                            },
+                            footer: footer
+                        },
+                        access: {restricted: true}
+                    })
+                    .state('admin.editPost', {
+                        url: '/posts/:postId',
+                        views: {
+                            header: header,
+                            content: {
+                                templateUrl: 'assets/partials/admin/posts/editPost.html',
+                                controller: 'EditPostController'
+                            },
+                            footer: footer
+                        },
+                        access: {restricted: true}
+                    })
+
+                    // Error
+                    .state('error', {
+                        abstract: true,
+                        templateUrl: 'assets/partials/layout/publicWrapper.html'
+                    })
+                    .state('error.oops', {
+                        url: '/uhoh',
+                        views: {
+                            header: header,
+                            content: {
+                                templateUrl: 'assets/partials/errors/oops.html',
+                            },
+                            footer: footer
+                        },
+                        access: {restricted: false}
+                    })
+                    .state('error.404', {
+                        url: '/404',
+                        views: {
+                            header: header,
+                            content: {
+                                templateUrl: 'assets/partials/errors/404.html',
+                            },
+                            footer: footer
+                        },
+                        access: {restricted: false}
+                    })
+                    .state('error.403', {
+                        url: '/403',
+                        views: {
+                            header: header,
+                            content: {
+                                templateUrl: 'assets/partials/errors/403.html',
+                            },
+                            footer: footer
+                        },
+                        access: {restricted: false}
+                    })
+                    .state('error.500', {
+                        url: '/500',
+                        views: {
+                            header: header,
+                            content: {
+                                templateUrl: 'assets/partials/errors/500.html',
+                            },
+                            footer: footer
+                        },
+                        access: {restricted: false}
+                    })
+            }]
+        );
+
+})();
 (function() {
     var LoginController = ['$scope', '$state', 'AuthService',
         function ($scope, $state, AuthService) {
@@ -1656,7 +1658,6 @@ angular.module("ui.tinymce",[]).value("uiTinymceConfig",{}).directive("uiTinymce
             };
 
             $scope.logout = function() {
-                console.log("Logout")
                 AuthService.logout()
                     // handle success
                     .then(function() {
