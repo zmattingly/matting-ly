@@ -29,170 +29,16 @@
     app.run(run)
         ;
 })(window.angular);
-(function () {
-    angular.module('matting-ly')
-        .controller('ProjectsController', ['$scope', '$http', '$state', '$timeout',
-            function ($scope, $http, $state, $timeout) {
-                $scope.model = {
-                    header: 'Projects',
-                    byline: "A few things I've worked on...",
-                    headlineImage: '/assets/images/bgs/yellow_flower_sky.jpg',
-                    projects: []
-                };
-
-                $scope.init = function() {
-                    $scope.getProjects();
-                };
-
-                $scope.getProjects = function() {
-                    $http.get('/api/projects')
-                        .success(function(data) {
-                            $timeout(function() {
-                                $scope.model.projects = data;
-                            }, 500);
-                        })
-                        .error(function(data, status, error, config) {
-                            $state.go('error.oops');
-                        });
-                }
-            }
-    ]);
-})();
-(function () {
-    angular.module('matting-ly')
-        .controller('HomeController', ['$scope', '$state', '$http', '$timeout',
-            function ($scope, $state, $http, $timeout) {
-                $scope.model = {
-                    header: 'Zane Mattingly',
-                    byline: 'Full-stack Developer',
-                    headlineImage: '/assets/images/bgs/robot.jpg',
-                    posts: []
-                };
-
-                $scope.init = function() {
-                    $scope.getPosts();
-                };
-
-                $scope.getPosts = function() {
-                    $http.get('/api/posts')
-                        .success(function(data) {
-                            $timeout(function() {
-                                $scope.model.posts = data;
-                            }, 500);
-                        })
-                        .error(function(data, status, error, config) {
-                            $state.go('error.oops');
-                        });
-                }
-            }
-    ]);
-})();
-(function () {
-    angular.module('matting-ly')
-        .controller('AboutController', ['$scope', '$http', '$timeout',
-            function ($scope, $http, $timeout) {
-                $scope.model = {
-                    header: 'About',
-                    byline: 'A few things about me',
-                    headlineImage: '/assets/images/bgs/rings.jpg'
-                };
-
-                $scope.init = function() {
-                    $scope.getBio();
-                };
-
-                $scope.getBio = function() {
-                    $http.get('/api/bio')
-                        .success(function(data) {
-                            $timeout(function() {
-                                $scope.model.bio = data;
-                            }, 500);
-                        })
-                        .error(function(data, status, error, config) {
-                            $state.go('error.oops');
-                        });
-                }
-            }
-    ]);
-})();
-(function() {
-    var LoginController = ['$scope', '$state', 'AuthService',
-        function ($scope, $state, AuthService) {
-            $scope.model = {
-                error: '',
-                disabled: false,
-                loginForm: {
-                    username: '',
-                    password: ''
-                },
-                isLoggedIn: false
-            };
-
-            $scope.init = function() {
-                if (AuthService.isLoggedIn()) {
-                   $state.go('admin.viewPosts');
-                } else {
-                    AuthService.getAccountStatus()
-                        .then(function(){
-                            if (AuthService.isLoggedIn()) {
-                                $state.go('admin.viewPosts');
-                            }
-                        });
-                }
-            };
-
-            $scope.dropdownInit = function() {
-                AuthService.getAccountStatus()
-                    .then(function(){
-                        $scope.model.isLoggedIn = AuthService.isLoggedIn();
-                    });
-            };
-
-            $scope.login = function () {
-                $scope.model.error = '';
-                $scope.model.disabled = true;
-
-                // call login from service
-                AuthService.login($scope.model.loginForm.username, $scope.model.loginForm.password)
-                    // handle success
-                    .then(function () {
-                        $state.go('admin.viewPosts');
-                    })
-                    // handle error
-                    .catch(function () {
-                        $scope.model.error = "Invalid username and/or password";
-                        $scope.model.disabled = false;
-                        $scope.model.loginForm = {};
-                    });
-
-            };
-
-            $scope.logout = function() {
-                AuthService.logout()
-                    // handle success
-                    .then(function() {
-                        $state.go('pages.home', {}, { reload: true });
-                    })
-                    // handle error
-                    .catch(function() {
-                        $state.go('error.oops');
-                    })
-            };
-        }
-    ];
-
-    angular.module('matting-ly')
-        .controller('LoginController', LoginController);
-
-})(window.angular);
-(function () {
+(function(angular) {
 
     ViewPostsController.$inject = ['$scope', '$state', '$http'];
     function ViewPostsController($scope, $state, $http) {
         $scope.model = {
             header: 'View/Edit Posts',
             allPosts: [],
-            selectedPost: []
+            selectedPost: [],
+            postsHaveLoaded: false,
+            postsEmptyDataString: 'No Posts Found!'
         };
 
         $scope.init = function() {
@@ -203,15 +49,15 @@
         };
 
         $scope.selectAndGoToPost = function() {
-            var selectedPost = $scope.model.selectedPost[0];
             // Navigate to the specific post to edit
-            $state.go('admin.editPost', {postId: selectedPost._id});
+            $state.go('admin.editPost', {postId: $scope.model.selectedPost[0]._id});
         };
 
         // Main View
         $scope.getPosts = function() {
             $http.get('/api/posts/all')
                 .success(function(data) {
+                    $scope.model.postsHaveLoaded = true;
                     $scope.model.allPosts = data;
                     // Auto-select first element
                     $scope.model.allPosts[0].selected = true;
@@ -226,8 +72,9 @@
 
     angular.module('matting-ly')
         .controller('ViewPostsController', ViewPostsController);
-})();
-(function () {
+
+})(window.angular);
+(function(angular) {
 
     NewPostController.$inject = ['$scope', '$state', '$http'];
     function NewPostController($scope, $state, $http) {
@@ -276,8 +123,9 @@
 
     angular.module('matting-ly')
         .controller('NewPostController', NewPostController);
-})();
-(function () {
+
+})(window.angular);
+(function(angular) {
 
     EditPostsController.$inject = ['$scope', '$state', '$http'];
     function EditPostsController ($scope, $state, $http) {
@@ -347,564 +195,10 @@
                     $state.go('error.500');
                 });
         };
-    };
+    }
 
     angular.module('matting-ly')
         .controller('EditPostController', EditPostsController);
-})();
-(function() {
-
-    angular.module('matting-ly.routing', ['ui.router'])
-        .config(['$urlRouterProvider', '$locationProvider', '$httpProvider', '$stateProvider',
-            function ($urlRouterProvider, $locationProvider, $httpProvider, $stateProvider) {
-                // urlRouter
-                $urlRouterProvider
-                    .when('/', '/home')
-                    .otherwise('/404');
-
-                $locationProvider.html5Mode({
-                    enabled: true,
-                    rewriteLinks: false
-                });
-
-                // $httpProvider
-                $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-                var header = {
-                    templateUrl: 'assets/partials/layout/header.html',
-                    controller: 'HeaderController'
-                };
-                var footer = {
-                    templateUrl: 'assets/partials/layout/footer.html',
-                    controller: 'FooterController'
-                };
-
-                // Set up the states
-                $stateProvider
-                    // Basic Pages
-                    .state('pages', {
-                        abstract: true,
-                        templateUrl: 'assets/partials/layout/publicWrapper.html'
-                    })
-                    .state('pages.home', {
-                        url: '/home',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/pages/home.html',
-                                controller: 'HomeController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-                    .state('pages.about', {
-                        url: '/about',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/pages/about.html',
-                                controller: 'AboutController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-                    .state('pages.projects', {
-                        url: '/projects',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/pages/projects.html',
-                                controller: 'ProjectsController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-
-                    // Auth
-                    .state('auth', {
-                        abstract: true,
-                        templateUrl: 'assets/partials/layout/publicWrapper.html',
-                        url: '/auth'
-                    })
-                    // Registration, etc, for non-admin users to come to later
-
-                    // Admin
-                    .state('admin', {
-                        abstract: true,
-                        templateUrl: 'assets/partials/layout/adminWrapper.html',
-                        url: '/admin',
-                    })
-                    .state('admin.viewPosts', {
-                        url: '/posts',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/admin/posts/viewPosts.html',
-                                controller: 'ViewPostsController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: true}
-                    })
-                    .state('admin.newPost', {
-                        url: '/posts/new',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/admin/posts/newPost.html',
-                                controller: 'NewPostController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: true}
-                    })
-                    .state('admin.editPost', {
-                        url: '/posts/:postId',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/admin/posts/editPost.html',
-                                controller: 'EditPostController'
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: true}
-                    })
-
-                    // Error
-                    .state('error', {
-                        abstract: true,
-                        templateUrl: 'assets/partials/layout/publicWrapper.html'
-                    })
-                    .state('error.oops', {
-                        url: '/uhoh',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/errors/oops.html',
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-                    .state('error.404', {
-                        url: '/404',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/errors/404.html',
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-                    .state('error.403', {
-                        url: '/403',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/errors/403.html',
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-                    .state('error.500', {
-                        url: '/500',
-                        views: {
-                            header: header,
-                            content: {
-                                templateUrl: 'assets/partials/errors/500.html',
-                            },
-                            footer: footer
-                        },
-                        access: {restricted: false}
-                    })
-            }]
-        );
-
-})();
-(function () {
-    angular.module('matting-ly').factory('safeApply', ['$rootScope', function ($rootScope) {
-        return function ($scope, fn) {
-            var phase = $scope.$root.$$phase;
-            if (phase == '$apply' || phase == '$digest') {
-                if (fn) {
-                    $scope.$eval(fn);
-                }
-            } else {
-                if (fn) {
-                    $scope.$apply(fn);
-                } else {
-                    $scope.$apply();
-                }
-            }
-        }
-    }]);
-})();
-(function(angular) {
-
-    var AuthService = ['$q', '$timeout', '$http',
-        function ($q, $timeout, $http) {
-
-            var user = false;
-
-            function returnFullLoginStatus() {
-                getAccountStatus()
-                    .then(function(){
-                        return isLoggedIn();
-                    });
-            }
-
-            function isLoggedIn() {
-                return user;
-            }
-
-            function getAccountStatus() {
-                return $http.get('/auth/account')
-                    // handle success
-                    .success(function (data) {
-                        if (data._id) {
-                            user = true;
-                        } else {
-                            user = false;
-                        }
-                    })
-                    // handle error
-                    .error(function (data) {
-                        user = false;
-                    });
-            }
-
-            function login(username, password) {
-                var deferred = $q.defer();
-
-                $http.post('/auth/login', {
-                    username: username,
-                    password: password
-                }).success(function(data, status) {
-                    if (status == 200 && data.status) {
-                        user = true;
-                        deferred.resolve();
-                    } else {
-                        user = false;
-                        deferred.reject();
-                    }
-                }).error(function(data) {
-                    user = false;
-                    deferred.reject();
-                });
-
-                return deferred.promise;
-            }
-
-            function logout() {
-                var deferred = $q.defer();
-
-                $http.get('/auth/logout')
-                    .success(function(data) {
-                        user = false;
-                        deferred.resolve();
-                    }).error(function(data) {
-                        user = false;
-                        deferred.reject();
-                    });
-
-                return deferred.promise;
-            }
-
-            function register(username, password) {
-                var deferred = $q.defer();
-
-                $http.post('/auth/register', {
-                    username: username,
-                    password: password
-                }).success(function(data, status) {
-                    if (status == 200 && data.status) {
-                        deferred.resolve();
-                    } else {
-                        deferred.reject();
-                    }
-                }).error(function(data) {
-                    deferred.reject();
-                });
-
-                return deferred.promise;
-            }
-
-            // return available functions for use in the controllers
-            return ({
-                isLoggedIn: isLoggedIn,
-                getAccountStatus: getAccountStatus,
-                returnFullLoginStatus: returnFullLoginStatus,
-                login: login,
-                logout: logout,
-                register: register
-            });
-    }];
-
-    angular.module('matting-ly')
-        .factory('AuthService', AuthService);
-
-})(window.angular);
-(function () {
-    angular.module('matting-ly').factory('AlertService', ['$rootScope',
-        function($rootScope) {
-            var alertService = {};
-
-            // create an array of alerts available globally
-            $rootScope.alerts = [];
-
-            alertService.add = function(type, msg, dismiss) {
-                $rootScope.alerts.push({'type': type, 'msg': msg, 'dismiss': dismiss || undefined });
-            };
-
-            alertService.closeAlert = function(index) {
-                $rootScope.alerts.splice(index, 1);
-            };
-
-            return alertService;
-        }
-    ]);
-})();
-(function (angular) {
-    angular.module('matting-ly')
-        .controller('MainController', ['$scope', '$rootScope', '$state', '$filter', 'AlertService',
-            function ($scope, $rootScope, $state, $filter, AlertService) {
-                $scope.state = $state;
-
-                $scope.defaultTinymceOptions = {
-                    height: 300,
-                    plugins: 'code hr link media',
-                    menu: {
-                        format: {title: 'Format', items: 'bold italic underline strikethrough superscript subscript | formats | removeformat'},
-                        edit: {title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall'},
-                        insert: {title: 'Insert', items: 'link media | hr'},
-                    },
-                    toolbar: 'formatselect | undo redo | bold italic | alignleft aligncenter alignright alignjustify | '
-                             + 'bullist numlist | indent outdent blockquote | removeformat | code',
-                };
-
-                // Root binding for AlertService
-                $rootScope.closeAlert = AlertService.closeAlert;
-
-                $scope.htmlToPlaintext = function($html) {
-                    return $filter('htmlToPlaintext')($html);
-                }
-            }
-    ]);
-})(window.angular);
-(function (angular) {
-
-    HeaderController.$inject = ['$scope', 'AuthService'];
-    function HeaderController ($scope, AuthService) {
-        $scope.model = {
-            stateNavs: [],
-            isLoggedIn: false
-        };
-
-        $scope.init = function() {
-            $scope.model.stateNavs = [
-                {
-                    'sref': 'pages.home',
-                    'text': 'Home'
-                },
-                {
-                    'sref': 'pages.about',
-                    'text': 'About'
-                },
-                {
-                    'sref': 'pages.projects',
-                    'text': 'Projects'
-                }
-            ];
-            $scope.model.isLoggedIn = AuthService.returnFullLoginStatus();
-        };
-    }
-
-    angular.module('matting-ly')
-        .controller('HeaderController', HeaderController);
-
-})(window.angular);
-(function (angular) {
-
-    FooterController.$inject = ['$scope'];
-    function FooterController($scope) {
-        $scope.model = {
-            socialNavs: [],
-            poweredByLines: [],
-            poweredBy: ''
-        };
-        $scope.init = function() {
-            $scope.model.socialNavs = [
-                {
-                    alt: 'LinkedIn',
-                    img_src: '/assets/images/social_logos/linkedin.png',
-                    href: 'https://linkedin.com/in/zanemattingly'
-                },
-                {
-                    alt: 'Github',
-                    img_src: '/assets/images/social_logos/github.png',
-                    href: 'https://github.com/zmattingly'
-                },
-                {
-                    alt: 'Instagram',
-                    img_src: '/assets/images/social_logos/instagram.png',
-                    href: 'https://instagram.com/zmattingly'
-                },
-                {
-                    alt: 'Twitter',
-                    img_src: '/assets/images/social_logos/twitter.png',
-                    href: 'https://twitter.com/z_mattingly'
-                }
-            ];
-            $scope.model.poweredByLines = [
-                "viewers like you",
-                "the efforts of a small, earnest bird",
-                "curious electromagnetic behavior",
-                "a chest-mounted arc reactor",
-                "thirteen tubas sounding in rhythm",
-                "IMMENSE hydraulic pressure",
-                "pressurized, super-heated steam",
-                "a power-generating stationary bike",
-                "bees. Hundreds of bees",
-                "a potato",
-                "the love inside you",
-                "our insect overlords",
-                "funky yeasts",
-                "three hundred dogs synced in parallel",
-                "static electricity",
-                "the harnessed gravity of a black hole",
-            ];
-            $scope.model.poweredBy = $scope.getPoweredBy();
-        };
-        $scope.getPoweredBy = function() {
-            return $scope.model.poweredByLines[Math.floor(Math.random()*($scope.model.poweredByLines.length - 1))];
-        };
-    }
-
-    angular.module('matting-ly')
-        .controller('FooterController', FooterController);
-
-})(window.angular);
-(function (angular) {
-
-    var yesNo = [function() {
-        return function (input) {
-            return input ? 'Yes' : 'No';
-        };
-    }];
-
-    angular.module("matting-ly")
-        .filter("yesNo", yesNo)
-    ;
-
-})(window.angular);
-(function (angular) {
-
-    var trust = ['$sce', function($sce) {
-        return function(htmlCode) {
-            return $sce.trustAsHtml(htmlCode);
-        }
-    }];
-
-    angular.module("matting-ly")
-        .filter("trust", trust);
-
-})(window.angular);
-(function (angular) {
-
-    whenFocus.$inject = ['$timeout'];
-    function whenFocus($timeout) {
-        return {
-            scope: {
-                whenFocus: '='
-            },
-            link: function (scope, element, attrs) {
-                scope.$watch('whenFocus', function (shouldFocus) {
-                    if (shouldFocus) {
-                        $timeout(function () {
-                            element[0].focus();
-                        })
-                    }
-                })
-            },
-        };
-    }
-
-   angular.module('matting-ly')
-        .directive('whenFocus', whenFocus);
-
-})(window.angular);
-(function (angular) {
-
-    delayDisplayTilImageLoaded.$inject = [];
-    function delayDisplayTilImageLoaded() {
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope, element, attrs) {
-                element.addClass("ng-hide");
-                var image = new Image();
-                image.onload = function () {
-                    scope.$apply(function () {
-                        element.removeClass("ng-hide");
-                    });
-                };
-                image.src = attrs.delayDisplayTilImageLoaded;
-            }
-        }
-    }
-
-    angular.module('matting-ly')
-        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded);
-
-}(angular));
-(function (angular) {
-
-    delayClassTilImageLoaded.$inject = [];
-    function delayClassTilImageLoaded() {
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope, element, attrs) {
-                var image = new Image();
-                image.onload = function() {
-                    scope.$apply(function () {
-                        element.addClass(attrs.delayedClasses);
-                        // element.addClass('animated');
-                        // element.addClass('fadeIn');
-                    });
-                };
-                image.src = attrs.delayClassTilImageLoaded;
-           }
-       }
-    }
-
-   angular.module('matting-ly')
-        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded);
-
-})(window.angular);
-(function (angular) {
-
-    backButton.$inject = ['$window'];
-    function backButton($window) {
-        return {
-            restrict: 'A',
-            scope: {},
-            link: function(scope, element, attrs) {
-                element.on('click', function() {
-                    $window.history.back();
-                });
-            },
-        };
-    }
-
-   angular.module('matting-ly')
-        .directive('backButton', backButton);
 
 })(window.angular);
 (function(angular) {
@@ -1011,11 +305,12 @@
                 restrict: 'E',
                 scope: {
                     loading: '=',
+                    dataHasLoaded: '=',
                     onEnter: '=?',
                     onChange: '=?',
                     maxTableHeight: '@',
                     selectionMode: '@',
-                    emptyDataString: '@',
+                    emptyDataString: '=',
                     selectedItems: '=?',
                     initialOrderBy: '@'
                 },
@@ -1945,3 +1240,688 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+(function(angular) {
+
+    ProjectsController.$inject = ['$scope', '$http', '$state', '$timeout'];
+    function ProjectsController($scope, $http, $state, $timeout) {
+        $scope.model = {
+            header: 'Projects',
+            byline: "A few things I've worked on...",
+            headlineImage: '/assets/images/bgs/yellow_flower_sky.jpg',
+            projects: []
+        };
+
+        $scope.init = function() {
+            $scope.getProjects();
+        };
+
+        $scope.getProjects = function() {
+            $http.get('/api/projects')
+                .success(function(data) {
+                    $timeout(function() {
+                        $scope.model.projects = data;
+                    }, 500);
+                })
+                .error(function(data, status, error, config) {
+                    $state.go('error.oops');
+                });
+        }
+    }
+
+    angular.module('matting-ly')
+        .controller('ProjectsController', ProjectsController);
+
+})(window.angular);
+(function(angular) {
+
+    HomeController.$inject = ['$scope', '$state', '$http', '$timeout'];
+    function HomeController($scope, $state, $http, $timeout) {
+        $scope.model = {
+            header: '',
+            byline: '',
+            headlineImage: '',
+            posts: [],
+            postsHaveLoaded: false
+        };
+
+        $scope.init = function() {
+            $scope.model.header = 'Zane Mattingly';
+            $scope.model.byline = 'Full-stack Developer';
+            $scope.model.headlineImage = '/assets/images/bgs/robot.jpg';
+            $scope.getPosts();
+        };
+
+        $scope.getPosts = function() {
+            $http.get('/api/posts')
+                .success(function(data) {
+                    $timeout(function() {
+                        $scope.model.postsHaveLoaded = true;
+                        $scope.model.posts = data;
+                    }, 500);
+                })
+                .error(function(data, status, error, config) {
+                    $state.go('error.oops');
+                });
+        };
+    }
+
+    angular.module('matting-ly')
+        .controller('HomeController', HomeController);
+
+})(window.angular);
+(function(angular) {
+
+    AboutController.$inject = ['$scope', '$http', '$timeout'];
+    function AboutController($scope, $http, $timeout) {
+        $scope.model = {
+            header: '',
+            byline: '',
+            headlineImage: ''
+        };
+
+        $scope.init = function() {
+            $scope.model.header = 'About';
+            $scope.model.byline = 'A few things about me';
+            $scope.model.headlineImage = '/assets/images/bgs/rings.jpg';
+            $scope.getBio();
+        };
+
+        $scope.getBio = function() {
+            $http.get('/api/bio')
+                .success(function(data) {
+                    $timeout(function() {
+                        $scope.model.bio = data;
+                    }, 500);
+                })
+                .error(function(data, status, error, config) {
+                    $state.go('error.oops');
+                });
+        }
+    }
+
+    angular.module('matting-ly')
+        .controller('AboutController', AboutController);
+})(window.angular);
+(function(angular) {
+
+    config.$inject = ['$urlRouterProvider', '$locationProvider', '$httpProvider', '$stateProvider'];
+    function config($urlRouterProvider, $locationProvider, $httpProvider, $stateProvider) {
+        // urlRouter
+        $urlRouterProvider
+            .when('/', '/home')
+            .otherwise('/404');
+
+        $locationProvider.html5Mode({
+            enabled: true,
+            rewriteLinks: false
+        });
+
+        // $httpProvider
+        $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+        var header = {
+            templateUrl: 'assets/partials/layout/header.html',
+            controller: 'HeaderController'
+        };
+        var footer = {
+            templateUrl: 'assets/partials/layout/footer.html',
+            controller: 'FooterController'
+        };
+
+        // Set up the states
+        $stateProvider
+            // Basic Pages
+            .state('pages', {
+                abstract: true,
+                templateUrl: 'assets/partials/layout/publicWrapper.html'
+            })
+            .state('pages.home', {
+                url: '/home',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/pages/home.html',
+                        controller: 'HomeController'
+                    },
+                    footer: footer
+                },
+                access: {restricted: false}
+            })
+            .state('pages.about', {
+                url: '/about',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/pages/about.html',
+                        controller: 'AboutController'
+                    },
+                    footer: footer
+                },
+                access: {restricted: false}
+            })
+            .state('pages.projects', {
+                url: '/projects',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/pages/projects.html',
+                        controller: 'ProjectsController'
+                    },
+                    footer: footer
+                },
+                access: {restricted: false}
+            })
+
+            // Auth
+            .state('auth', {
+                abstract: true,
+                templateUrl: 'assets/partials/layout/publicWrapper.html',
+                url: '/auth'
+            })
+            // Registration, etc, for non-admin users to come to later
+
+            // Admin
+            .state('admin', {
+                abstract: true,
+                templateUrl: 'assets/partials/layout/adminWrapper.html',
+                url: '/admin',
+            })
+            .state('admin.viewPosts', {
+                url: '/posts',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/admin/posts/viewPosts.html',
+                        controller: 'ViewPostsController'
+                    },
+                    footer: footer
+                },
+                access: {restricted: true}
+            })
+            .state('admin.newPost', {
+                url: '/posts/new',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/admin/posts/newPost.html',
+                        controller: 'NewPostController'
+                    },
+                    footer: footer
+                },
+                access: {restricted: true}
+            })
+            .state('admin.editPost', {
+                url: '/posts/:postId',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/admin/posts/editPost.html',
+                        controller: 'EditPostController'
+                    },
+                    footer: footer
+                },
+                access: {restricted: true}
+            })
+
+            // Error
+            .state('error', {
+                abstract: true,
+                templateUrl: 'assets/partials/layout/publicWrapper.html'
+            })
+            .state('error.oops', {
+                url: '/uhoh',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/errors/oops.html',
+                    },
+                    footer: footer
+                },
+                access: {restricted: false}
+            })
+            .state('error.404', {
+                url: '/404',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/errors/404.html',
+                    },
+                    footer: footer
+                },
+                access: {restricted: false}
+            })
+            .state('error.403', {
+                url: '/403',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/errors/403.html',
+                    },
+                    footer: footer
+                },
+                access: {restricted: false}
+            })
+            .state('error.500', {
+                url: '/500',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/errors/500.html',
+                    },
+                    footer: footer
+                },
+                access: {restricted: false}
+            })
+    }
+    angular.module('matting-ly.routing', ['ui.router'])
+        .config(config);
+
+})(window.angular);
+(function(angular) {
+
+    MainController.$inject = ['$scope', '$state', '$filter'];
+    function MainController($scope, $state, $filter) {
+        $scope.state = $state;
+        $scope.defaultTinymceOptions = {
+            height: 300,
+            plugins: 'code hr link media',
+            menu: {
+                format: {title: 'Format', items: 'bold italic underline strikethrough superscript subscript | formats | removeformat'},
+                edit: {title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall'},
+                insert: {title: 'Insert', items: 'link media | hr'},
+            },
+            toolbar: 'formatselect | undo redo | bold italic | alignleft aligncenter alignright alignjustify | '
+                     + 'bullist numlist | indent outdent blockquote | removeformat | code',
+        };
+    }
+
+    angular.module('matting-ly')
+        .controller('MainController', MainController);
+
+})(window.angular);
+(function(angular) {
+
+    HeaderController.$inject = ['$scope', 'AuthService'];
+    function HeaderController ($scope, AuthService) {
+        $scope.model = {
+            stateNavs: [],
+            isLoggedIn: false
+        };
+
+        $scope.init = function() {
+            $scope.model.stateNavs = [
+                {
+                    'sref': 'pages.home',
+                    'text': 'Home'
+                },
+                {
+                    'sref': 'pages.about',
+                    'text': 'About'
+                },
+                {
+                    'sref': 'pages.projects',
+                    'text': 'Projects'
+                }
+            ];
+            $scope.model.isLoggedIn = AuthService.returnFullLoginStatus();
+        };
+    }
+
+    angular.module('matting-ly')
+        .controller('HeaderController', HeaderController);
+
+})(window.angular);
+(function(angular) {
+
+    FooterController.$inject = ['$scope'];
+    function FooterController($scope) {
+        $scope.model = {
+            socialNavs: [],
+            poweredByLines: [],
+            poweredBy: ''
+        };
+        $scope.init = function() {
+            $scope.model.socialNavs = [
+                {
+                    alt: 'LinkedIn',
+                    img_src: '/assets/images/social_logos/linkedin.png',
+                    href: 'https://linkedin.com/in/zanemattingly'
+                },
+                {
+                    alt: 'Github',
+                    img_src: '/assets/images/social_logos/github.png',
+                    href: 'https://github.com/zmattingly'
+                },
+                {
+                    alt: 'Instagram',
+                    img_src: '/assets/images/social_logos/instagram.png',
+                    href: 'https://instagram.com/zmattingly'
+                },
+                {
+                    alt: 'Twitter',
+                    img_src: '/assets/images/social_logos/twitter.png',
+                    href: 'https://twitter.com/z_mattingly'
+                }
+            ];
+            $scope.model.poweredByLines = [
+                "viewers like you",
+                "the efforts of a small, earnest bird",
+                "curious electromagnetic behavior",
+                "a chest-mounted arc reactor",
+                "thirteen tubas sounding in rhythm",
+                "IMMENSE hydraulic pressure",
+                "pressurized, super-heated steam",
+                "a power-generating stationary bike",
+                "bees. Hundreds of bees",
+                "a potato",
+                "the love inside you",
+                "our insect overlords",
+                "funky yeasts",
+                "three hundred dogs synced in parallel",
+                "static electricity",
+                "the harnessed gravity of a black hole",
+            ];
+            $scope.model.poweredBy = $scope.getPoweredBy();
+        };
+        $scope.getPoweredBy = function() {
+            return $scope.model.poweredByLines[Math.floor(Math.random()*($scope.model.poweredByLines.length - 1))];
+        };
+    }
+
+    angular.module('matting-ly')
+        .controller('FooterController', FooterController);
+
+})(window.angular);
+(function(angular) {
+
+    yesNo.$inject = [];
+    function yesNo() {
+        return function (input) {
+            return input ? 'Yes' : 'No';
+        };
+    }
+
+    angular.module("matting-ly")
+        .filter("yesNo", yesNo)
+    ;
+
+})(window.angular);
+(function(angular) {
+
+    whenFocus.$inject = ['$timeout'];
+    function whenFocus($timeout) {
+        return {
+            scope: {
+                whenFocus: '='
+            },
+            link: function (scope, element, attrs) {
+                scope.$watch('whenFocus', function (shouldFocus) {
+                    if (shouldFocus) {
+                        $timeout(function () {
+                            element[0].focus();
+                        })
+                    }
+                })
+            },
+        };
+    }
+
+   angular.module('matting-ly')
+        .directive('whenFocus', whenFocus);
+
+})(window.angular);
+(function(angular) {
+
+    trust.$inject = ['$sce'];
+    function trust($sce) {
+        return function(htmlCode) {
+            return $sce.trustAsHtml(htmlCode);
+        }
+    }
+
+    angular.module("matting-ly")
+        .filter("trust", trust);
+
+})(window.angular);
+(function(angular) {
+
+    delayDisplayTilImageLoaded.$inject = [];
+    function delayDisplayTilImageLoaded() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                element.addClass("ng-hide");
+                var image = new Image();
+                image.onload = function () {
+                    scope.$apply(function () {
+                        element.removeClass("ng-hide");
+                    });
+                };
+                image.src = attrs.delayDisplayTilImageLoaded;
+            }
+        }
+    }
+
+    angular.module('matting-ly')
+        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded);
+
+}(window.angular));
+(function(angular) {
+
+    delayClassTilImageLoaded.$inject = [];
+    function delayClassTilImageLoaded() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                var image = new Image();
+                image.onload = function() {
+                    scope.$apply(function () {
+                        element.addClass(attrs.delayedClasses);
+                        // element.addClass('animated');
+                        // element.addClass('fadeIn');
+                    });
+                };
+                image.src = attrs.delayClassTilImageLoaded;
+           }
+       }
+    }
+
+   angular.module('matting-ly')
+        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded);
+
+})(window.angular);
+(function(angular) {
+
+    backButton.$inject = ['$window'];
+    function backButton($window) {
+        return {
+            restrict: 'A',
+            scope: {},
+            link: function(scope, element, attrs) {
+                element.on('click', function() {
+                    $window.history.back();
+                });
+            },
+        };
+    }
+
+   angular.module('matting-ly')
+        .directive('backButton', backButton);
+
+})(window.angular);
+(function(angular) {
+
+    LoginController.$inject = ['$scope', '$state', 'AuthService']
+    function LoginController($scope, $state, AuthService) {
+        $scope.model = {
+            error: '',
+            disabled: false,
+            loginForm: {
+                username: '',
+                password: ''
+            },
+            isLoggedIn: false
+        };
+
+        $scope.init = function() {
+            if (AuthService.isLoggedIn()) {
+               $state.go('admin.viewPosts');
+            } else {
+                AuthService.getAccountStatus()
+                    .then(function(){
+                        if (AuthService.isLoggedIn()) {
+                            $state.go('admin.viewPosts');
+                        }
+                    });
+            }
+        };
+
+        $scope.dropdownInit = function() {
+            AuthService.getAccountStatus()
+                .then(function(){
+                    $scope.model.isLoggedIn = AuthService.isLoggedIn();
+                });
+        };
+
+        $scope.login = function () {
+            $scope.model.error = '';
+            $scope.model.disabled = true;
+
+            // call login from service
+            AuthService.login($scope.model.loginForm.username, $scope.model.loginForm.password)
+                // handle success
+                .then(function () {
+                    $state.go('admin.viewPosts');
+                })
+                // handle error
+                .catch(function () {
+                    $scope.model.error = "Invalid username and/or password";
+                    $scope.model.disabled = false;
+                    $scope.model.loginForm = {};
+                });
+
+        };
+
+        $scope.logout = function() {
+            AuthService.logout()
+                // handle success
+                .then(function() {
+                    $state.go('pages.home', {}, { reload: true });
+                })
+                // handle error
+                .catch(function() {
+                    $state.go('error.oops');
+                })
+        };
+    }
+
+    angular.module('matting-ly')
+        .controller('LoginController', LoginController);
+
+})(window.angular);
+(function(angular) {
+
+    AuthService.$inject = ['$q', '$timeout', '$http'];
+    function AuthService($q, $timeout, $http) {
+        var user = false;
+
+        function returnFullLoginStatus() {
+            getAccountStatus()
+                .then(function(){
+                    return isLoggedIn();
+                });
+        }
+
+        function isLoggedIn() {
+            return user;
+        }
+
+        function getAccountStatus() {
+            return $http.get('/auth/account')
+                // handle success
+                .success(function (data) {
+                    if (data._id) {
+                        user = true;
+                    } else {
+                        user = false;
+                    }
+                })
+                // handle error
+                .error(function (data) {
+                    user = false;
+                });
+        }
+
+        function login(username, password) {
+            var deferred = $q.defer();
+
+            $http.post('/auth/login', {
+                username: username,
+                password: password
+            }).success(function(data, status) {
+                if (status == 200 && data.status) {
+                    user = true;
+                    deferred.resolve();
+                } else {
+                    user = false;
+                    deferred.reject();
+                }
+            }).error(function(data) {
+                user = false;
+                deferred.reject();
+            });
+
+            return deferred.promise;
+        }
+
+        function logout() {
+            var deferred = $q.defer();
+
+            $http.get('/auth/logout')
+                .success(function(data) {
+                    user = false;
+                    deferred.resolve();
+                }).error(function(data) {
+                    user = false;
+                    deferred.reject();
+                });
+
+            return deferred.promise;
+        }
+
+        function register(username, password) {
+            var deferred = $q.defer();
+
+            $http.post('/auth/register', {
+                username: username,
+                password: password
+            }).success(function(data, status) {
+                if (status == 200 && data.status) {
+                    deferred.resolve();
+                } else {
+                    deferred.reject();
+                }
+            }).error(function(data) {
+                deferred.reject();
+            });
+
+            return deferred.promise;
+        }
+
+        // return available functions for use in the controllers
+        return ({
+            isLoggedIn: isLoggedIn,
+            getAccountStatus: getAccountStatus,
+            returnFullLoginStatus: returnFullLoginStatus,
+            login: login,
+            logout: logout,
+            register: register
+        });
+    }
+
+    angular.module('matting-ly')
+        .factory('AuthService', AuthService);
+
+})(window.angular);

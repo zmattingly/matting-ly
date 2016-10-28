@@ -5,7 +5,9 @@
         $scope.model = {
             header: 'View/Edit Posts',
             allPosts: [],
-            selectedPost: []
+            selectedPost: [],
+            postsHaveLoaded: false,
+            postsEmptyDataString: 'No Posts Found!'
         };
 
         $scope.init = function() {
@@ -16,15 +18,15 @@
         };
 
         $scope.selectAndGoToPost = function() {
-            var selectedPost = $scope.model.selectedPost[0];
             // Navigate to the specific post to edit
-            $state.go('admin.editPost', {postId: selectedPost._id});
+            $state.go('admin.editPost', {postId: $scope.model.selectedPost[0]._id});
         };
 
         // Main View
         $scope.getPosts = function() {
             $http.get('/api/posts/all')
                 .success(function(data) {
+                    $scope.model.postsHaveLoaded = true;
                     $scope.model.allPosts = data;
                     // Auto-select first element
                     $scope.model.allPosts[0].selected = true;

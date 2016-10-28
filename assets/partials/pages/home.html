@@ -3,7 +3,7 @@
 
     <div class="content">
         <div class="container">
-            <section class="col-md-12 blog" ng-repeat="post in model.posts" ng-show="model.posts.length">
+            <section class="col-md-12 blog" ng-repeat="post in model.posts" ng-show="model.postsHaveLoaded">
                 <article>
                     <header>
                         <h2>{{ post.heading }}</h2>
@@ -15,7 +15,10 @@
                     </footer>
                 </article>
             </section>
-            <div ng-hide="model.posts.length">
+            <div ng-show="model.postsHaveLoaded && !model.posts.length">
+                <div class="alert alert-warning text-center no-posts"><strong>No Posts Found!</strong></div>
+            </div>
+            <div ng-hide="model.postsHaveLoaded">
                 <div ng-include="'/assets/partials/misc/sk-cube-grid.html'"></div>
             </div>
         </div>

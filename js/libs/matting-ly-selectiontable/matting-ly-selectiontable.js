@@ -102,11 +102,12 @@
                 restrict: 'E',
                 scope: {
                     loading: '=',
+                    dataHasLoaded: '=',
                     onEnter: '=?',
                     onChange: '=?',
                     maxTableHeight: '@',
                     selectionMode: '@',
-                    emptyDataString: '@',
+                    emptyDataString: '=',
                     selectedItems: '=?',
                     initialOrderBy: '@'
                 },

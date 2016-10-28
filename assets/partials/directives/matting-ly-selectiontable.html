@@ -20,3 +20,6 @@
         </tr>
     </tbody>
 </table>
+<div ng-hide="vm.data.length || vm.dataHasLoaded">
+    <div class="alert alert-info text-center"><strong>{{ vm.emptyDataString }}</strong></div>
+</div>

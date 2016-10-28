@@ -6,7 +6,8 @@
             header: '',
             byline: '',
             headlineImage: '',
-            posts: []
+            posts: [],
+            postsHaveLoaded: false
         };
 
         $scope.init = function() {
@@ -20,6 +21,7 @@
             $http.get('/api/posts')
                 .success(function(data) {
                     $timeout(function() {
+                        $scope.model.postsHaveLoaded = true;
                         $scope.model.posts = data;
                     }, 500);
                 })

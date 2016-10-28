@@ -253,6 +253,8 @@ video {
   line-height: 24px; }
 #public #home .blog article footer {
   border-top: solid 2px #111; }
+#public #home .no-posts {
+  margin-top: 20px; }
 #public #about .content section {
   font-size: 20px;
   line-height: 22px; }

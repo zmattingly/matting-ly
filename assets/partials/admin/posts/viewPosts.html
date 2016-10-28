@@ -4,12 +4,15 @@
     <div class="content">
         <div class="container">
             <section class="col-md-12 blog">
-                <div ng-show="model.allPosts.length">
+                <div ng-show="model.postsHaveLoaded">
                     <h2>All Posts</h2>
                     <selection-table class="selection-table" id="all-posts"
                                      selection-mode="'single'" ng-model="model.allPosts"
                                      initial-order-by="date" on-enter="selectAndGoToPost"
-                                     selected-items="model.selectedPost">
+                                     selected-items="model.selectedPost"
+                                     dataHasLoaded="model.postsLoading"
+                                     empty-data-string="model.postsEmptyDataString"
+                                >
                         <selection-table-column key="heading">Heading</selection-table-column>
                         <selection-table-column key="date" filter="date:longDate">Date</selection-table-column>
                         <selection-table-column key="author">Author</selection-table-column>
@@ -20,7 +23,7 @@
                         <button class="btn btn-lg btn-success" ui-sref="admin.newPost">Create New Post</button>
                     </div>
                 </div>
-                <div ng-hide="model.allPosts.length">
+                <div ng-hide="model.postsHaveLoaded">
                     <div ng-include="'/assets/partials/misc/sk-cube-grid.html'"></div>
                 </div>
             </section>
