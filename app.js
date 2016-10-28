@@ -50,6 +50,8 @@ passport.deserializeUser(Account.deserializeUser());
 // mongoose
 if (app.get('env') === 'testing') {
     mongoose.connect(process.env.MONGO_URI_TESTING);
+} else if (app.get('env') === 'development') {
+    mongoose.connect(process.env.MONGO_URI_DEVELOPMENT);
 } else {
     mongoose.connect(process.env.MONGO_URI);
 }

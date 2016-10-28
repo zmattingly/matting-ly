@@ -1,4 +1,4 @@
-(function (angular) {
+(function(angular) {
 
     FooterController.$inject = ['$scope'];
     function FooterController($scope) {

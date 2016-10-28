@@ -1,10 +1,11 @@
-(function (angular) {
+(function(angular) {
 
-    var yesNo = [function() {
+    yesNo.$inject = [];
+    function yesNo() {
         return function (input) {
             return input ? 'Yes' : 'No';
         };
-    }];
+    }
 
     angular.module("matting-ly")
         .filter("yesNo", yesNo)

@@ -11,5 +11,8 @@ a, a:hover, a:visited, a:link, a:active {
   text-decoration: none !important;
 }
 *:focus {
-  outline: none
+  outline: none !important;
+  border-color: $banner !important;
+  -webkit-box-shadow: inset 0 1px 1px rgba($banner, .075), 0 0 8px rgba($banner ,.6);
+  box-shadow: inset 0 1px 1px rgba($banner, .075),0 0 8px rgba($banner, .6);
 }

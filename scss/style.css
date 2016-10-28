@@ -58,7 +58,10 @@ a, a:hover, a:visited, a:link, a:active {
   text-decoration: none !important; }
 
 *:focus {
-  outline: none; }
+  outline: none !important;
+  border-color: #707070 !important;
+  -webkit-box-shadow: inset 0 1px 1px rgba(112, 112, 112, 0.075), 0 0 8px rgba(112, 112, 112, 0.6);
+  box-shadow: inset 0 1px 1px rgba(112, 112, 112, 0.075), 0 0 8px rgba(112, 112, 112, 0.6); }
 
 html {
   background-color: #707070; }
@@ -330,11 +333,6 @@ video {
 #admin selection-table .selected td {
   color: #FFF;
   background-color: #707070; }
-#admin selection-table:focus,
-#admin selection-table table:focus {
-  border-color: #707070;
-  box-shadow: none;
-  -webkit-box-shadow: none; }
 #admin .admin-controls {
   display: block;
   margin-bottom: 20px; }

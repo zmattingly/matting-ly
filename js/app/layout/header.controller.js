@@ -1,4 +1,4 @@
-(function (angular) {
+(function(angular) {
 
     HeaderController.$inject = ['$scope', 'AuthService'];
     function HeaderController ($scope, AuthService) {

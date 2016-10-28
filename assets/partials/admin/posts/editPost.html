@@ -31,7 +31,7 @@
                     <div class="content-editable">
                         <div ng-hide="editingContent" ng-click="editingContent = true" class="entry" ng-bind-html="model.post.content | trust"></div>
                         <div ng-show="editingContent">
-                            <textarea ui-tinymce="defaultTinymceOptions" ng-model="model.post.content"></textarea>
+                            <textarea ng-blur="editingContent = false" ui-tinymce="defaultTinymceOptions" ng-model="model.post.content" tabindex="0"></textarea>
                         </div>
                     </div>
 
