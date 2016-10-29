@@ -1,7 +1,7 @@
 (function(angular) {
 
-    EditPostsController.$inject = ['$scope', '$state', '$http'];
-    function EditPostsController ($scope, $state, $http) {
+    EditPostController.$inject = ['$scope', '$state', '$http'];
+    function EditPostController ($scope, $state, $http) {
         $scope.model = {
             header: 'Edit Post',
             post: {},
@@ -71,6 +71,6 @@
     }
 
     angular.module('matting-ly')
-        .controller('EditPostController', EditPostsController);
+        .controller('EditPostController', EditPostController);
 
 })(window.angular);

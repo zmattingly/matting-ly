@@ -1,5 +1,24 @@
 #admin {
-  @import "general";
-  @import "editPost";
-  @import "newPost";
+  @import "_general.scss";
+  @import "_editPost.scss";
+  @import "_newPost.scss";
+
+  .heading-editable {
+    input {
+      margin-top: 20px;
+      font-size: 56px;
+      margin-bottom: 5px;
+      border-bottom: solid 5px $base-black;
+      padding: 5px 0;
+      line-height: 1.1;
+      height: 60px;
+    }
+  }
+  .date-editable {
+    form .input-group {
+      border-bottom: solid 2px $base-black;
+    }
+  }
+
 }
+

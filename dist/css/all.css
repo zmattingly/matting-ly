@@ -370,18 +370,6 @@ video {
   font-weight: bold;
   background-color: #707070; }
 
-#admin #edit-post article .heading-editable input {
-  margin-top: 20px;
-  font-size: 56px;
-  margin-bottom: 5px;
-  border-bottom: solid 5px #111;
-  padding: 5px 0;
-  line-height: 1.1;
-  height: 60px; }
-
-#admin #edit-post article .date-editable form .input-group {
-  border-bottom: solid 2px #111; }
-
 #admin #edit-post article header .date {
   display: inline-block;
   border-bottom: solid 2px #111; }
@@ -408,3 +396,15 @@ video {
 
 #admin #new-post form.new-post-form {
   margin-top: 20px; }
+
+#admin .heading-editable input {
+  margin-top: 20px;
+  font-size: 56px;
+  margin-bottom: 5px;
+  border-bottom: solid 5px #111;
+  padding: 5px 0;
+  line-height: 1.1;
+  height: 60px; }
+
+#admin .date-editable form .input-group {
+  border-bottom: solid 2px #111; }

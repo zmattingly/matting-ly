@@ -82,6 +82,7 @@
                 templateUrl: 'assets/partials/layout/adminWrapper.html',
                 url: '/admin',
             })
+            // Posts
             .state('admin.viewPosts', {
                 url: '/posts',
                 views: {
@@ -113,6 +114,19 @@
                     content: {
                         templateUrl: 'assets/partials/admin/posts/editPost.html',
                         controller: 'EditPostController'
+                    },
+                    footer: footer
+                },
+                access: {restricted: true}
+            })
+            // About
+            .state('admin.editBio', {
+                url: '/bio',
+                views: {
+                    header: header,
+                    content: {
+                        templateUrl: 'assets/partials/admin/bio/editBio.html',
+                        controller: 'EditBioController'
                     },
                     footer: footer
                 },

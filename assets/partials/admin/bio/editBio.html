@@ -1,0 +1,31 @@
+<div id="edit-bio" ng-init="init()">
+    <div ng-include src="'/assets/partials/layout/headline.html'"></div>
+
+    <div class="content">
+        <div class="container">
+            <section class="col-md-12 blog">
+                <div ng-show="!model.bioLoading">
+                    <div class="heading-editable">
+                        <h2 ng-hide="editingHeading" ng-click="editingHeading = true">{{ model.bio.heading }}</h2>
+                        <form ng-show="editingHeading" ng-submit="editingHeading = false">
+                            <input ng-model="model.bio.heading" when-focus="editingHeading" ng-blur="editingHeading = false" class="form-control" />
+                        </form>
+                    </div>
+                    <div class="content-editable">
+                        <div ng-hide="editingContent" ng-click="editingContent = true" class="entry" ng-bind-html="model.bio.content | trust"></div>
+                        <div ng-show="editingContent">
+                            <textarea ng-blur="editingContent = false" ui-tinymce="defaultTinymceOptions" ng-model="model.bio.content" tabindex="0"></textarea>
+                        </div>
+                    </div>
+                    <div class="admin-controls text-center">
+                        <button class="btn btn-info btn-lg" ng-click="getBio()">Revert Edits</button>
+                        <button class="btn btn-primary btn-lg" ng-click="submitEdits(model.bio)">Submit Edits</button>
+                    </div>
+                </div>
+                <div ng-show="model.bioLoading" class="text-center spinner">
+                    <div ng-include="'/assets/partials/misc/sk-cube-grid.html'"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

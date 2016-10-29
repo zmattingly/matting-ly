@@ -11,7 +11,7 @@ var angularFilesort = require('gulp-angular-filesort');
 
 // Compile Sass
 gulp.task('sass', function() {
-    return gulp.src('scss/**/*.scss')
+    return gulp.src('src/scss/**/*.scss')
         .pipe(sass())
         .pipe(rename('all.css'))
         .pipe(gulp.dest('dist/css'))

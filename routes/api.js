@@ -77,6 +77,19 @@ router.get('/bio', function(req, res, next) {
     models.Bio.findOne({})
         .exec(defaultFindExec(res));
 });
+router.put('/bio', middleware.ensureAdmin, function(req, res, next) {
+    var bioData = req.body;
+
+    models.Bio.findOneAndUpdate({ _id: bioData._id }, bioData, { new: true, runValidators: true }, function(err, doc) {
+        if (err) {
+            return res.status(400).json({ error: err });
+        }
+        return res.status(200).json({
+            success: "Updated bio record successfully.",
+            doc: doc
+        });
+    });
+});
 
 // Projects
 router.get('/projects', function(req, res, next) {
