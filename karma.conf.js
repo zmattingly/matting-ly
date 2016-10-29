@@ -23,7 +23,7 @@ module.exports = function(config) {
       './node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js',         // ui.bootstrap
       './node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',    // ui.bootstrap.tpls
       // All of our JS and spec files
-      'js/**/*.js'
+      'src/js/**/*.js'
     ],
 
 
