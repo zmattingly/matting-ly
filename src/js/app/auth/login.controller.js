@@ -55,7 +55,7 @@
             AuthService.logout()
                 // handle success
                 .then(function() {
-                    $state.go('pages.home', {}, { reload: true });
+                    $state.go('public.home', {}, { reload: true });
                 })
                 // handle error
                 .catch(function() {

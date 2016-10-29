@@ -26,41 +26,41 @@
 
         // Set up the states
         $stateProvider
-            // Basic Pages
-            .state('pages', {
+            // Public Pages
+            .state('public', {
                 abstract: true,
                 templateUrl: 'assets/partials/layout/publicWrapper.html'
             })
-            .state('pages.home', {
+            .state('public.home', {
                 url: '/home',
                 views: {
                     header: header,
                     content: {
-                        templateUrl: 'assets/partials/pages/home.html',
+                        templateUrl: 'assets/partials/public/home.html',
                         controller: 'HomeController'
                     },
                     footer: footer
                 },
                 access: {restricted: false}
             })
-            .state('pages.about', {
+            .state('public.about', {
                 url: '/about',
                 views: {
                     header: header,
                     content: {
-                        templateUrl: 'assets/partials/pages/about.html',
+                        templateUrl: 'assets/partials/public/about.html',
                         controller: 'AboutController'
                     },
                     footer: footer
                 },
                 access: {restricted: false}
             })
-            .state('pages.projects', {
+            .state('public.projects', {
                 url: '/projects',
                 views: {
                     header: header,
                     content: {
-                        templateUrl: 'assets/partials/pages/projects.html',
+                        templateUrl: 'assets/partials/public/projects.html',
                         controller: 'ProjectsController'
                     },
                     footer: footer

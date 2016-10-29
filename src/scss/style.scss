@@ -1,14 +1,14 @@
 // ======================
 // Mixins
 // ======================
-@import "./variables.scss";
-@import "./mixins.scss";
+@import "variables";
+@import "mixins";
 
 // ======================
 // Reset and Global
 // ======================
-@import "./reset.scss";
-@import "./global.scss";
+@import "reset";
+@import "global";
 
 // ======================
 // The Good Stuff
@@ -268,7 +268,7 @@ video {
     height: auto !important;
 }
 
-// Pages - All
-@import "pages/pages.scss";
+// Public - All
+@import "public/_public.scss";
 // Admin - All
-@import "admin/admin.scss";
+@import "admin/_admin.scss";

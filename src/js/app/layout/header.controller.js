@@ -10,15 +10,15 @@
         $scope.init = function() {
             $scope.model.stateNavs = [
                 {
-                    'sref': 'pages.home',
+                    'sref': 'public.home',
                     'text': 'Home'
                 },
                 {
-                    'sref': 'pages.about',
+                    'sref': 'public.about',
                     'text': 'About'
                 },
                 {
-                    'sref': 'pages.projects',
+                    'sref': 'public.projects',
                     'text': 'Projects'
                 }
             ];

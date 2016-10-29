@@ -19,7 +19,7 @@
                     .then(function(){
                         if (toState.access.restricted && !AuthService.isLoggedIn()) {
                             event.preventDefault();
-                            $state.go('pages.home');
+                            $state.go('public.home');
                         }
                     });
             }
