@@ -9,7 +9,7 @@
                         <div class="heading-editable">
                             <h2 ng-hide="editingHeading" ng-click="editingHeading = true">{{ model.post.heading }}</h2>
                             <form ng-show="editingHeading" ng-submit="editingHeading = false">
-                                <input ng-model="model.post.heading" when-focus="editingHeading" ng-blur="editingHeading = false"
+                                <input ng-model="model.post.heading" focus-when="{{editingHeading}}" ng-blur="editingHeading = false"
                                        class="form-control" ng-required="true" />
                             </form>
                         </div>
@@ -22,7 +22,7 @@
                                         <input type="text" class="form-control" uib-datepicker-popup="{{model.defaultDateFormat}}"
                                                is-open="model.datePickerOpen" ng-model="model.post.date"
                                                ng-required="true" date-options="{{model.dateOptions}}"
-                                               alt-input-formats="{{model.formats}}">
+                                               alt-input-formats="{{model.formats}}" focus-when="{{editingDate}}">
                                         <span class="input-group-btn">
                                             <button type="button" class="btn btn-default" ng-click="datePickerOpen()">
                                                 <i class="glyphicon glyphicon-calendar"></i>
@@ -50,7 +50,7 @@
                             <p class="pull-left" ng-hide="editingPublished" ng-click="editingPublished = true">Published? {{ model.post.published | yesNo }}</p>
                             <form class="pull-left" ng-show="editingPublished" ng-submit="editingPublished = false">
                                 <div class="checkbox">
-                                    <label>Published? <input type="checkbox" ng-model="model.post.published" when-focus="editingPublished"
+                                    <label>Published? <input type="checkbox" ng-model="model.post.published" focus-when="{{editingPublished}}"
                                                              ng-blur="editingPublished = false" />
                                     </label>
                                 </div>
@@ -59,7 +59,7 @@
                         <div class="author-editable">
                             <p class="pull-right" ng-hide="editingAuthor" ng-click="editingAuthor = true"> - {{ model.post.author }}</p>
                             <form ng-show="editingAuthor" ng-submit="editingAuthor = false">
-                                <p class="pull-right"> - <input ng-model="model.post.author" when-focus="editingAuthor"
+                                <p class="pull-right"> - <input ng-model="model.post.author" focus-when="{{editingAuthor}}"
                                                                 ng-blur="editingAuthor = false" ng-required="true" /></p>
                             </form>
                         </div>

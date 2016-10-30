@@ -1770,6 +1770,122 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 })(window.angular);
 (function(angular) {
 
+    yesNo.$inject = [];
+    function yesNo() {
+        return function (input) {
+            return input ? 'Yes' : 'No';
+        };
+    }
+
+    angular.module("matting-ly")
+        .filter("yesNo", yesNo)
+    ;
+
+})(window.angular);
+(function(angular) {
+
+    trust.$inject = ['$sce'];
+    function trust($sce) {
+        return function(htmlCode) {
+            return $sce.trustAsHtml(htmlCode);
+        }
+    }
+
+    angular.module("matting-ly")
+        .filter("trust", trust);
+
+})(window.angular);
+(function(angular) {
+
+    focusWhen.$inject = ['$timeout'];
+    function focusWhen($timeout) {
+        return {
+            link: function (scope, element, attrs) {
+                attrs.$observe('focusWhen', function(shouldFocus) {
+                    if (shouldFocus) {
+                        $timeout(function () {
+                            element[0].focus();
+                        })
+                    }
+                });
+            }
+        };
+    }
+
+   angular.module('matting-ly')
+        .directive('focusWhen', focusWhen);
+
+})(window.angular);
+(function(angular) {
+
+    delayDisplayTilImageLoaded.$inject = [];
+    function delayDisplayTilImageLoaded() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                element.addClass("ng-hide");
+                var image = new Image();
+                image.onload = function () {
+                    scope.$apply(function () {
+                        element.removeClass("ng-hide");
+                    });
+                };
+                image.src = attrs.delayDisplayTilImageLoaded;
+            }
+        }
+    }
+
+    angular.module('matting-ly')
+        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded);
+
+}(window.angular));
+(function(angular) {
+
+    delayClassTilImageLoaded.$inject = [];
+    function delayClassTilImageLoaded() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                var image = new Image();
+                image.onload = function() {
+                    scope.$apply(function () {
+                        element.addClass(attrs.delayedClasses);
+                        // element.addClass('animated');
+                        // element.addClass('fadeIn');
+                    });
+                };
+                image.src = attrs.delayClassTilImageLoaded;
+           }
+       }
+    }
+
+   angular.module('matting-ly')
+        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded);
+
+})(window.angular);
+(function(angular) {
+
+    backButton.$inject = ['$window'];
+    function backButton($window) {
+        return {
+            restrict: 'A',
+            scope: {},
+            link: function(scope, element, attrs) {
+                element.on('click', function() {
+                    $window.history.back();
+                });
+            },
+        };
+    }
+
+   angular.module('matting-ly')
+        .directive('backButton', backButton);
+
+})(window.angular);
+(function(angular) {
+
     LoginController.$inject = ['$scope', '$state', 'AuthService']
     function LoginController($scope, $state, AuthService) {
         $scope.model = {
@@ -1940,124 +2056,5 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular.module('matting-ly')
         .factory('AuthService', AuthService);
-
-})(window.angular);
-(function(angular) {
-
-    yesNo.$inject = [];
-    function yesNo() {
-        return function (input) {
-            return input ? 'Yes' : 'No';
-        };
-    }
-
-    angular.module("matting-ly")
-        .filter("yesNo", yesNo)
-    ;
-
-})(window.angular);
-(function(angular) {
-
-    whenFocus.$inject = ['$timeout'];
-    function whenFocus($timeout) {
-        return {
-            scope: {
-                whenFocus: '='
-            },
-            link: function (scope, element, attrs) {
-                scope.$watch('whenFocus', function (shouldFocus) {
-                    if (shouldFocus) {
-                        $timeout(function () {
-                            element[0].focus();
-                        })
-                    }
-                })
-            },
-        };
-    }
-
-   angular.module('matting-ly')
-        .directive('whenFocus', whenFocus);
-
-})(window.angular);
-(function(angular) {
-
-    trust.$inject = ['$sce'];
-    function trust($sce) {
-        return function(htmlCode) {
-            return $sce.trustAsHtml(htmlCode);
-        }
-    }
-
-    angular.module("matting-ly")
-        .filter("trust", trust);
-
-})(window.angular);
-(function(angular) {
-
-    delayDisplayTilImageLoaded.$inject = [];
-    function delayDisplayTilImageLoaded() {
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope, element, attrs) {
-                element.addClass("ng-hide");
-                var image = new Image();
-                image.onload = function () {
-                    scope.$apply(function () {
-                        element.removeClass("ng-hide");
-                    });
-                };
-                image.src = attrs.delayDisplayTilImageLoaded;
-            }
-        }
-    }
-
-    angular.module('matting-ly')
-        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded);
-
-}(window.angular));
-(function(angular) {
-
-    delayClassTilImageLoaded.$inject = [];
-    function delayClassTilImageLoaded() {
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope, element, attrs) {
-                var image = new Image();
-                image.onload = function() {
-                    scope.$apply(function () {
-                        element.addClass(attrs.delayedClasses);
-                        // element.addClass('animated');
-                        // element.addClass('fadeIn');
-                    });
-                };
-                image.src = attrs.delayClassTilImageLoaded;
-           }
-       }
-    }
-
-   angular.module('matting-ly')
-        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded);
-
-})(window.angular);
-(function(angular) {
-
-    backButton.$inject = ['$window'];
-    function backButton($window) {
-        return {
-            restrict: 'A',
-            scope: {},
-            link: function(scope, element, attrs) {
-                element.on('click', function() {
-                    $window.history.back();
-                });
-            },
-        };
-    }
-
-   angular.module('matting-ly')
-        .directive('backButton', backButton);
 
 })(window.angular);

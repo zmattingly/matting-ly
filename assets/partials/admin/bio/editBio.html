@@ -8,7 +8,7 @@
                     <div class="heading-editable">
                         <h2 ng-hide="editingHeading" ng-click="editingHeading = true">{{ model.bio.heading }}</h2>
                         <form ng-show="editingHeading" ng-submit="editingHeading = false">
-                            <input ng-model="model.bio.heading" when-focus="editingHeading" ng-blur="editingHeading = false" class="form-control" />
+                            <input ng-model="model.bio.heading" focus-when="{{editingHeading}}" ng-blur="editingHeading = false" class="form-control" />
                         </form>
                     </div>
                     <div class="content-editable">

@@ -1,24 +1,21 @@
 (function(angular) {
 
-    whenFocus.$inject = ['$timeout'];
-    function whenFocus($timeout) {
+    focusWhen.$inject = ['$timeout'];
+    function focusWhen($timeout) {
         return {
-            scope: {
-                whenFocus: '='
-            },
             link: function (scope, element, attrs) {
-                scope.$watch('whenFocus', function (shouldFocus) {
+                attrs.$observe('focusWhen', function(shouldFocus) {
                     if (shouldFocus) {
                         $timeout(function () {
                             element[0].focus();
                         })
                     }
-                })
-            },
+                });
+            }
         };
     }
 
    angular.module('matting-ly')
-        .directive('whenFocus', whenFocus);
+        .directive('focusWhen', focusWhen);
 
 })(window.angular);
