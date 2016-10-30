@@ -11,9 +11,10 @@
             selection-model-type="'basic'"
             selection-model-mode="{{ vm.selectionMode }}"
             selection-model-selected-items="vm.selectedItems"
-            selection-model-on-enter="vm.onEnter(row)"
             selection-model-on-change="vm.onChange(row)"
-            context-menu="vm.menuOptions">
+            selection-model-on-enter-keypress="vm.onEnter(row)"
+            selection-model-use-keyboard-navigation="vm.useKeyboardNavigation"
+        >
             <td ng-repeat="col in columns = (columns || vm.getRowCols(row)) track by $index">
                 {{ col.prepend }}{{ col.value | meta:col.filter }}{{ col.append }}
             </td>
