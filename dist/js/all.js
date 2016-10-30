@@ -1,7 +1,7 @@
 (function (angular) {
     var app = angular.module('matting-ly', [
         'matting-ly.routing',        // matting-ly Angular UI Router and config
-        'matting-ly.selectionTable', // matting-ly selectionTable
+        'matting-ly.selectionTable', // selectionTable
         'ngResource',                // $sce
         'ui.bootstrap',              // Angular UI Bootstrap
         'ui.bootstrap.tpls',         // Angular UI Bootstrap Default Templates
@@ -300,6 +300,219 @@
 
     angular.module('matting-ly')
         .controller('EditBioController', EditBioController);
+
+})(window.angular);
+(function(angular) {
+
+    angular.module('matting-ly.selectionTable', [
+        'selectionModel',            // angular-selection-model - zmattingly forked version
+        'anguFixedHeaderTable'       // angu-fixed-header-table
+        //"mattingly/selectionTable/template/selectionTable.html"
+    ]).directive('selectionTable', [function() {
+
+            var controller = function () {
+                var vm = this;
+
+                init();
+                function init() {
+                    console.log('useKeyboardSelection', vm.useKeyboardNavigation);
+                    vm.isFocused = false;
+
+                    vm.data = [];
+                    vm.columns = [];
+                    vm.headers = [];
+                    vm.reverse = true;
+                    vm.orderby = null;
+
+                    vm.selectedItems = [];
+
+                    // Default to 'multiple' selection mode if we weren't passed one
+                    if (!vm.selectionMode) {
+                        vm.selectionMode = "'multiple'";
+                    }
+
+                    if (!vm.emptyDataString) {
+                        vm.emptyDataString = "No Results Found";
+                    }
+
+                    if (!vm.menuOptions) {
+                        vm.menuOptions = [];
+                    }
+
+                    if (!vm.onChange) {
+                        vm.onChange = function() {};
+                    }
+
+                    if (vm.onEnterKeypress && !vm.useKeyboardNavigation) {
+                        throw 'onEnterKeypress must be used with useKeyboardNavigation';
+                    }
+                }
+
+                vm.sort = function (key) {
+                    vm.reverse = (vm.orderby === key) ? !vm.reverse : false;
+                    vm.orderby = key;
+                };
+
+                vm.getRowCols = function (row) {
+                    var orderedColumns = [];
+                    vm.columns.forEach(function (column) {
+                        orderedColumns.push(
+                            {
+                                'value': column.key.split('.').reduce(index, row), // See function index() below
+                                'filter': column.filter,
+                                'prepend': column.prepend,
+                                'append': column.append
+                            }
+                        );
+
+                    });
+                    return orderedColumns;
+                };
+                // http://stackoverflow.com/questions/6393943/convert-javascript-string-in-dot-notation-into-an-object-reference
+                function index(obj, i) {
+                    return obj[i]
+                }
+            };
+
+            var link = function (scope, elem, attrs, ngModelController) {
+
+                // When the contents of ngModel change, assign the data to our
+                // vm.data property for use in templates
+                ngModelController.$render = function () {
+                    scope.vm.data = ngModelController.$modelValue;
+                    scope.vm.orderby = scope.vm.initialOrderBy;
+                };
+
+                var ths = elem.find('thead').find('tr').children();
+
+
+                for (var i = 0; i < ths.length; i++) {
+                    var th = ths[i];
+
+                    scope.vm.columns.push({
+                        key: th.hasAttribute('key') ? th.getAttribute('key') : null,
+                        filter: th.hasAttribute('filter') ? th.getAttribute('filter') : null,
+                        prepend: th.hasAttribute('prepend') ? th.getAttribute('prepend') : null,
+                        append: th.hasAttribute('append') ? th.getAttribute('append') : null
+                    });
+                    scope.vm.headers.push({
+                        key: th.hasAttribute('key') ? th.getAttribute('key') : null,
+                        value: th.innerText
+                    });
+                }
+            };
+
+            return {
+                restrict: 'E',
+                scope: {
+                    loading: '=',
+                    dataHasLoaded: '=',
+                    onChange: '=?',
+                    maxTableHeight: '@',
+                    selectionMode: '@',
+                    emptyDataString: '=',
+                    selectedItems: '=?',
+                    initialOrderBy: '@',
+                    useKeyboardNavigation: '=?',
+                    onEnterKeypress: '=?'
+                },
+                require: 'ngModel',
+                link: link,
+                controller: controller,
+                controllerAs: 'vm',
+                bindToController: true,
+                // TODO: Determine why $templateCache version of this doesn't load the selection-model properly
+                templateUrl: '/assets/partials/directives/matting-ly-selectiontable.html',
+                //templateUrl: 'mattingly/selectionTable/template/selectionTable.html',
+                transclude: true
+            };
+    }]).directive('selectionTableColumn', [
+        function () {
+            var link = function (scope, elem, attrs, selectorTableController, transclude) {
+
+                transclude(scope, function (content) {
+                    // Create TH with the same attributes as the <header> elements
+                    var thString;
+
+                    // TODO: Could this be handled better using $interpolate?
+                    thString = '<th';
+                    thString += ' key="' + scope.key + '"';
+                    thString += ' filter="' + scope.filter + '"'
+                    if (scope.append) {
+                        thString += ' append="' + scope.append + '"';
+                    }
+                    if (scope.prepend) {
+                        thString += ' prepend="' + scope.prepend + '"';
+                    }
+                    thString += '>';
+                    thString += content.html();
+                    thString += '</th>';
+
+                    var th = angular.element(thString);
+
+                    // On header click, call to parent controller's sort function with our key
+                    th.on('click', function () {
+                        scope.$apply(function () {
+                            selectorTableController.sort(scope.key);
+                        });
+                    });
+
+                    elem.replaceWith(th);
+                });
+            };
+
+            return {
+                restrict: 'E',
+                transclude: true,
+                require: '^selectionTable',
+                scope: {
+                    key: '@',
+                    filter: '@',
+                    append: '@',
+                    prepend: '@'
+                },
+                link: link
+            }
+    }]).filter('meta', ['$filter',
+        function ($filter) {
+            return function(value, filterSpec) {
+                var args = filterSpec.split(':');
+                var filterName = args.shift() || "filter";
+                if (filterName === 'undefined') {
+                    filterName = "filter";
+                }
+                var filter = $filter(filterName);
+                args.unshift(value);
+                return filter.apply(null, args);
+            };
+    }]);
+
+    // TemplateCache'd version of the selectionTable template
+    // angular.module("mattingly/selectionTable/template/selectionTable.html", []).run(['$templateCache', function($templateCache) {
+    //   $templateCache.put("mattingly/selectionTable/template/selectionTable.html",
+    //     "<table ng-show=\"vm.data.length\"" +
+    //         "fixed-header max-table-height=\"{{ vm.maxTableHeight }}\" table-render-events=\"{{ vm.tableRenderEvents }}\"" +
+    //         "class=\"table table-bordered table-striped animated fadeIn\" tabindex=\"0\">" +
+    //         "<thead>" +
+    //             "<tr ng-transclude></tr>" +
+    //         "</thead>" +
+    //         "<tbody>" +
+    //             "<tr ng-repeat=\"row in vm.data | orderBy:vm.orderby:vm.reverse\""+
+    //                 "selection-model" +
+    //                 "selection-model-type=\"'basic'\"" +
+    //                 "selection-model-mode=\"{{ vm.selectionMode }}\""+
+    //                 "selection-model-selected-items=\"vm.selectedItems\"" +
+    //                 "selection-model-on-enter=\"vm.onEnter(row)\"" +
+    //                 "selection-model-on-change=\"vm.onChange(row)\"" +
+    //                 "context-menu=\"vm.menuOptions\">" +
+    //                 "<td ng-repeat=\"col in columns = (columns || vm.getRowCols(row)) track by $index\">" +
+    //                     "{{ col.prepend }}{{ col.value | meta:col.filter }}{{ col.append }}" +
+    //                 "</td>" +
+    //             "</tr>" +
+    //         "</tbody>" +
+    //     "</table>" +
+    //     "");
+    // }]);
 
 })(window.angular);
 angular.module("ui.tinymce",[]).value("uiTinymceConfig",{}).directive("uiTinymce",["$rootScope","$compile","$timeout","$window","$sce","uiTinymceConfig",function(a,b,c,d,e,f){f=f||{};var g="ui-tinymce";return f.baseUrl&&(tinymce.baseURL=f.baseUrl),{require:["ngModel","^?form"],priority:599,link:function(h,i,j,k){function l(a){a?(m(),o&&o.getBody().setAttribute("contenteditable",!1)):(m(),o&&!o.settings.readonly&&o.getDoc()&&o.getBody().setAttribute("contenteditable",!0))}function m(){o||(o=tinymce.get(j.id))}if(d.tinymce){var n,o,p=k[0],q=k[1]||null,r={debounce:!0},s=function(b){var c=b.getContent({format:r.format}).trim();c=e.trustAsHtml(c),p.$setViewValue(c),a.$$phase||h.$digest()};j.$set("id",g+"-"+(new Date).valueOf()),n={},angular.extend(n,h.$eval(j.uiTinymce));var t=function(a){var b;return function(d){c.cancel(b),b=c(function(){return function(a){a.isDirty()&&(a.save(),s(a))}(d)},a)}}(400),u={setup:function(b){b.on("init",function(){p.$render(),p.$setPristine(),p.$setUntouched(),q&&q.$setPristine()}),b.on("ExecCommand change NodeChange ObjectResized",function(){return r.debounce?void t(b):(b.save(),void s(b))}),b.on("blur",function(){i[0].blur(),p.$setTouched(),a.$$phase||h.$digest()}),b.on("remove",function(){i.remove()}),f.setup&&f.setup(b,{updateView:s}),n.setup&&n.setup(b,{updateView:s})},format:n.format||"html",selector:"#"+j.id};angular.extend(r,f,n,u),c(function(){r.baseURL&&(tinymce.baseURL=r.baseURL);var a=tinymce.init(r);a&&"function"==typeof a.then?a.then(function(){l(h.$eval(j.ngDisabled))}):l(h.$eval(j.ngDisabled))}),p.$formatters.unshift(function(a){return a?e.trustAsHtml(a):""}),p.$parsers.unshift(function(a){return a?e.getTrustedHtml(a):""}),p.$render=function(){m();var a=p.$viewValue?e.getTrustedHtml(p.$viewValue):"";o&&o.getDoc()&&(o.setContent(a),o.fire("change"))},j.$observe("disabled",l),h.$on("$tinymce:refresh",function(a,c){var d=j.id;if(angular.isUndefined(c)||c===d){var e=i.parent(),f=i.clone();f.removeAttr("id"),f.removeAttr("style"),f.removeAttr("aria-hidden"),tinymce.execCommand("mceRemoveEditor",!1,d),e.append(b(f)(h))}}),h.$on("$destroy",function(){m(),o&&(o.remove(),o=null)})}}}}]);
@@ -1464,125 +1677,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 })(window.angular);
 (function(angular) {
 
-    yesNo.$inject = [];
-    function yesNo() {
-        return function (input) {
-            return input ? 'Yes' : 'No';
-        };
-    }
-
-    angular.module("matting-ly")
-        .filter("yesNo", yesNo)
-    ;
-
-})(window.angular);
-(function(angular) {
-
-    whenFocus.$inject = ['$timeout'];
-    function whenFocus($timeout) {
-        return {
-            scope: {
-                whenFocus: '='
-            },
-            link: function (scope, element, attrs) {
-                scope.$watch('whenFocus', function (shouldFocus) {
-                    if (shouldFocus) {
-                        $timeout(function () {
-                            element[0].focus();
-                        })
-                    }
-                })
-            },
-        };
-    }
-
-   angular.module('matting-ly')
-        .directive('whenFocus', whenFocus);
-
-})(window.angular);
-(function(angular) {
-
-    trust.$inject = ['$sce'];
-    function trust($sce) {
-        return function(htmlCode) {
-            return $sce.trustAsHtml(htmlCode);
-        }
-    }
-
-    angular.module("matting-ly")
-        .filter("trust", trust);
-
-})(window.angular);
-(function(angular) {
-
-    delayDisplayTilImageLoaded.$inject = [];
-    function delayDisplayTilImageLoaded() {
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope, element, attrs) {
-                element.addClass("ng-hide");
-                var image = new Image();
-                image.onload = function () {
-                    scope.$apply(function () {
-                        element.removeClass("ng-hide");
-                    });
-                };
-                image.src = attrs.delayDisplayTilImageLoaded;
-            }
-        }
-    }
-
-    angular.module('matting-ly')
-        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded);
-
-}(window.angular));
-(function(angular) {
-
-    delayClassTilImageLoaded.$inject = [];
-    function delayClassTilImageLoaded() {
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope, element, attrs) {
-                var image = new Image();
-                image.onload = function() {
-                    scope.$apply(function () {
-                        element.addClass(attrs.delayedClasses);
-                        // element.addClass('animated');
-                        // element.addClass('fadeIn');
-                    });
-                };
-                image.src = attrs.delayClassTilImageLoaded;
-           }
-       }
-    }
-
-   angular.module('matting-ly')
-        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded);
-
-})(window.angular);
-(function(angular) {
-
-    backButton.$inject = ['$window'];
-    function backButton($window) {
-        return {
-            restrict: 'A',
-            scope: {},
-            link: function(scope, element, attrs) {
-                element.on('click', function() {
-                    $window.history.back();
-                });
-            },
-        };
-    }
-
-   angular.module('matting-ly')
-        .directive('backButton', backButton);
-
-})(window.angular);
-(function(angular) {
-
     HeaderController.$inject = ['$scope', 'AuthService'];
     function HeaderController ($scope, AuthService) {
         $scope.model = {
@@ -1846,5 +1940,124 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular.module('matting-ly')
         .factory('AuthService', AuthService);
+
+})(window.angular);
+(function(angular) {
+
+    yesNo.$inject = [];
+    function yesNo() {
+        return function (input) {
+            return input ? 'Yes' : 'No';
+        };
+    }
+
+    angular.module("matting-ly")
+        .filter("yesNo", yesNo)
+    ;
+
+})(window.angular);
+(function(angular) {
+
+    whenFocus.$inject = ['$timeout'];
+    function whenFocus($timeout) {
+        return {
+            scope: {
+                whenFocus: '='
+            },
+            link: function (scope, element, attrs) {
+                scope.$watch('whenFocus', function (shouldFocus) {
+                    if (shouldFocus) {
+                        $timeout(function () {
+                            element[0].focus();
+                        })
+                    }
+                })
+            },
+        };
+    }
+
+   angular.module('matting-ly')
+        .directive('whenFocus', whenFocus);
+
+})(window.angular);
+(function(angular) {
+
+    trust.$inject = ['$sce'];
+    function trust($sce) {
+        return function(htmlCode) {
+            return $sce.trustAsHtml(htmlCode);
+        }
+    }
+
+    angular.module("matting-ly")
+        .filter("trust", trust);
+
+})(window.angular);
+(function(angular) {
+
+    delayDisplayTilImageLoaded.$inject = [];
+    function delayDisplayTilImageLoaded() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                element.addClass("ng-hide");
+                var image = new Image();
+                image.onload = function () {
+                    scope.$apply(function () {
+                        element.removeClass("ng-hide");
+                    });
+                };
+                image.src = attrs.delayDisplayTilImageLoaded;
+            }
+        }
+    }
+
+    angular.module('matting-ly')
+        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded);
+
+}(window.angular));
+(function(angular) {
+
+    delayClassTilImageLoaded.$inject = [];
+    function delayClassTilImageLoaded() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                var image = new Image();
+                image.onload = function() {
+                    scope.$apply(function () {
+                        element.addClass(attrs.delayedClasses);
+                        // element.addClass('animated');
+                        // element.addClass('fadeIn');
+                    });
+                };
+                image.src = attrs.delayClassTilImageLoaded;
+           }
+       }
+    }
+
+   angular.module('matting-ly')
+        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded);
+
+})(window.angular);
+(function(angular) {
+
+    backButton.$inject = ['$window'];
+    function backButton($window) {
+        return {
+            restrict: 'A',
+            scope: {},
+            link: function(scope, element, attrs) {
+                element.on('click', function() {
+                    $window.history.back();
+                });
+            },
+        };
+    }
+
+   angular.module('matting-ly')
+        .directive('backButton', backButton);
 
 })(window.angular);

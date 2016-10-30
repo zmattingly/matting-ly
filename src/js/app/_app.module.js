@@ -1,7 +1,7 @@
 (function (angular) {
     var app = angular.module('matting-ly', [
         'matting-ly.routing',        // matting-ly Angular UI Router and config
-        'matting-ly.selectionTable', // matting-ly selectionTable
+        'matting-ly.selectionTable', // selectionTable
         'ngResource',                // $sce
         'ui.bootstrap',              // Angular UI Bootstrap
         'ui.bootstrap.tpls',         // Angular UI Bootstrap Default Templates
