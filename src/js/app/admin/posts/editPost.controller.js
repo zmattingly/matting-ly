@@ -1,7 +1,7 @@
 (function(angular) {
 
-    EditPostController.$inject = ['$scope', '$state', '$http'];
-    function EditPostController ($scope, $state, $http) {
+    EditPostController.$inject = ['$scope', '$state', '$http', '$timeout'];
+    function EditPostController ($scope, $state, $http, $timeout) {
         $scope.model = {
             header: 'Edit Post',
             post: {},
@@ -17,6 +17,22 @@
             ],
             defaultDateFormat: 'longDate',
         };
+
+        // TinyMCE Editor Setup
+        $scope.editingContent = false;
+        $scope.defaultTinymceOptions.setup = function(ed) {
+            ed.on('blur', function(e) {
+                $scope.editingContent = false;
+                $scope.$apply();
+            });
+        };
+        $scope.$watch('editingContent', function(newVal, oldVal) {
+            if (newVal == true && oldVal == false) {
+                $timeout(function() {
+                    tinyMCE.activeEditor.focus();
+                }, 50);
+            }
+        });
 
         $scope.init = function() {
             // Give us a half-sec to check out the nifty spinner

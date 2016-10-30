@@ -21,6 +21,21 @@
             ],
             defaultDateFormat: 'longDate',
         };
+        // TinyMCE Editor Setup
+        $scope.editingContent = false;
+        $scope.defaultTinymceOptions.setup = function(ed) {
+            ed.on('blur', function(e) {
+                $scope.editingContent = false;
+                $scope.$apply();
+            });
+        };
+        $scope.$watch('editingContent', function(newVal, oldVal) {
+            if (newVal == true && oldVal == false) {
+                $timeout(function() {
+                    tinyMCE.activeEditor.focus();
+                }, 50);
+            }
+        });
 
         $scope.init = function() {};
 

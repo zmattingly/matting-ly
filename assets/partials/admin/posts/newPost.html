@@ -12,7 +12,8 @@
                             <div class="col-sm-11">
                                 <div class="input-group">
                                     <div class="input-group-addon"><span class="glyphicon glyphicon-pencil" /></div>
-                                    <input ng-model="model.post.heading" type="text" class="form-control" id="heading" placeholder="Heading" />
+                                    <input ng-model="model.post.heading" type="text" class="form-control" id="heading"
+                                           placeholder="Heading" ng-required="true" />
                                 </div>
                             </div>
                         </div>
@@ -21,9 +22,9 @@
                             <div class="col-sm-11">
                                 <div class="input-group">
                                     <div class="input-group-addon"><span class="glyphicon glyphicon-user" /></div>
-                                    <input ng-model="model.post.author" type="text" class="form-control" id="author" placeholder="Author" />
+                                    <input ng-model="model.post.author" type="text" class="form-control" id="author"
+                                           placeholder="Author" ng-required="true" />
                                 </div>
-
                             </div>
                         </div>
                         <div class="form-group">
@@ -31,9 +32,13 @@
                             <div class="col-sm-11">
                                 <div class="input-group">
                                     <span class="input-group-btn">
-                                        <button type="button" class="btn btn-default" ng-click="datePickerOpen()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        <button type="button" class="btn btn-default" ng-click="datePickerOpen()">
+                                            <i class="glyphicon glyphicon-calendar"></i>
+                                        </button>
                                     </span>
-                                    <input type="text" id="date" class="form-control" uib-datepicker-popup="{{model.defaultDateFormat}}" is-open="model.datePickerOpen" ng-model="model.post.date" ng-required="true" date-options="{{model.dateOptions}}" alt-input-formats="{{model.formats}}">
+                                    <input type="text" id="date" class="form-control" uib-datepicker-popup="{{model.defaultDateFormat}}"
+                                           is-open="model.datePickerOpen" ng-model="model.post.date" date-options="{{model.dateOptions}}"
+                                           alt-input-formats="{{model.formats}}" ng-required="true">
                                 </div>
                             </div>
                         </div>
@@ -50,7 +55,9 @@
                         <div class="form-group">
                             <label for="content" class="col-sm-1 control-label">Content</label>
                             <div class="col-sm-11">
-                                <textarea id="post-editor" ui-tinymce="defaultTinymceOptions" ng-model="model.post.content"></textarea>
+                                <textarea name="content" id="post-editor" ui-tinymce="defaultTinymceOptions"
+                                          ng-model="model.post.content" ng-required="true" ng-minlength="140">
+                                </textarea>
                             </div>
                         </div>
                         <div class="admin-controls text-center">
@@ -58,7 +65,6 @@
                             <button type="submit" class="btn btn-success btn-lg">Submit New Post</button>
                         </div>
                     </form>
-
                 </article>
                 <div ng-show="model.postSubmitting" class="text-center spinner">
                     <div ng-include="'/assets/partials/misc/sk-cube-grid.html'"></div>

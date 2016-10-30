@@ -60,6 +60,15 @@
                     $scope.model.postsHaveLoaded = true;
                     $scope.model.allPosts = data;
                     // Auto-select first element
+                    $scope.model.allPosts = $scope.model.allPosts.sort(function(a, b) {
+                        if (a.date > b.date) {
+                            return -1;
+                        } else if (a.date < b.date) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    });
                     $scope.model.allPosts[0].selected = true;
                 })
                 .error(function(data) {
@@ -97,6 +106,21 @@
             ],
             defaultDateFormat: 'longDate',
         };
+        // TinyMCE Editor Setup
+        $scope.editingContent = false;
+        $scope.defaultTinymceOptions.setup = function(ed) {
+            ed.on('blur', function(e) {
+                $scope.editingContent = false;
+                $scope.$apply();
+            });
+        };
+        $scope.$watch('editingContent', function(newVal, oldVal) {
+            if (newVal == true && oldVal == false) {
+                $timeout(function() {
+                    tinyMCE.activeEditor.focus();
+                }, 50);
+            }
+        });
 
         $scope.init = function() {};
 
@@ -127,8 +151,8 @@
 })(window.angular);
 (function(angular) {
 
-    EditPostController.$inject = ['$scope', '$state', '$http'];
-    function EditPostController ($scope, $state, $http) {
+    EditPostController.$inject = ['$scope', '$state', '$http', '$timeout'];
+    function EditPostController ($scope, $state, $http, $timeout) {
         $scope.model = {
             header: 'Edit Post',
             post: {},
@@ -144,6 +168,22 @@
             ],
             defaultDateFormat: 'longDate',
         };
+
+        // TinyMCE Editor Setup
+        $scope.editingContent = false;
+        $scope.defaultTinymceOptions.setup = function(ed) {
+            ed.on('blur', function(e) {
+                $scope.editingContent = false;
+                $scope.$apply();
+            });
+        };
+        $scope.$watch('editingContent', function(newVal, oldVal) {
+            if (newVal == true && oldVal == false) {
+                $timeout(function() {
+                    tinyMCE.activeEditor.focus();
+                }, 50);
+            }
+        });
 
         $scope.init = function() {
             // Give us a half-sec to check out the nifty spinner
@@ -210,6 +250,21 @@
             bio: {},
             bioLoading: true
         };
+        // TinyMCE Editor Setup
+        $scope.editingContent = false;
+        $scope.defaultTinymceOptions.setup = function(ed) {
+            ed.on('blur', function(e) {
+                $scope.editingContent = false;
+                $scope.$apply();
+            });
+        };
+        $scope.$watch('editingContent', function(newVal, oldVal) {
+            if (newVal == true && oldVal == false) {
+                $timeout(function() {
+                    tinyMCE.activeEditor.focus();
+                }, 50);
+            }
+        });
 
         $scope.init = function() {
             // Give us a half-sec to check out the nifty spinner
@@ -247,220 +302,7 @@
         .controller('EditBioController', EditBioController);
 
 })(window.angular);
-(function(angular) {
-
-    angular.module('matting-ly.selectionTable', [
-        'duScroll',                  // angular-scroll
-        'matting-ly.selectionModel', // angular-selection-model
-        'anguFixedHeaderTable',      // angu-fixed-header-table
-        //"mattingly/selectionTable/template/selectionTable.html"
-    ]).directive('selectionTable', [function() {
-
-            var controller = function () {
-                var vm = this;
-
-                init();
-                function init() {
-                    vm.isFocused = false;
-
-                    vm.data = [];
-                    vm.columns = [];
-                    vm.headers = [];
-                    vm.reverse = true;
-                    vm.orderby = null;
-
-                    vm.selectedItems = [];
-
-                    // Default to 'multiple' selection mode if we weren't passed one
-                    if (!vm.selectionMode) {
-                        vm.selectionMode = "'multiple'";
-                    }
-
-                    if (!vm.emptyDataString) {
-                        vm.emptyDataString = "No Results Found";
-                    }
-
-                    if (!vm.menuOptions) {
-                        vm.menuOptions = [];
-                    }
-
-                    if (!vm.onEnter) {
-                        vm.onEnter = function() {};
-                    }
-
-                    if (!vm.onChange) {
-                        vm.onChange = function() {};
-                    }
-                }
-
-                vm.sort = function (key) {
-                    vm.reverse = (vm.orderby === key) ? !vm.reverse : false;
-                    vm.orderby = key;
-                };
-
-                vm.getRowCols = function (row) {
-                    var orderedColumns = [];
-                    vm.columns.forEach(function (column) {
-                        orderedColumns.push(
-                            {
-                                'value': column.key.split('.').reduce(index, row), // See function index() below
-                                'filter': column.filter,
-                                'prepend': column.prepend,
-                                'append': column.append
-                            }
-                        );
-
-                    });
-                    return orderedColumns;
-                };
-                // http://stackoverflow.com/questions/6393943/convert-javascript-string-in-dot-notation-into-an-object-reference
-                function index(obj, i) {
-                    return obj[i]
-                }
-            };
-
-            var link = function (scope, elem, attrs, ngModelController) {
-
-                // When the contents of ngModel change, assign the data to our
-                // vm.data property for use in templates
-                ngModelController.$render = function () {
-                    scope.vm.data = ngModelController.$modelValue;
-                    scope.vm.orderby = scope.vm.initialOrderBy;
-                };
-
-                var ths = elem.find('thead').find('tr').children();
-
-
-                for (var i = 0; i < ths.length; i++) {
-                    var th = ths[i];
-
-                    scope.vm.columns.push({
-                        key: th.hasAttribute('key') ? th.getAttribute('key') : null,
-                        filter: th.hasAttribute('filter') ? th.getAttribute('filter') : null,
-                        prepend: th.hasAttribute('prepend') ? th.getAttribute('prepend') : null,
-                        append: th.hasAttribute('append') ? th.getAttribute('append') : null
-                    });
-                    scope.vm.headers.push({
-                        key: th.hasAttribute('key') ? th.getAttribute('key') : null,
-                        value: th.innerText
-                    });
-                }
-            };
-
-            return {
-                restrict: 'E',
-                scope: {
-                    loading: '=',
-                    dataHasLoaded: '=',
-                    onEnter: '=?',
-                    onChange: '=?',
-                    maxTableHeight: '@',
-                    selectionMode: '@',
-                    emptyDataString: '=',
-                    selectedItems: '=?',
-                    initialOrderBy: '@'
-                },
-                require: 'ngModel',
-                link: link,
-                controller: controller,
-                controllerAs: 'vm',
-                bindToController: true,
-                // TODO: Determine why $templateCache version of this doesn't load the selection-model properly
-                templateUrl: '/assets/partials/directives/matting-ly-selectiontable.html',
-                //templateUrl: 'mattingly/selectionTable/template/selectionTable.html',
-                transclude: true
-            };
-    }]).directive('selectionTableColumn', [
-        function () {
-            var link = function (scope, elem, attrs, selectorTableController, transclude) {
-
-                transclude(scope, function (content) {
-                    // Create TH with the same attributes as the <header> elements
-                    var thString;
-
-                    // TODO: Could this be handled better using $interpolate?
-                    thString = '<th';
-                    thString += ' key="' + scope.key + '"';
-                    thString += ' filter="' + scope.filter + '"'
-                    if (scope.append) {
-                        thString += ' append="' + scope.append + '"';
-                    }
-                    if (scope.prepend) {
-                        thString += ' prepend="' + scope.prepend + '"';
-                    }
-                    thString += '>';
-                    thString += content.html();
-                    thString += '</th>';
-
-                    var th = angular.element(thString);
-
-                    // On header click, call to parent controller's sort function with our key
-                    th.on('click', function () {
-                        scope.$apply(function () {
-                            selectorTableController.sort(scope.key);
-                        });
-                    });
-
-                    elem.replaceWith(th);
-                });
-            };
-
-            return {
-                restrict: 'E',
-                transclude: true,
-                require: '^selectionTable',
-                scope: {
-                    key: '@',
-                    filter: '@',
-                    append: '@',
-                    prepend: '@'
-                },
-                link: link
-            }
-    }]).filter('meta', ['$filter',
-        function ($filter) {
-            return function(value, filterSpec) {
-                var args = filterSpec.split(':');
-                var filterName = args.shift() || "filter";
-                if (filterName === 'undefined') {
-                    filterName = "filter";
-                }
-                var filter = $filter(filterName);
-                args.unshift(value);
-                return filter.apply(null, args);
-            };
-    }]);
-
-    // TemplateCache'd version of the selectionTable template
-    // angular.module("mattingly/selectionTable/template/selectionTable.html", []).run(['$templateCache', function($templateCache) {
-    //   $templateCache.put("mattingly/selectionTable/template/selectionTable.html",
-    //     "<table ng-show=\"vm.data.length\"" +
-    //         "fixed-header max-table-height=\"{{ vm.maxTableHeight }}\" table-render-events=\"{{ vm.tableRenderEvents }}\"" +
-    //         "class=\"table table-bordered table-striped animated fadeIn\" tabindex=\"0\">" +
-    //         "<thead>" +
-    //             "<tr ng-transclude></tr>" +
-    //         "</thead>" +
-    //         "<tbody>" +
-    //             "<tr ng-repeat=\"row in vm.data | orderBy:vm.orderby:vm.reverse\""+
-    //                 "selection-model" +
-    //                 "selection-model-type=\"'basic'\"" +
-    //                 "selection-model-mode=\"{{ vm.selectionMode }}\""+
-    //                 "selection-model-selected-items=\"vm.selectedItems\"" +
-    //                 "selection-model-on-enter=\"vm.onEnter(row)\"" +
-    //                 "selection-model-on-change=\"vm.onChange(row)\"" +
-    //                 "context-menu=\"vm.menuOptions\">" +
-    //                 "<td ng-repeat=\"col in columns = (columns || vm.getRowCols(row)) track by $index\">" +
-    //                     "{{ col.prepend }}{{ col.value | meta:col.filter }}{{ col.append }}" +
-    //                 "</td>" +
-    //             "</tr>" +
-    //         "</tbody>" +
-    //     "</table>" +
-    //     "");
-    // }]);
-
-})(window.angular);
 angular.module("ui.tinymce",[]).value("uiTinymceConfig",{}).directive("uiTinymce",["$rootScope","$compile","$timeout","$window","$sce","uiTinymceConfig",function(a,b,c,d,e,f){f=f||{};var g="ui-tinymce";return f.baseUrl&&(tinymce.baseURL=f.baseUrl),{require:["ngModel","^?form"],priority:599,link:function(h,i,j,k){function l(a){a?(m(),o&&o.getBody().setAttribute("contenteditable",!1)):(m(),o&&!o.settings.readonly&&o.getDoc()&&o.getBody().setAttribute("contenteditable",!0))}function m(){o||(o=tinymce.get(j.id))}if(d.tinymce){var n,o,p=k[0],q=k[1]||null,r={debounce:!0},s=function(b){var c=b.getContent({format:r.format}).trim();c=e.trustAsHtml(c),p.$setViewValue(c),a.$$phase||h.$digest()};j.$set("id",g+"-"+(new Date).valueOf()),n={},angular.extend(n,h.$eval(j.uiTinymce));var t=function(a){var b;return function(d){c.cancel(b),b=c(function(){return function(a){a.isDirty()&&(a.save(),s(a))}(d)},a)}}(400),u={setup:function(b){b.on("init",function(){p.$render(),p.$setPristine(),p.$setUntouched(),q&&q.$setPristine()}),b.on("ExecCommand change NodeChange ObjectResized",function(){return r.debounce?void t(b):(b.save(),void s(b))}),b.on("blur",function(){i[0].blur(),p.$setTouched(),a.$$phase||h.$digest()}),b.on("remove",function(){i.remove()}),f.setup&&f.setup(b,{updateView:s}),n.setup&&n.setup(b,{updateView:s})},format:n.format||"html",selector:"#"+j.id};angular.extend(r,f,n,u),c(function(){r.baseURL&&(tinymce.baseURL=r.baseURL);var a=tinymce.init(r);a&&"function"==typeof a.then?a.then(function(){l(h.$eval(j.ngDisabled))}):l(h.$eval(j.ngDisabled))}),p.$formatters.unshift(function(a){return a?e.trustAsHtml(a):""}),p.$parsers.unshift(function(a){return a?e.getTrustedHtml(a):""}),p.$render=function(){m();var a=p.$viewValue?e.getTrustedHtml(p.$viewValue):"";o&&o.getDoc()&&(o.setContent(a),o.fire("change"))},j.$observe("disabled",l),h.$on("$tinymce:refresh",function(a,c){var d=j.id;if(angular.isUndefined(c)||c===d){var e=i.parent(),f=i.clone();f.removeAttr("id"),f.removeAttr("style"),f.removeAttr("aria-hidden"),tinymce.execCommand("mceRemoveEditor",!1,d),e.append(b(f)(h))}}),h.$on("$destroy",function(){m(),o&&(o.remove(),o=null)})}}}}]);
-angular.module("selectionModel",[]),angular.module("selectionModel").directive("selectionModelIgnore",[function(){"use strict";return{restrict:"A",link:function(a,b,c){var d=function(a){a.selectionModelIgnore=!0,a.originalEvent&&(a.originalEvent.selectionModelIgnore=!0)};b.on("click",function(b){(!c.selectionModelIgnore||a.$eval(c.selectionModelIgnore))&&d(b)})}}}]),angular.module("selectionModel").directive("selectionModel",["selectionStack","uuidGen","selectionModelOptions",function(a,b,c){"use strict";return{restrict:"A",link:function(d,e,f){var g=c.get(),h=g.selectedAttribute,i=g.selectedClass,j=g.type,k=g.mode,l=g.cleanupStrategy,m=d.$eval(f.selectionModelType)||j,n=d.$eval(f.selectionModelMode)||k,o=/^multi(ple)?(-additive)?$/.test(n),p=/^multi(ple)?-additive/.test(n),q=d.$eval(f.selectionModelSelectedAttribute)||h,r=d.$eval(f.selectionModelSelectedClass)||i,s=d.$eval(f.selectionModelCleanupStrategy)||l,t=f.selectionModelOnChange,u=f.ngRepeat;if(!u)throw"selectionModel must be used along side ngRepeat";var v=d.$eval(f.selectionModelSelectedItems),w=function(){if(!o)return null;var a="data-selection-model-stack-id",c=e.attr(a);return c?c:(c=e.parent().attr(a))?(e.attr(a,c),c):(c=b.create(),e.attr(a,c),e.parent().attr(a,c),c)}(),x=u.split(/\sin\s|\strack\sby\s/g),y=d.$eval(x[0]),z=x.length>2,A=function(){if(y[q]?e.addClass(r):e.removeClass(r),"checkbox"===m){var a=[];angular.forEach(e.find("input"),function(b){b=angular.element(b),"checkbox"===b.attr("type")&&a.push(b)}),a.length&&a[0].prop("checked",y[q])}},B=function(){return d.$eval(x[1])},C=function(){return d.$eval(x[1].split(/[|=]/)[0])},D=function(a){var b,c=angular.isArray(v),d=angular.isArray(a)&&2===a.length,e=C(),f=0,g=!1;c&&(v.length=0),angular.forEach(e,function(e){d?(b=a.indexOf(e),b>-1?(f++,g=!1,a.splice(b,1)):g=1!==f):g=e!==a,g?e[q]=!1:c&&e[q]&&v.push(e)})},E=function(a){var b=(B(),!1),c=!1;a=a||y,angular.forEach(B(),function(d){c=c||d===y,b=b||d===a;var e=b+c===1;(e||d===y||d===a)&&(d[q]=!0)})},F=function(b){if(!(b.selectionModelIgnore||b.originalEvent&&b.originalEvent.selectionModelIgnore||b.selectionModelClickHandled||b.originalEvent&&b.originalEvent.selectionModelClickHandled)){b.selectionModelClickHandled=!0,b.originalEvent&&(b.originalEvent.selectionModelClickHandled=!0);var c=b.ctrlKey||b.metaKey||p,f=b.shiftKey,g=b.target||b.srcElement,h="checkbox"===m&&"INPUT"===g.tagName&&"checkbox"===g.type;if("LABEL"===g.tagName){var i=angular.element(g).attr("for");if(i){var j,k=e[0].getElementsByTagName("INPUT");for(j=k.length;j--;)if(k[j].id===i)return}else if(g.getElementsByTagName("INPUT").length)return}if(f&&o&&!h)return c||d.$apply(function(){D([y,a.peek(w)])}),E(a.peek(w)),void d.$apply();if(c||f||h){var l=!y[q];return o||D(y),y[q]=l,y[q]&&a.push(w,y),void d.$apply()}D(y),d.$apply(),y[q]=!0,a.push(w,y),d.$apply()}},G=function(){if(angular.isArray(v)){var a=v.indexOf(y);y[q]?-1===a&&v.push(y):a>-1&&v.splice(a,1)}};if(e.on("click",F),"checkbox"===m){var H=e.find("input");H[0]&&"checkbox"===H[0].type&&e.find("input").on("click",F)}A(),G(),"deselect"===s&&d.$on("$destroy",function(){var a=y[q];y[q]=!1,G(),t&&a&&d.$eval(t)}),d.$watch(x[0]+"."+q,function(a,b){a!==b&&(o||!a||b||(D(y),y[q]=!0),A(),G(),t&&d.$eval(t))}),z&&d.$watch(x[0],function(a){y=a})}}}]),angular.module("selectionModel").provider("selectionModelOptions",[function(){"use strict";var a={selectedAttribute:"selected",selectedClass:"selected",type:"basic",mode:"single",cleanupStrategy:"none"};this.set=function(b){angular.extend(a,b)},this.$get=function(){var b={get:function(){return angular.copy(a)}};return b}}]),angular.module("selectionModel").service("selectionStack",function(){"use strict";var a={},b=1e3,c={};return a.push=function(a,d){c.hasOwnProperty(a)||(c[a]=[]);var e=c[a];for(e.push(d);e.length>b;)e.shift();return e.length},a.pop=function(a){c.hasOwnProperty(a)||(c[a]=[]);var b=c[a];return b.pop()},a.peek=function(a){c.hasOwnProperty(a)||(c[a]=[]);var b=c[a];return b.length?b[b.length-1]:void 0},a}),angular.module("selectionModel").service("uuidGen",function(){"use strict";var a={},b=["0","0","0"];return a.create=function(){for(var a,c=b.length;c;){if(c--,a=b[c].charCodeAt(0),57===a)return b[c]="A",b.join("");if(90!==a)return b[c]=String.fromCharCode(a+1),b.join("");b[c]="0"}return b.unshift("0"),b.join("")},a});
 
 /**
  * The Selection Model module
@@ -470,12 +312,10 @@ angular.module("selectionModel",[]),angular.module("selectionModel").directive("
  * play nicely with native angular features so you can leverage existing tools
  * for filtering, sorting, animations, etc.
  *
- * Modified to include up/down arrow navigation by Zane Mattingly
- *
  * @package selectionModel
  */
 
-angular.module('matting-ly.selectionModel', ['duScroll']);
+angular.module('selectionModel', []);
 
 
 /**
@@ -491,7 +331,7 @@ angular.module('matting-ly.selectionModel', ['duScroll']);
  * @copyright 2014 Justin Russell, released under the MIT license
  */
 
-angular.module('matting-ly.selectionModel').directive('selectionModelIgnore', [
+angular.module('selectionModel').directive('selectionModelIgnore', [
   function() {
     'use strict';
     return {
@@ -532,7 +372,7 @@ angular.module('matting-ly.selectionModel').directive('selectionModelIgnore', [
  * @copyright 2014 Justin Russell, released under the MIT license
  */
 
-angular.module('matting-ly.selectionModel').directive('selectionModel', [
+angular.module('selectionModel').directive('selectionModel', [
   'selectionStack', 'uuidGen', 'selectionModelOptions', '$document',
   function(selectionStack, uuidGen, selectionModelOptions, $document) {
     'use strict';
@@ -547,17 +387,18 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
          * set application wide defaults
          */
         var defaultOptions = selectionModelOptions.get()
-          , defaultSelectedAttribute = defaultOptions.selectedAttribute
-          , defaultSelectedClass = defaultOptions.selectedClass
-          , defaultType = defaultOptions.type
-          , defaultMode = defaultOptions.mode
-          , defaultCleanupStrategy = defaultOptions.cleanupStrategy;
+            , defaultSelectedAttribute = defaultOptions.selectedAttribute
+            , defaultSelectedClass = defaultOptions.selectedClass
+            , defaultType = defaultOptions.type
+            , defaultMode = defaultOptions.mode
+            , defaultCleanupStrategy = defaultOptions.cleanupStrategy
+            , defaultUseKeyboardNavigation = defaultOptions.useKeyboardNavigation;
 
         /**
          * The selection model type
          *
          * Controls how selections are presented on the underlying element. Use
-         * 'basic' (the default) to simplye assign a "selected" class to
+         * 'basic' (the default) to simply assign a "selected" class to
          * selected items. If set to 'checkbox' it'll also sync the checked
          * state of the first checkbox child in each underlying `tr` or `li`
          * element.
@@ -580,8 +421,8 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
          * as turning every click into a ctrl-click.
          */
         var smMode = scope.$eval(attrs.selectionModelMode) || defaultMode
-          , isMultiMode = /^multi(ple)?(-additive)?$/.test(smMode)
-          , isModeAdditive = /^multi(ple)?-additive/.test(smMode);
+            , isMultiMode = /^multi(ple)?(-additive)?$/.test(smMode)
+            , isModeAdditive = /^multi(ple)?-additive/.test(smMode);
 
         /**
          * The item attribute to track selected status
@@ -611,18 +452,30 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
         var cleanupStrategy = scope.$eval(attrs.selectionModelCleanupStrategy) || defaultCleanupStrategy;
 
         /**
+         * Whether or not to use Keyboard Navigation
+         *
+         * If evaluated to true, we'll bind the parent element with
+         * UpArrow/DownArrow keyboard events to navigate the selections.
+         */
+        var smUseKeyboardNav = scope.$eval(attrs.selectionModelUseKeyboardNavigation) || defaultUseKeyboardNavigation;
+
+        /**
+         * The onEnterKeypress callback
+         *
+         * To be executed whenever the user presses Enter if
+         * we're using Keyboard Navigation
+         */
+        var smOnEnterKeypress = attrs.selectionModelOnEnterKeypress;
+        if(smOnEnterKeypress && !smUseKeyboardNav) {
+          throw 'selection-model-on-enter-keypress must be used with selection-model-use-keyboard-navigation set to true';
+        }
+
+        /**
          * The change callback
          *
          * To be executed whenever the item's selected state changes.
          */
         var smOnChange = attrs.selectionModelOnChange;
-
-        /**
-         * The onEnter callback
-         *
-         * To be executed whenever the user presses Enter
-         */
-        var smOnEnter = attrs.selectionModelOnEnter;
 
         /**
          * The list of items
@@ -682,49 +535,29 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
          * repeatParts[2] -> The track by expression (if present)
          */
         var repeatParts = repeatLine.split(/\sin\s|\strack\sby\s/g)
-          , smItem = scope.$eval(repeatParts[0])
-          , hasTrackBy = repeatParts.length > 2;
-
-        var isClick = false;
-
-        var findScrollableElement = function() {
-          var el = element
-            , currentTagName
-            , scrollableElementFound
-            , scrollableElement = null
-            , maxSearchDepth = 5;
-
-          // Recursively search up the parent stack until we find our Tbody/UL/OL
-          while (scrollableElementFound !== true && maxSearchDepth > 0) {
-            el = el.parent();
-            currentTagName = el[0] ? el[0].tagName : '';
-            if ('TBODY' === currentTagName || 'UL' === currentTagName || 'OL' === currentTagName) {
-              scrollableElementFound = true;
-              scrollableElement = el;
-            }
-            maxSearchDepth--;
-          }
-
-          return scrollableElement;
-        };
-        var scrollableElement = findScrollableElement();
+            , smItem = scope.$eval(repeatParts[0])
+            , hasTrackBy = repeatParts.length > 2;
 
         var updateDom = function() {
           if(smItem[selectedAttribute]) {
             element.addClass(selectedClass);
-            if (scrollableElement && !isClick) {
-              scrollableElement.scrollToElement(element, 50, 750)
-            }
           } else {
             element.removeClass(selectedClass);
           }
 
           if('checkbox' === smType) {
-            var cb = element.find('input');
-            cb.prop('checked', smItem[selectedAttribute]);
-          }
+            var checkboxes = [];
+            angular.forEach(element.find('input'), function(input) {
+              input = angular.element(input);
+              if(input.attr('type') === 'checkbox') {
+                checkboxes.push(input);
+              }
+            });
 
-          isClick = false;
+            if(checkboxes.length) {
+              checkboxes[0].prop('checked', smItem[selectedAttribute]);
+            }
+          }
         };
 
         var getAllVisibleItems = function() {
@@ -746,11 +579,11 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
         // deselect anything between those items inclusively).
         var deselectAllItemsExcept = function(except) {
           var useSelectedArray = angular.isArray(selectedItemsList)
-            , isRange = angular.isArray(except) && 2 === except.length
-            , allItems = getAllItems()
-            , numItemsFound = 0
-            , doDeselect = false
-            , ixItem;
+              , isRange = angular.isArray(except) && 2 === except.length
+              , allItems = getAllItems()
+              , numItemsFound = 0
+              , doDeselect = false
+              , ixItem;
           if(useSelectedArray) {
             selectedItemsList.length = 0;
           }
@@ -779,12 +612,12 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
 
         var selectItemsBetween = function(lastItem) {
           var allItems = getAllVisibleItems()
-            , foundLastItem = false
-            , foundThisItem = false;
+              , foundLastItem = false
+              , foundThisItem = false;
 
           lastItem = lastItem || smItem;
 
-          angular.forEach(getAllVisibleItems(), function(item) {
+          angular.forEach(allItems, function(item) {
             foundThisItem = foundThisItem || item === smItem;
             foundLastItem = foundLastItem || item === lastItem;
             var inRange = (foundLastItem + foundThisItem) === 1;
@@ -795,130 +628,12 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
         };
 
         /**
-         * Arrow Key Selection
-         */
-        var doesBaseElementHaveFocus = function() {
-          var currentlyFocusedElement = $document[0].activeElement
-            , el = element
-            , currentTagName
-            , baseElementFound
-            , baseElement
-            , maxSearchDepth = 5;
-
-          // Recursively search up the parent stack until we find our parent Table/UL/OL
-          while (baseElementFound !== true && maxSearchDepth > 0) {
-            el = el.parent();
-            currentTagName = el[0] ? el[0].tagName : '';
-            if ('TABLE' === currentTagName || 'UL' === currentTagName || 'OL' === currentTagName) {
-              baseElementFound = true;
-              baseElement = el;
-            }
-            maxSearchDepth--;
-          }
-
-          if (!baseElement) {
-            return false;
-          }
-          return currentlyFocusedElement === baseElement[0];
-        };
-
-        var handleKeypress = function(event) {
-          isClick = false;
-
-          var keyCode = event.which || event.keyCode
-            , keyPressed;
-
-          switch (keyCode) {
-            case (38):
-              keyPressed = 'arrowUp';
-              break;
-            case (40):
-              keyPressed = 'arrowDown';
-              break;
-            case (13):
-              keyPressed = 'enter';
-              break;
-            default:
-              return;
-          }
-
-          if (!doesBaseElementHaveFocus()) {
-            // Don't do anything if our base element is out of focus
-            return;
-          }
-
-          // If they've pressed the enter key, execute smOnEnter callback
-          if (keyPressed === 'enter') {
-            scope.$eval(smOnEnter);
-            return;
-          }
-
-          // Prevent default scrolling behavior (scrolling the browser window)
-          event.preventDefault();
-
-          var isCtrlKeyDown = event.ctrlKey || event.metaKey
-            , isShiftKeyDown = event.shiftKey;
-
-          var allItems = getAllVisibleItems()
-            , maxIx = allItems.length
-            , firstItem = selectionStack.peek(clickStackId) ? selectionStack.peek(clickStackId) : allItems[0]
-            , currentIx = allItems.indexOf(firstItem)
-            , nextItem;
-
-          // Ensure our firstItem is within the list of visible Items
-          if (currentIx > -1) {
-
-            if (keyPressed === 'arrowDown' && currentIx +1 <= maxIx) {
-              // As long as next item isn't outside the top bounds of our list
-              nextItem = allItems[currentIx + 1]
-            } else if (keyPressed === 'arrowUp' && currentIx -1 >= 0) {
-              // As long as next item isn't outside the bottom bounds of our list
-              nextItem = allItems[currentIx - 1]
-            }
-
-            if (nextItem) {
-              deselectAllItemsExcept(nextItem);
-              scope.$apply();
-
-              nextItem[selectedAttribute] = true;
-              selectionStack.push(clickStackId, nextItem);
-              scope.$apply();
-            }
-          }
-
-        };
-
-        /**
-         * bindKeyPress()
-         *
-         * Bind the keydown event to our handleKeypress function
-         * Only do this once per list of selection-model elements, so flag
-         * that we have done so on the parent element once completed for the
-         * first time.
-         */
-        var bindKeypress = function() {
-          var keypressAttr = 'data-selection-model-keypress-bound'
-            , keypressBound;
-
-          // Look to see if cached on parent
-          if (element.parent().attr(keypressAttr)) {
-            return;
-          }
-
-          // We haven't bound the keypress to the parent element yet
-          // Do so now and then cache the attribute
-          $document.bind('keydown', handleKeypress);
-          element.parent().attr(keypressAttr, true);
-        };
-        bindKeypress();
-
-        /**
          * Item click handler
          *
          * Use the `ctrl` key to select/deselect while preserving the rest of
          * your selection. Note your your selection mode must be set to
          * `'multiple'` to allow for more than one selected item at a time. In
-         * single select mode you still must use the `ctrl` or `shitft` keys to
+         * single select mode you still must use the `ctrl` or `shift` keys to
          * deselect an item.
          *
          * The `shift` key allows you to select ranges of items at a time. Use
@@ -935,7 +650,6 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
          * checkbox is in.
          */
         var handleClick = function(event) {
-          isClick = true;
 
           /**
            * Set by the `selectionModelIgnore` directive
@@ -958,11 +672,11 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
           }
 
           var isCtrlKeyDown = event.ctrlKey || event.metaKey || isModeAdditive
-            , isShiftKeyDown = event.shiftKey
-            , target = event.target || event.srcElement
-            , isCheckboxClick = 'checkbox' === smType &&
-                'INPUT' === target.tagName &&
-                'checkbox' === target.type;
+              , isShiftKeyDown = event.shiftKey
+              , target = event.target || event.srcElement
+              , isCheckboxClick = 'checkbox' === smType &&
+              'INPUT' === target.tagName &&
+              'checkbox' === target.type;
 
           /**
            * Guard against label + checkbox clicks
@@ -976,7 +690,7 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
             var labelFor = angular.element(target).attr('for');
             if(labelFor) {
               var childInputs = element[0].getElementsByTagName('INPUT'), ix;
-              for(ix = childInputs.length; ix--;) {
+              for (ix = childInputs.length; ix--;) {
                 if(childInputs[ix].id === labelFor) {
                   return;
                 }
@@ -1025,6 +739,155 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
         };
 
         /**
+         * getBaseElement
+         *
+         * If we're using keyboard navigation we need to determine our outer base parent element to ensure we have focus
+         * before handling key presses.
+         *
+         * For tables if we're repeating over <tr> elements we can't simply use the parent of the current element,
+         * since we might be inside of a <tbody> or <thead>. Instead, search up until we find the base <table> element.
+         *
+         * For <li> elements we can find the <ol> or <li> elements.
+         *
+         * For <a> or similar elements we can find the <nav>.
+         */
+        function getBaseElement() {
+          var el = element
+            , currentTagName
+            , baseElement
+            , baseElementFound = false
+            , maxSearchDepth = 5;
+
+          // Recursively search up the parent stack until we find our parent <table>/<ul>/<ol>/<nav>
+          while (baseElementFound !== true && maxSearchDepth > 0) {
+            el = el.parent();
+            currentTagName = el[0] ? el[0].tagName : '';
+            if('TABLE' === currentTagName ||
+                'UL' === currentTagName ||
+                'OL' === currentTagName ||
+                'NAV' === currentTagName) {
+              baseElementFound = true;
+              baseElement = el[0];
+            }
+            maxSearchDepth--;
+          }
+
+          if(!baseElement) {
+            throw 'selection-model-use-keyboard-navigation must be used inside of a table, ul, ol, or nav element';
+          }
+
+          return baseElement;
+        }
+
+        var doesBaseElementHaveFocus = function() {
+          var currentlyFocusedElement = $document[0].activeElement
+            , baseElement = getBaseElement();
+
+          return currentlyFocusedElement === baseElement;
+        };
+
+        /**
+         * Key Press event handler
+         *
+         * Pressing up/down while selectionModelUseKeyboardNavigation is set to true will change your selection to the
+         * previous/next item in the visible list of items.
+         *
+         * If smMode is set to 'multiple', holding Shift will not deselect the previous item(s) so you can shift-press
+         * multiple rows.
+         *
+         */
+        var handleKeypress = function(event) {
+          var keyCode = event.keyCode
+            , keyPressed;
+
+          if(!doesBaseElementHaveFocus()) {
+            // Don't do anything if our base element is out of focus
+            return;
+          }
+
+          // Determine which key the user has pressed
+          // If not arrowUp, ArrowDown, or Enter: exit.
+          switch (keyCode) {
+            case (38):
+              keyPressed = 'arrowUp';
+              break;
+            case (40):
+              keyPressed = 'arrowDown';
+              break;
+            case (13):
+              keyPressed = 'enter';
+              break;
+            default:
+              return;
+          }
+
+          // If they've pressed the enter key, execute smOnEnter callback and exit
+          if(keyPressed === 'enter') {
+            scope.$eval(smOnEnterKeypress);
+            return;
+          }
+
+          // Prevent default scrolling behavior (scrolling the browser window)
+          // event.preventDefault();
+          var isShiftKeyDown = event.shiftKey;
+
+          var allItems = getAllVisibleItems()
+            , maxIx = allItems.length
+            , firstItem = selectionStack.peek(clickStackId) ? selectionStack.peek(clickStackId) : allItems[0]
+            , currentIx = allItems.indexOf(firstItem)
+            , nextItem;
+
+          // Ensure our firstItem is within the list of visible Items
+          if(currentIx > -1) {
+            if(keyPressed === 'arrowDown' && currentIx + 1 <= maxIx) {
+              // As long as next item isn't outside the top bounds of our list
+              nextItem = allItems[currentIx + 1];
+            } else if(keyPressed === 'arrowUp' && currentIx - 1 >= 0) {
+              // As long as next item isn't outside the bottom bounds of our list
+              nextItem = allItems[currentIx - 1];
+            }
+            if(nextItem) {
+              if(!isShiftKeyDown && isMultiMode) {
+                deselectAllItemsExcept(nextItem);
+                scope.$apply();
+              }
+
+              nextItem[selectedAttribute] = true;
+              selectionStack.push(clickStackId, nextItem);
+              scope.$apply();
+            }
+          }
+        };
+
+        /**
+         * Bind the document keydown event to our handleKeypress function.
+         * Since the parent element is not an input we have to use onkeydown
+         * on the $document itself.
+         *
+         * Only do this once per list of selection-model elements, so flag
+         * that we have done so on the parent element once completed for the
+         * first time.
+         */
+        var bindKeypress = function() {
+          var keypressAttr = 'data-selection-model-keypress-bound';
+
+          // Look to see if cached on parent
+          if(element.parent().attr(keypressAttr)) {
+            return;
+          }
+
+          // We haven't bound the keypress to the parent element yet
+          // Do so now and then cache the attribute
+          element.parent().attr(keypressAttr, true);
+
+          // Now bind our keypress event to the document
+          $document.on('keydown', handleKeypress);
+        };
+        if(smUseKeyboardNav) {
+          bindKeypress();
+        }
+
+        /**
          * Routine to keep the list of selected items up to date
          *
          * Adds/removes this item from `selectionModelSelectedItems`.
@@ -1044,7 +907,6 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
           }
         };
 
-        // Handle default clicks
         element.on('click', handleClick);
         if('checkbox' === smType) {
           var elCb = element.find('input');
@@ -1107,7 +969,7 @@ angular.module('matting-ly.selectionModel').directive('selectionModel', [
  * @package selectionModel
  */
 
-angular.module('matting-ly.selectionModel').provider('selectionModelOptions', [function() {
+angular.module('selectionModel').provider('selectionModelOptions', [function() {
   'use strict';
 
   var options = {
@@ -1115,7 +977,8 @@ angular.module('matting-ly.selectionModel').provider('selectionModelOptions', [f
     selectedClass: 'selected',
     type: 'basic',
     mode: 'single',
-    cleanupStrategy: 'none'
+    cleanupStrategy: 'none',
+    useKeyboardNavigation: false
   };
 
   this.set = function(userOpts) {
@@ -1135,7 +998,7 @@ angular.module('matting-ly.selectionModel').provider('selectionModelOptions', [f
 }]);
 
 
-angular.module('matting-ly.selectionModel').service('selectionStack', function() {
+angular.module('selectionModel').service('selectionStack', function() {
   'use strict';
   var exports = {}
     , maxSize = 1000
@@ -1174,7 +1037,7 @@ angular.module('matting-ly.selectionModel').service('selectionStack', function()
 
 /*jshint bitwise:false */
 
-angular.module('matting-ly.selectionModel').service('uuidGen', function() {
+angular.module('selectionModel').service('uuidGen', function() {
   'use strict';
   var exports = {};
   var uid = ['0', '0', '0'];
@@ -1203,7 +1066,6 @@ angular.module('matting-ly.selectionModel').service('uuidGen', function() {
   return exports;
 });
 
-var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:1-Math.pow(2*(1-e),2)/2},duScroll=angular.module("duScroll",["duScroll.scrollspy","duScroll.smoothScroll","duScroll.scrollContainer","duScroll.spyContext","duScroll.scrollHelpers"]).value("duScrollDuration",350).value("duScrollSpyWait",100).value("duScrollGreedy",!1).value("duScrollOffset",0).value("duScrollEasing",duScrollDefaultEasing).value("duScrollCancelOnEvents","scroll mousedown mousewheel touchmove keydown").value("duScrollBottomSpy",!1).value("duScrollActiveClass","active");"undefined"!=typeof module&&module&&module.exports&&(module.exports=duScroll),angular.module("duScroll.scrollHelpers",["duScroll.requestAnimation"]).run(["$window","$q","cancelAnimation","requestAnimation","duScrollEasing","duScrollDuration","duScrollOffset","duScrollCancelOnEvents",function(e,t,n,r,o,l,u,c){"use strict";var i={},a=function(e){return"undefined"!=typeof HTMLDocument&&e instanceof HTMLDocument||e.nodeType&&e.nodeType===e.DOCUMENT_NODE},s=function(e){return"undefined"!=typeof HTMLElement&&e instanceof HTMLElement||e.nodeType&&e.nodeType===e.ELEMENT_NODE},d=function(e){return s(e)||a(e)?e:e[0]};i.duScrollTo=function(t,n,r,o){var l;if(angular.isElement(t)?l=this.duScrollToElement:angular.isDefined(r)&&(l=this.duScrollToAnimated),l)return l.apply(this,arguments);var u=d(this);return a(u)?e.scrollTo(t,n):(u.scrollLeft=t,void(u.scrollTop=n))};var f,m;i.duScrollToAnimated=function(e,l,u,i){u&&!i&&(i=o);var a=this.duScrollLeft(),s=this.duScrollTop(),d=Math.round(e-a),p=Math.round(l-s),S=null,g=0,v=this,h=function(e){(!e||g&&e.which>0)&&(c&&v.unbind(c,h),n(f),m.reject(),f=null)};if(f&&h(),m=t.defer(),0===u||!d&&!p)return 0===u&&v.duScrollTo(e,l),m.resolve(),m.promise;var y=function(e){null===S&&(S=e),g=e-S;var t=g>=u?1:i(g/u);v.scrollTo(a+Math.ceil(d*t),s+Math.ceil(p*t)),1>t?f=r(y):(c&&v.unbind(c,h),f=null,m.resolve())};return v.duScrollTo(a,s),c&&v.bind(c,h),f=r(y),m.promise},i.duScrollToElement=function(e,t,n,r){var o=d(this);(!angular.isNumber(t)||isNaN(t))&&(t=u);var l=this.duScrollTop()+d(e).getBoundingClientRect().top-t;return s(o)&&(l-=o.getBoundingClientRect().top),this.duScrollTo(0,l,n,r)},i.duScrollLeft=function(t,n,r){if(angular.isNumber(t))return this.duScrollTo(t,this.duScrollTop(),n,r);var o=d(this);return a(o)?e.scrollX||document.documentElement.scrollLeft||document.body.scrollLeft:o.scrollLeft},i.duScrollTop=function(t,n,r){if(angular.isNumber(t))return this.duScrollTo(this.duScrollLeft(),t,n,r);var o=d(this);return a(o)?e.scrollY||document.documentElement.scrollTop||document.body.scrollTop:o.scrollTop},i.duScrollToElementAnimated=function(e,t,n,r){return this.duScrollToElement(e,t,n||l,r)},i.duScrollTopAnimated=function(e,t,n){return this.duScrollTop(e,t||l,n)},i.duScrollLeftAnimated=function(e,t,n){return this.duScrollLeft(e,t||l,n)},angular.forEach(i,function(e,t){angular.element.prototype[t]=e;var n=t.replace(/^duScroll/,"scroll");angular.isUndefined(angular.element.prototype[n])&&(angular.element.prototype[n]=e)})}]),angular.module("duScroll.polyfill",[]).factory("polyfill",["$window",function(e){"use strict";var t=["webkit","moz","o","ms"];return function(n,r){if(e[n])return e[n];for(var o,l=n.substr(0,1).toUpperCase()+n.substr(1),u=0;u<t.length;u++)if(o=t[u]+l,e[o])return e[o];return r}}]),angular.module("duScroll.requestAnimation",["duScroll.polyfill"]).factory("requestAnimation",["polyfill","$timeout",function(e,t){"use strict";var n=0,r=function(e,r){var o=(new Date).getTime(),l=Math.max(0,16-(o-n)),u=t(function(){e(o+l)},l);return n=o+l,u};return e("requestAnimationFrame",r)}]).factory("cancelAnimation",["polyfill","$timeout",function(e,t){"use strict";var n=function(e){t.cancel(e)};return e("cancelAnimationFrame",n)}]),angular.module("duScroll.spyAPI",["duScroll.scrollContainerAPI"]).factory("spyAPI",["$rootScope","$timeout","$window","$document","scrollContainerAPI","duScrollGreedy","duScrollSpyWait","duScrollBottomSpy","duScrollActiveClass",function(e,t,n,r,o,l,u,c,i){"use strict";var a=function(o){var a=!1,s=!1,d=function(){s=!1;var t,u=o.container,a=u[0],d=0;if("undefined"!=typeof HTMLElement&&a instanceof HTMLElement||a.nodeType&&a.nodeType===a.ELEMENT_NODE)d=a.getBoundingClientRect().top,t=Math.round(a.scrollTop+a.clientHeight)>=a.scrollHeight;else{var f=r[0].body.scrollHeight||r[0].documentElement.scrollHeight;t=Math.round(n.pageYOffset+n.innerHeight)>=f}var m,p,S,g,v,h,y=c&&t?"bottom":"top";for(g=o.spies,p=o.currentlyActive,S=void 0,m=0;m<g.length;m++)v=g[m],h=v.getTargetPosition(),h&&(c&&t||h.top+v.offset-d<20&&(l||-1*h.top+d)<h.height)&&(!S||S[y]<h[y])&&(S={spy:v},S[y]=h[y]);S&&(S=S.spy),p===S||l&&!S||(p&&(p.$element.removeClass(i),e.$broadcast("duScrollspy:becameInactive",p.$element,angular.element(p.getTargetElement()))),S&&(S.$element.addClass(i),e.$broadcast("duScrollspy:becameActive",S.$element,angular.element(S.getTargetElement()))),o.currentlyActive=S)};return u?function(){a?s=!0:(d(),a=t(function(){a=!1,s&&d()},u,!1))}:d},s={},d=function(e){var t=e.$id,n={spies:[]};return n.handler=a(n),s[t]=n,e.$on("$destroy",function(){f(e)}),t},f=function(e){var t=e.$id,n=s[t],r=n.container;r&&r.off("scroll",n.handler),delete s[t]},m=d(e),p=function(e){return s[e.$id]?s[e.$id]:e.$parent?p(e.$parent):s[m]},S=function(e){var t,n,r=e.$scope;if(r)return p(r);for(n in s)if(t=s[n],-1!==t.spies.indexOf(e))return t},g=function(e){for(;e.parentNode;)if(e=e.parentNode,e===document)return!0;return!1},v=function(e){var t=S(e);t&&(t.spies.push(e),t.container&&g(t.container)||(t.container&&t.container.off("scroll",t.handler),t.container=o.getContainer(e.$scope),t.container.on("scroll",t.handler).triggerHandler("scroll")))},h=function(t){var n=S(t);t===n.currentlyActive&&(e.$broadcast("duScrollspy:becameInactive",n.currentlyActive.$element),n.currentlyActive=null);var r=n.spies.indexOf(t);-1!==r&&n.spies.splice(r,1),t.$element=null};return{addSpy:v,removeSpy:h,createContext:d,destroyContext:f,getContextForScope:p}}]),angular.module("duScroll.scrollContainerAPI",[]).factory("scrollContainerAPI",["$document",function(e){"use strict";var t={},n=function(e,n){var r=e.$id;return t[r]=n,r},r=function(e){return t[e.$id]?e.$id:e.$parent?r(e.$parent):void 0},o=function(n){var o=r(n);return o?t[o]:e},l=function(e){var n=r(e);n&&delete t[n]};return{getContainerId:r,getContainer:o,setContainer:n,removeContainer:l}}]),angular.module("duScroll.smoothScroll",["duScroll.scrollHelpers","duScroll.scrollContainerAPI"]).directive("duSmoothScroll",["duScrollDuration","duScrollOffset","scrollContainerAPI",function(e,t,n){"use strict";return{link:function(r,o,l){o.on("click",function(o){if(l.href&&-1!==l.href.indexOf("#")||""!==l.duSmoothScroll){var u=l.href?l.href.replace(/.*(?=#[^\s]+$)/,"").substring(1):l.duSmoothScroll,c=document.getElementById(u)||document.getElementsByName(u)[0];if(c&&c.getBoundingClientRect){o.stopPropagation&&o.stopPropagation(),o.preventDefault&&o.preventDefault();var i=l.offset?parseInt(l.offset,10):t,a=l.duration?parseInt(l.duration,10):e,s=n.getContainer(r);s.duScrollToElement(angular.element(c),isNaN(i)?0:i,isNaN(a)?0:a)}}})}}}]),angular.module("duScroll.spyContext",["duScroll.spyAPI"]).directive("duSpyContext",["spyAPI",function(e){"use strict";return{restrict:"A",scope:!0,compile:function(t,n,r){return{pre:function(t,n,r,o){e.createContext(t)}}}}}]),angular.module("duScroll.scrollContainer",["duScroll.scrollContainerAPI"]).directive("duScrollContainer",["scrollContainerAPI",function(e){"use strict";return{restrict:"A",scope:!0,compile:function(t,n,r){return{pre:function(t,n,r,o){r.$observe("duScrollContainer",function(r){angular.isString(r)&&(r=document.getElementById(r)),r=angular.isElement(r)?angular.element(r):n,e.setContainer(t,r),t.$on("$destroy",function(){e.removeContainer(t)})})}}}}}]),angular.module("duScroll.scrollspy",["duScroll.spyAPI"]).directive("duScrollspy",["spyAPI","duScrollOffset","$timeout","$rootScope",function(e,t,n,r){"use strict";var o=function(e,t,n,r){angular.isElement(e)?this.target=e:angular.isString(e)&&(this.targetId=e),this.$scope=t,this.$element=n,this.offset=r};return o.prototype.getTargetElement=function(){return!this.target&&this.targetId&&(this.target=document.getElementById(this.targetId)||document.getElementsByName(this.targetId)[0]),this.target},o.prototype.getTargetPosition=function(){var e=this.getTargetElement();return e?e.getBoundingClientRect():void 0},o.prototype.flushTargetCache=function(){this.targetId&&(this.target=void 0)},{link:function(l,u,c){var i,a=c.ngHref||c.href;if(a&&-1!==a.indexOf("#")?i=a.replace(/.*(?=#[^\s]+$)/,"").substring(1):c.duScrollspy?i=c.duScrollspy:c.duSmoothScroll&&(i=c.duSmoothScroll),i){var s=n(function(){var n=new o(i,l,u,-(c.offset?parseInt(c.offset,10):t));e.addSpy(n),l.$on("$locationChangeSuccess",n.flushTargetCache.bind(n));var a=r.$on("$stateChangeSuccess",n.flushTargetCache.bind(n));l.$on("$destroy",function(){e.removeSpy(n),a()})},0,!1);l.$on("$destroy",function(){n.cancel(s)})}}}}]);
 /**
  * AngularJS fixed header scrollable table directive
  * @author Jason Watmore <jason@pointblankdevelopment.com.au> (http://jasonwatmore.com)
@@ -1286,6 +1148,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
         }
     }
 })();
+var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:1-Math.pow(2*(1-e),2)/2},duScroll=angular.module("duScroll",["duScroll.scrollspy","duScroll.smoothScroll","duScroll.scrollContainer","duScroll.spyContext","duScroll.scrollHelpers"]).value("duScrollDuration",350).value("duScrollSpyWait",100).value("duScrollGreedy",!1).value("duScrollOffset",0).value("duScrollEasing",duScrollDefaultEasing).value("duScrollCancelOnEvents","scroll mousedown mousewheel touchmove keydown").value("duScrollBottomSpy",!1).value("duScrollActiveClass","active");"undefined"!=typeof module&&module&&module.exports&&(module.exports=duScroll),angular.module("duScroll.scrollHelpers",["duScroll.requestAnimation"]).run(["$window","$q","cancelAnimation","requestAnimation","duScrollEasing","duScrollDuration","duScrollOffset","duScrollCancelOnEvents",function(e,t,n,r,o,l,u,c){"use strict";var i={},a=function(e){return"undefined"!=typeof HTMLDocument&&e instanceof HTMLDocument||e.nodeType&&e.nodeType===e.DOCUMENT_NODE},s=function(e){return"undefined"!=typeof HTMLElement&&e instanceof HTMLElement||e.nodeType&&e.nodeType===e.ELEMENT_NODE},d=function(e){return s(e)||a(e)?e:e[0]};i.duScrollTo=function(t,n,r,o){var l;if(angular.isElement(t)?l=this.duScrollToElement:angular.isDefined(r)&&(l=this.duScrollToAnimated),l)return l.apply(this,arguments);var u=d(this);return a(u)?e.scrollTo(t,n):(u.scrollLeft=t,void(u.scrollTop=n))};var f,m;i.duScrollToAnimated=function(e,l,u,i){u&&!i&&(i=o);var a=this.duScrollLeft(),s=this.duScrollTop(),d=Math.round(e-a),p=Math.round(l-s),S=null,g=0,v=this,h=function(e){(!e||g&&e.which>0)&&(c&&v.unbind(c,h),n(f),m.reject(),f=null)};if(f&&h(),m=t.defer(),0===u||!d&&!p)return 0===u&&v.duScrollTo(e,l),m.resolve(),m.promise;var y=function(e){null===S&&(S=e),g=e-S;var t=g>=u?1:i(g/u);v.scrollTo(a+Math.ceil(d*t),s+Math.ceil(p*t)),1>t?f=r(y):(c&&v.unbind(c,h),f=null,m.resolve())};return v.duScrollTo(a,s),c&&v.bind(c,h),f=r(y),m.promise},i.duScrollToElement=function(e,t,n,r){var o=d(this);(!angular.isNumber(t)||isNaN(t))&&(t=u);var l=this.duScrollTop()+d(e).getBoundingClientRect().top-t;return s(o)&&(l-=o.getBoundingClientRect().top),this.duScrollTo(0,l,n,r)},i.duScrollLeft=function(t,n,r){if(angular.isNumber(t))return this.duScrollTo(t,this.duScrollTop(),n,r);var o=d(this);return a(o)?e.scrollX||document.documentElement.scrollLeft||document.body.scrollLeft:o.scrollLeft},i.duScrollTop=function(t,n,r){if(angular.isNumber(t))return this.duScrollTo(this.duScrollLeft(),t,n,r);var o=d(this);return a(o)?e.scrollY||document.documentElement.scrollTop||document.body.scrollTop:o.scrollTop},i.duScrollToElementAnimated=function(e,t,n,r){return this.duScrollToElement(e,t,n||l,r)},i.duScrollTopAnimated=function(e,t,n){return this.duScrollTop(e,t||l,n)},i.duScrollLeftAnimated=function(e,t,n){return this.duScrollLeft(e,t||l,n)},angular.forEach(i,function(e,t){angular.element.prototype[t]=e;var n=t.replace(/^duScroll/,"scroll");angular.isUndefined(angular.element.prototype[n])&&(angular.element.prototype[n]=e)})}]),angular.module("duScroll.polyfill",[]).factory("polyfill",["$window",function(e){"use strict";var t=["webkit","moz","o","ms"];return function(n,r){if(e[n])return e[n];for(var o,l=n.substr(0,1).toUpperCase()+n.substr(1),u=0;u<t.length;u++)if(o=t[u]+l,e[o])return e[o];return r}}]),angular.module("duScroll.requestAnimation",["duScroll.polyfill"]).factory("requestAnimation",["polyfill","$timeout",function(e,t){"use strict";var n=0,r=function(e,r){var o=(new Date).getTime(),l=Math.max(0,16-(o-n)),u=t(function(){e(o+l)},l);return n=o+l,u};return e("requestAnimationFrame",r)}]).factory("cancelAnimation",["polyfill","$timeout",function(e,t){"use strict";var n=function(e){t.cancel(e)};return e("cancelAnimationFrame",n)}]),angular.module("duScroll.spyAPI",["duScroll.scrollContainerAPI"]).factory("spyAPI",["$rootScope","$timeout","$window","$document","scrollContainerAPI","duScrollGreedy","duScrollSpyWait","duScrollBottomSpy","duScrollActiveClass",function(e,t,n,r,o,l,u,c,i){"use strict";var a=function(o){var a=!1,s=!1,d=function(){s=!1;var t,u=o.container,a=u[0],d=0;if("undefined"!=typeof HTMLElement&&a instanceof HTMLElement||a.nodeType&&a.nodeType===a.ELEMENT_NODE)d=a.getBoundingClientRect().top,t=Math.round(a.scrollTop+a.clientHeight)>=a.scrollHeight;else{var f=r[0].body.scrollHeight||r[0].documentElement.scrollHeight;t=Math.round(n.pageYOffset+n.innerHeight)>=f}var m,p,S,g,v,h,y=c&&t?"bottom":"top";for(g=o.spies,p=o.currentlyActive,S=void 0,m=0;m<g.length;m++)v=g[m],h=v.getTargetPosition(),h&&(c&&t||h.top+v.offset-d<20&&(l||-1*h.top+d)<h.height)&&(!S||S[y]<h[y])&&(S={spy:v},S[y]=h[y]);S&&(S=S.spy),p===S||l&&!S||(p&&(p.$element.removeClass(i),e.$broadcast("duScrollspy:becameInactive",p.$element,angular.element(p.getTargetElement()))),S&&(S.$element.addClass(i),e.$broadcast("duScrollspy:becameActive",S.$element,angular.element(S.getTargetElement()))),o.currentlyActive=S)};return u?function(){a?s=!0:(d(),a=t(function(){a=!1,s&&d()},u,!1))}:d},s={},d=function(e){var t=e.$id,n={spies:[]};return n.handler=a(n),s[t]=n,e.$on("$destroy",function(){f(e)}),t},f=function(e){var t=e.$id,n=s[t],r=n.container;r&&r.off("scroll",n.handler),delete s[t]},m=d(e),p=function(e){return s[e.$id]?s[e.$id]:e.$parent?p(e.$parent):s[m]},S=function(e){var t,n,r=e.$scope;if(r)return p(r);for(n in s)if(t=s[n],-1!==t.spies.indexOf(e))return t},g=function(e){for(;e.parentNode;)if(e=e.parentNode,e===document)return!0;return!1},v=function(e){var t=S(e);t&&(t.spies.push(e),t.container&&g(t.container)||(t.container&&t.container.off("scroll",t.handler),t.container=o.getContainer(e.$scope),t.container.on("scroll",t.handler).triggerHandler("scroll")))},h=function(t){var n=S(t);t===n.currentlyActive&&(e.$broadcast("duScrollspy:becameInactive",n.currentlyActive.$element),n.currentlyActive=null);var r=n.spies.indexOf(t);-1!==r&&n.spies.splice(r,1),t.$element=null};return{addSpy:v,removeSpy:h,createContext:d,destroyContext:f,getContextForScope:p}}]),angular.module("duScroll.scrollContainerAPI",[]).factory("scrollContainerAPI",["$document",function(e){"use strict";var t={},n=function(e,n){var r=e.$id;return t[r]=n,r},r=function(e){return t[e.$id]?e.$id:e.$parent?r(e.$parent):void 0},o=function(n){var o=r(n);return o?t[o]:e},l=function(e){var n=r(e);n&&delete t[n]};return{getContainerId:r,getContainer:o,setContainer:n,removeContainer:l}}]),angular.module("duScroll.smoothScroll",["duScroll.scrollHelpers","duScroll.scrollContainerAPI"]).directive("duSmoothScroll",["duScrollDuration","duScrollOffset","scrollContainerAPI",function(e,t,n){"use strict";return{link:function(r,o,l){o.on("click",function(o){if(l.href&&-1!==l.href.indexOf("#")||""!==l.duSmoothScroll){var u=l.href?l.href.replace(/.*(?=#[^\s]+$)/,"").substring(1):l.duSmoothScroll,c=document.getElementById(u)||document.getElementsByName(u)[0];if(c&&c.getBoundingClientRect){o.stopPropagation&&o.stopPropagation(),o.preventDefault&&o.preventDefault();var i=l.offset?parseInt(l.offset,10):t,a=l.duration?parseInt(l.duration,10):e,s=n.getContainer(r);s.duScrollToElement(angular.element(c),isNaN(i)?0:i,isNaN(a)?0:a)}}})}}}]),angular.module("duScroll.spyContext",["duScroll.spyAPI"]).directive("duSpyContext",["spyAPI",function(e){"use strict";return{restrict:"A",scope:!0,compile:function(t,n,r){return{pre:function(t,n,r,o){e.createContext(t)}}}}}]),angular.module("duScroll.scrollContainer",["duScroll.scrollContainerAPI"]).directive("duScrollContainer",["scrollContainerAPI",function(e){"use strict";return{restrict:"A",scope:!0,compile:function(t,n,r){return{pre:function(t,n,r,o){r.$observe("duScrollContainer",function(r){angular.isString(r)&&(r=document.getElementById(r)),r=angular.isElement(r)?angular.element(r):n,e.setContainer(t,r),t.$on("$destroy",function(){e.removeContainer(t)})})}}}}}]),angular.module("duScroll.scrollspy",["duScroll.spyAPI"]).directive("duScrollspy",["spyAPI","duScrollOffset","$timeout","$rootScope",function(e,t,n,r){"use strict";var o=function(e,t,n,r){angular.isElement(e)?this.target=e:angular.isString(e)&&(this.targetId=e),this.$scope=t,this.$element=n,this.offset=r};return o.prototype.getTargetElement=function(){return!this.target&&this.targetId&&(this.target=document.getElementById(this.targetId)||document.getElementsByName(this.targetId)[0]),this.target},o.prototype.getTargetPosition=function(){var e=this.getTargetElement();return e?e.getBoundingClientRect():void 0},o.prototype.flushTargetCache=function(){this.targetId&&(this.target=void 0)},{link:function(l,u,c){var i,a=c.ngHref||c.href;if(a&&-1!==a.indexOf("#")?i=a.replace(/.*(?=#[^\s]+$)/,"").substring(1):c.duScrollspy?i=c.duScrollspy:c.duSmoothScroll&&(i=c.duSmoothScroll),i){var s=n(function(){var n=new o(i,l,u,-(c.offset?parseInt(c.offset,10):t));e.addSpy(n),l.$on("$locationChangeSuccess",n.flushTargetCache.bind(n));var a=r.$on("$stateChangeSuccess",n.flushTargetCache.bind(n));l.$on("$destroy",function(){e.removeSpy(n),a()})},0,!1);l.$on("$destroy",function(){n.cancel(s)})}}}}]);
 (function(angular) {
 
     ProjectsController.$inject = ['$scope', '$http', '$state', '$timeout'];
@@ -1387,99 +1250,6 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular.module('matting-ly')
         .controller('AboutController', AboutController);
-})(window.angular);
-(function(angular) {
-
-    HeaderController.$inject = ['$scope', 'AuthService'];
-    function HeaderController ($scope, AuthService) {
-        $scope.model = {
-            stateNavs: [],
-            isLoggedIn: false
-        };
-
-        $scope.init = function() {
-            $scope.model.stateNavs = [
-                {
-                    'sref': 'public.home',
-                    'text': 'Home'
-                },
-                {
-                    'sref': 'public.about',
-                    'text': 'About'
-                },
-                {
-                    'sref': 'public.projects',
-                    'text': 'Projects'
-                }
-            ];
-            $scope.model.isLoggedIn = AuthService.returnFullLoginStatus();
-        };
-    }
-
-    angular.module('matting-ly')
-        .controller('HeaderController', HeaderController);
-
-})(window.angular);
-(function(angular) {
-
-    FooterController.$inject = ['$scope'];
-    function FooterController($scope) {
-        $scope.model = {
-            socialNavs: [],
-            poweredByLines: [],
-            poweredBy: ''
-        };
-        $scope.init = function() {
-            $scope.model.socialNavs = [
-                {
-                    alt: 'LinkedIn',
-                    img_src: '/assets/images/social_logos/linkedin.png',
-                    href: 'https://linkedin.com/in/zanemattingly'
-                },
-                {
-                    alt: 'Github',
-                    img_src: '/assets/images/social_logos/github.png',
-                    href: 'https://github.com/zmattingly'
-                },
-                {
-                    alt: 'Instagram',
-                    img_src: '/assets/images/social_logos/instagram.png',
-                    href: 'https://instagram.com/zmattingly'
-                },
-                {
-                    alt: 'Twitter',
-                    img_src: '/assets/images/social_logos/twitter.png',
-                    href: 'https://twitter.com/z_mattingly'
-                }
-            ];
-            $scope.model.poweredByLines = [
-                "viewers like you",
-                "the efforts of a small, earnest bird",
-                "curious electromagnetic behavior",
-                "a chest-mounted arc reactor",
-                "thirteen tubas sounding in rhythm",
-                "IMMENSE hydraulic pressure",
-                "pressurized, super-heated steam",
-                "a power-generating stationary bike",
-                "bees. Hundreds of bees",
-                "a potato",
-                "the love inside you",
-                "our insect overlords",
-                "funky yeasts",
-                "three hundred dogs synced in parallel",
-                "static electricity",
-                "the harnessed gravity of a black hole",
-            ];
-            $scope.model.poweredBy = $scope.getPoweredBy();
-        };
-        $scope.getPoweredBy = function() {
-            return $scope.model.poweredByLines[Math.floor(Math.random()*($scope.model.poweredByLines.length - 1))];
-        };
-    }
-
-    angular.module('matting-ly')
-        .controller('FooterController', FooterController);
-
 })(window.angular);
 (function(angular) {
 
@@ -1694,121 +1464,95 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 })(window.angular);
 (function(angular) {
 
-    yesNo.$inject = [];
-    function yesNo() {
-        return function (input) {
-            return input ? 'Yes' : 'No';
+    HeaderController.$inject = ['$scope', 'AuthService'];
+    function HeaderController ($scope, AuthService) {
+        $scope.model = {
+            stateNavs: [],
+            isLoggedIn: false
         };
-    }
 
-    angular.module("matting-ly")
-        .filter("yesNo", yesNo)
-    ;
-
-})(window.angular);
-(function(angular) {
-
-    whenFocus.$inject = ['$timeout'];
-    function whenFocus($timeout) {
-        return {
-            scope: {
-                whenFocus: '='
-            },
-            link: function (scope, element, attrs) {
-                scope.$watch('whenFocus', function (shouldFocus) {
-                    if (shouldFocus) {
-                        $timeout(function () {
-                            element[0].focus();
-                        })
-                    }
-                })
-            },
+        $scope.init = function() {
+            $scope.model.stateNavs = [
+                {
+                    'sref': 'public.home',
+                    'text': 'Home'
+                },
+                {
+                    'sref': 'public.about',
+                    'text': 'About'
+                },
+                {
+                    'sref': 'public.projects',
+                    'text': 'Projects'
+                }
+            ];
+            $scope.model.isLoggedIn = AuthService.returnFullLoginStatus();
         };
-    }
-
-   angular.module('matting-ly')
-        .directive('whenFocus', whenFocus);
-
-})(window.angular);
-(function(angular) {
-
-    trust.$inject = ['$sce'];
-    function trust($sce) {
-        return function(htmlCode) {
-            return $sce.trustAsHtml(htmlCode);
-        }
-    }
-
-    angular.module("matting-ly")
-        .filter("trust", trust);
-
-})(window.angular);
-(function(angular) {
-
-    delayDisplayTilImageLoaded.$inject = [];
-    function delayDisplayTilImageLoaded() {
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope, element, attrs) {
-                element.addClass("ng-hide");
-                var image = new Image();
-                image.onload = function () {
-                    scope.$apply(function () {
-                        element.removeClass("ng-hide");
-                    });
-                };
-                image.src = attrs.delayDisplayTilImageLoaded;
-            }
-        }
     }
 
     angular.module('matting-ly')
-        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded);
-
-}(window.angular));
-(function(angular) {
-
-    delayClassTilImageLoaded.$inject = [];
-    function delayClassTilImageLoaded() {
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope, element, attrs) {
-                var image = new Image();
-                image.onload = function() {
-                    scope.$apply(function () {
-                        element.addClass(attrs.delayedClasses);
-                        // element.addClass('animated');
-                        // element.addClass('fadeIn');
-                    });
-                };
-                image.src = attrs.delayClassTilImageLoaded;
-           }
-       }
-    }
-
-   angular.module('matting-ly')
-        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded);
+        .controller('HeaderController', HeaderController);
 
 })(window.angular);
 (function(angular) {
 
-    backButton.$inject = ['$window'];
-    function backButton($window) {
-        return {
-            restrict: 'A',
-            scope: {},
-            link: function(scope, element, attrs) {
-                element.on('click', function() {
-                    $window.history.back();
-                });
-            },
+    FooterController.$inject = ['$scope'];
+    function FooterController($scope) {
+        $scope.model = {
+            socialNavs: [],
+            poweredByLines: [],
+            poweredBy: ''
+        };
+        $scope.init = function() {
+            $scope.model.socialNavs = [
+                {
+                    alt: 'LinkedIn',
+                    img_src: '/assets/images/social_logos/linkedin.png',
+                    href: 'https://linkedin.com/in/zanemattingly'
+                },
+                {
+                    alt: 'Github',
+                    img_src: '/assets/images/social_logos/github.png',
+                    href: 'https://github.com/zmattingly'
+                },
+                {
+                    alt: 'Instagram',
+                    img_src: '/assets/images/social_logos/instagram.png',
+                    href: 'https://instagram.com/zmattingly'
+                },
+                {
+                    alt: 'Twitter',
+                    img_src: '/assets/images/social_logos/twitter.png',
+                    href: 'https://twitter.com/z_mattingly'
+                }
+            ];
+            $scope.model.poweredByLines = [
+                "viewers like you",
+                "the efforts of a small, earnest bird",
+                "curious electromagnetic behavior",
+                "a chest-mounted arc reactor",
+                "thirteen tubas sounding in rhythm",
+                "IMMENSE hydraulic pressure",
+                "pressurized, super-heated steam",
+                "a power-generating stationary bike",
+                "bees. Hundreds of bees",
+                "a potato",
+                "the love inside you",
+                "our insect overlords",
+                "funky yeasts",
+                "three hundred dogs synced in parallel",
+                "static electricity",
+                "the harnessed gravity of a black hole",
+            ];
+            $scope.model.poweredBy = $scope.getPoweredBy();
+        };
+        $scope.getPoweredBy = function() {
+            return $scope.model.poweredByLines[Math.floor(Math.random()*($scope.model.poweredByLines.length - 1))];
         };
     }
 
-   angular.module('matting-ly')
-        .directive('backButton', backButton);
+    angular.module('matting-ly')
+        .controller('FooterController', FooterController);
 
 })(window.angular);
 (function(angular) {
@@ -1983,5 +1727,124 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular.module('matting-ly')
         .factory('AuthService', AuthService);
+
+})(window.angular);
+(function(angular) {
+
+    yesNo.$inject = [];
+    function yesNo() {
+        return function (input) {
+            return input ? 'Yes' : 'No';
+        };
+    }
+
+    angular.module("matting-ly")
+        .filter("yesNo", yesNo)
+    ;
+
+})(window.angular);
+(function(angular) {
+
+    whenFocus.$inject = ['$timeout'];
+    function whenFocus($timeout) {
+        return {
+            scope: {
+                whenFocus: '='
+            },
+            link: function (scope, element, attrs) {
+                scope.$watch('whenFocus', function (shouldFocus) {
+                    if (shouldFocus) {
+                        $timeout(function () {
+                            element[0].focus();
+                        })
+                    }
+                })
+            },
+        };
+    }
+
+   angular.module('matting-ly')
+        .directive('whenFocus', whenFocus);
+
+})(window.angular);
+(function(angular) {
+
+    trust.$inject = ['$sce'];
+    function trust($sce) {
+        return function(htmlCode) {
+            return $sce.trustAsHtml(htmlCode);
+        }
+    }
+
+    angular.module("matting-ly")
+        .filter("trust", trust);
+
+})(window.angular);
+(function(angular) {
+
+    delayDisplayTilImageLoaded.$inject = [];
+    function delayDisplayTilImageLoaded() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                element.addClass("ng-hide");
+                var image = new Image();
+                image.onload = function () {
+                    scope.$apply(function () {
+                        element.removeClass("ng-hide");
+                    });
+                };
+                image.src = attrs.delayDisplayTilImageLoaded;
+            }
+        }
+    }
+
+    angular.module('matting-ly')
+        .directive('delayDisplayTilImageLoaded', delayDisplayTilImageLoaded);
+
+}(window.angular));
+(function(angular) {
+
+    delayClassTilImageLoaded.$inject = [];
+    function delayClassTilImageLoaded() {
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope, element, attrs) {
+                var image = new Image();
+                image.onload = function() {
+                    scope.$apply(function () {
+                        element.addClass(attrs.delayedClasses);
+                        // element.addClass('animated');
+                        // element.addClass('fadeIn');
+                    });
+                };
+                image.src = attrs.delayClassTilImageLoaded;
+           }
+       }
+    }
+
+   angular.module('matting-ly')
+        .directive('delayClassTilImageLoaded', delayClassTilImageLoaded);
+
+})(window.angular);
+(function(angular) {
+
+    backButton.$inject = ['$window'];
+    function backButton($window) {
+        return {
+            restrict: 'A',
+            scope: {},
+            link: function(scope, element, attrs) {
+                element.on('click', function() {
+                    $window.history.back();
+                });
+            },
+        };
+    }
+
+   angular.module('matting-ly')
+        .directive('backButton', backButton);
 
 })(window.angular);

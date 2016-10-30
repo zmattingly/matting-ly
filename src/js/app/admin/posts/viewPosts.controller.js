@@ -29,6 +29,15 @@
                     $scope.model.postsHaveLoaded = true;
                     $scope.model.allPosts = data;
                     // Auto-select first element
+                    $scope.model.allPosts = $scope.model.allPosts.sort(function(a, b) {
+                        if (a.date > b.date) {
+                            return -1;
+                        } else if (a.date < b.date) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    });
                     $scope.model.allPosts[0].selected = true;
                 })
                 .error(function(data) {

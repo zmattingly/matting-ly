@@ -9,7 +9,8 @@
                         <div class="heading-editable">
                             <h2 ng-hide="editingHeading" ng-click="editingHeading = true">{{ model.post.heading }}</h2>
                             <form ng-show="editingHeading" ng-submit="editingHeading = false">
-                                <input ng-model="model.post.heading" when-focus="editingHeading" ng-blur="editingHeading = false" class="form-control" />
+                                <input ng-model="model.post.heading" when-focus="editingHeading" ng-blur="editingHeading = false"
+                                       class="form-control" ng-required="true" />
                             </form>
                         </div>
 
@@ -18,9 +19,14 @@
                             <form class="form-inline" ng-show="editingDate" ng-submit="editingDate = false">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" uib-datepicker-popup="{{model.defaultDateFormat}}" is-open="model.datePickerOpen" ng-model="model.post.date" ng-required="true" date-options="{{model.dateOptions}}" alt-input-formats="{{model.formats}}">
+                                        <input type="text" class="form-control" uib-datepicker-popup="{{model.defaultDateFormat}}"
+                                               is-open="model.datePickerOpen" ng-model="model.post.date"
+                                               ng-required="true" date-options="{{model.dateOptions}}"
+                                               alt-input-formats="{{model.formats}}">
                                         <span class="input-group-btn">
-                                            <button type="button" class="btn btn-default" ng-click="datePickerOpen()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                            <button type="button" class="btn btn-default" ng-click="datePickerOpen()">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
                                         </span>
                                     </div>
                                 </div>
@@ -29,9 +35,13 @@
                     </header>
 
                     <div class="content-editable">
-                        <div ng-hide="editingContent" ng-click="editingContent = true" class="entry" ng-bind-html="model.post.content | trust"></div>
+                        <div ng-hide="editingContent" ng-click="editingContent = true" class="entry"
+                             ng-bind-html="model.post.content | trust">
+                        </div>
                         <div ng-show="editingContent">
-                            <textarea ng-blur="editingContent = false" ui-tinymce="defaultTinymceOptions" ng-model="model.post.content" tabindex="0"></textarea>
+                            <textarea ng-blur="editingContent = false" ui-tinymce="defaultTinymceOptions"
+                                      ng-model="model.post.content" tabindex="0" ng-required="true">
+                            </textarea>
                         </div>
                     </div>
 
@@ -40,14 +50,17 @@
                             <p class="pull-left" ng-hide="editingPublished" ng-click="editingPublished = true">Published? {{ model.post.published | yesNo }}</p>
                             <form class="pull-left" ng-show="editingPublished" ng-submit="editingPublished = false">
                                 <div class="checkbox">
-                                    <label>Published? <input type="checkbox" ng-model="model.post.published" when-focus="editingPublished" ng-blur="editingPublished = false" /></label>
+                                    <label>Published? <input type="checkbox" ng-model="model.post.published" when-focus="editingPublished"
+                                                             ng-blur="editingPublished = false" />
+                                    </label>
                                 </div>
                             </form>
                         </div>
                         <div class="author-editable">
                             <p class="pull-right" ng-hide="editingAuthor" ng-click="editingAuthor = true"> - {{ model.post.author }}</p>
                             <form ng-show="editingAuthor" ng-submit="editingAuthor = false">
-                                <p class="pull-right"> - <input ng-model="model.post.author" when-focus="editingAuthor" ng-blur="editingAuthor = false" /></p>
+                                <p class="pull-right"> - <input ng-model="model.post.author" when-focus="editingAuthor"
+                                                                ng-blur="editingAuthor = false" ng-required="true" /></p>
                             </form>
                         </div>
                     </footer>
