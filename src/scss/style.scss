@@ -198,6 +198,17 @@ html {
             margin-bottom: 5px;
         }
 
+        a {
+          color: #337AB7;
+        }
+        a:hover {
+          text-decoration: none;
+        }
+        a:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
         .entry {
             ul {
                 margin-left: 40px;
@@ -214,7 +225,7 @@ html {
     .container {
         padding: 0;
         a {
-            color: lighten($base-black, 15%);
+            color: lighten($base-black, 20%);
         }
         img {
             height: 32px;
@@ -228,7 +239,7 @@ html {
             line-height: 48px;
         }
         .powered-by {
-
+            color: lighten($base-black, 5%);
             @include respond-to(tiny-screens) {
                 text-align: left;
                 line-height: 24px;
@@ -236,6 +247,9 @@ html {
             @include respond-to(large-screens) {
                 text-align: right;
                 line-height: 48px;
+            }
+            a:hover {
+                text-decoration: underline;
             }
         }
 

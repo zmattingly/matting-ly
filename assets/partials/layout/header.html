@@ -6,10 +6,10 @@
                     <a class="eye" href uib-dropdown-toggle><span class="glyphicon glyphicon-eye-open" /></a>
                     <ul uib-dropdown-menu>
                         <li>
-                            <a class="posts" ui-sref="admin.viewPosts" ui-sref-active="active"><span class="glyphicon glyphicon-home"></span> Posts</a>
+                            <a class="posts" ui-sref="admin.viewPosts" ui-sref-opts="{reload: true}" ui-sref-active="active"><span class="glyphicon glyphicon-home"></span> Posts</a>
                         </li>
                         <li>
-                            <a class="bio" ui-sref="admin.editBio" ui-sref-active="active"><span class="glyphicon glyphicon-user"></span> Bio</a>
+                            <a class="bio" ui-sref="admin.editBio" ui-sref-opts="{reload: true}" ui-sref-active="active"><span class="glyphicon glyphicon-user"></span> Bio</a>
                         </li>
                         <li class="divider"></li>
                         <li>
