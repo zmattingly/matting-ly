@@ -14,7 +14,7 @@
             // Give us a half-sec to check out the nifty spinner
             setTimeout(function() {
                 $scope.getPosts();
-            }, 500)
+            }, 500);
         };
 
         $scope.selectAndGoToPost = function() {

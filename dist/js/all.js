@@ -45,7 +45,7 @@
             // Give us a half-sec to check out the nifty spinner
             setTimeout(function() {
                 $scope.getPosts();
-            }, 500)
+            }, 500);
         };
 
         $scope.selectAndGoToPost = function() {
@@ -306,213 +306,254 @@
 
     angular.module('matting-ly.selectionTable', [
         'selectionModel',            // angular-selection-model - zmattingly forked version
-        'anguFixedHeaderTable'       // angu-fixed-header-table
-        //"mattingly/selectionTable/template/selectionTable.html"
-    ]).directive('selectionTable', [function() {
+        'anguFixedHeaderTable',       // angu-fixed-header-table
+        "mattingly/selectionTable/template/selectionTable.html"
+    ]);
 
-            var controller = function () {
-                var vm = this;
+    function selectionTable() {
 
-                init();
-                function init() {
-                    console.log('useKeyboardSelection', vm.useKeyboardNavigation);
-                    vm.isFocused = false;
+        var controller = function () {
+            var vm = this;
 
-                    vm.data = [];
-                    vm.columns = [];
-                    vm.headers = [];
-                    vm.reverse = true;
-                    vm.orderby = null;
+            init();
+            function init() {
+                vm.isFocused = false;
 
-                    vm.selectedItems = [];
+                vm.data = [];
+                vm.columns = [];
+                vm.headers = [];
 
-                    // Default to 'multiple' selection mode if we weren't passed one
-                    if (!vm.selectionMode) {
-                        vm.selectionMode = "'multiple'";
-                    }
+                vm.reverse = true;
+                vm.orderby = null;
 
-                    if (!vm.emptyDataString) {
-                        vm.emptyDataString = "No Results Found";
-                    }
+                vm.selectedItems = [];
 
-                    if (!vm.menuOptions) {
-                        vm.menuOptions = [];
-                    }
-
-                    if (!vm.onChange) {
-                        vm.onChange = function() {};
-                    }
-
-                    if (vm.onEnterKeypress && !vm.useKeyboardNavigation) {
-                        throw 'onEnterKeypress must be used with useKeyboardNavigation';
-                    }
+                // Default to 'multiple' selection mode if we weren't passed one
+                if (!vm.selectionMode) {
+                    vm.selectionMode = "'multiple'";
                 }
 
-                vm.sort = function (key) {
-                    vm.reverse = (vm.orderby === key) ? !vm.reverse : false;
-                    vm.orderby = key;
-                };
-
-                vm.getRowCols = function (row) {
-                    var orderedColumns = [];
-                    vm.columns.forEach(function (column) {
-                        orderedColumns.push(
-                            {
-                                'value': column.key.split('.').reduce(index, row), // See function index() below
-                                'filter': column.filter,
-                                'prepend': column.prepend,
-                                'append': column.append
-                            }
-                        );
-
-                    });
-                    return orderedColumns;
-                };
-                // http://stackoverflow.com/questions/6393943/convert-javascript-string-in-dot-notation-into-an-object-reference
-                function index(obj, i) {
-                    return obj[i]
+                if (!vm.emptyDataString) {
+                    vm.emptyDataString = "No Results Found";
                 }
-            };
 
-            var link = function (scope, elem, attrs, ngModelController) {
-
-                // When the contents of ngModel change, assign the data to our
-                // vm.data property for use in templates
-                ngModelController.$render = function () {
-                    scope.vm.data = ngModelController.$modelValue;
-                    scope.vm.orderby = scope.vm.initialOrderBy;
-                };
-
-                var ths = elem.find('thead').find('tr').children();
-
-
-                for (var i = 0; i < ths.length; i++) {
-                    var th = ths[i];
-
-                    scope.vm.columns.push({
-                        key: th.hasAttribute('key') ? th.getAttribute('key') : null,
-                        filter: th.hasAttribute('filter') ? th.getAttribute('filter') : null,
-                        prepend: th.hasAttribute('prepend') ? th.getAttribute('prepend') : null,
-                        append: th.hasAttribute('append') ? th.getAttribute('append') : null
-                    });
-                    scope.vm.headers.push({
-                        key: th.hasAttribute('key') ? th.getAttribute('key') : null,
-                        value: th.innerText
-                    });
+                if (!vm.menuOptions) {
+                    vm.menuOptions = [];
                 }
-            };
 
-            return {
-                restrict: 'E',
-                scope: {
-                    loading: '=',
-                    dataHasLoaded: '=',
-                    onChange: '=?',
-                    maxTableHeight: '@',
-                    selectionMode: '@',
-                    emptyDataString: '=',
-                    selectedItems: '=?',
-                    initialOrderBy: '@',
-                    useKeyboardNavigation: '=?',
-                    onEnterKeypress: '=?'
-                },
-                require: 'ngModel',
-                link: link,
-                controller: controller,
-                controllerAs: 'vm',
-                bindToController: true,
-                // TODO: Determine why $templateCache version of this doesn't load the selection-model properly
-                templateUrl: '/assets/partials/directives/matting-ly-selectiontable.html',
-                //templateUrl: 'mattingly/selectionTable/template/selectionTable.html',
-                transclude: true
-            };
-    }]).directive('selectionTableColumn', [
-        function () {
-            var link = function (scope, elem, attrs, selectorTableController, transclude) {
+                // if (!vm.focusWhen) {
+                //     vm.focusWhen = "'vm.data.length'";
+                // }
 
-                transclude(scope, function (content) {
-                    // Create TH with the same attributes as the <header> elements
-                    var thString;
+                if (!vm.onChange) {
+                    vm.onChange = function () {};
+                }
 
-                    // TODO: Could this be handled better using $interpolate?
-                    thString = '<th';
-                    thString += ' key="' + scope.key + '"';
-                    thString += ' filter="' + scope.filter + '"'
-                    if (scope.append) {
-                        thString += ' append="' + scope.append + '"';
-                    }
-                    if (scope.prepend) {
-                        thString += ' prepend="' + scope.prepend + '"';
-                    }
-                    thString += '>';
-                    thString += content.html();
-                    thString += '</th>';
-
-                    var th = angular.element(thString);
-
-                    // On header click, call to parent controller's sort function with our key
-                    th.on('click', function () {
-                        scope.$apply(function () {
-                            selectorTableController.sort(scope.key);
-                        });
-                    });
-
-                    elem.replaceWith(th);
-                });
-            };
-
-            return {
-                restrict: 'E',
-                transclude: true,
-                require: '^selectionTable',
-                scope: {
-                    key: '@',
-                    filter: '@',
-                    append: '@',
-                    prepend: '@'
-                },
-                link: link
+                if (vm.onEnterKeypress && !vm.useKeyboardNavigation) {
+                    throw 'onEnterKeypress must be used with useKeyboardNavigation';
+                }
             }
-    }]).filter('meta', ['$filter',
-        function ($filter) {
-            return function(value, filterSpec) {
-                var args = filterSpec.split(':');
-                var filterName = args.shift() || "filter";
-                if (filterName === 'undefined') {
-                    filterName = "filter";
-                }
-                var filter = $filter(filterName);
-                args.unshift(value);
-                return filter.apply(null, args);
+
+            vm.sort = function (key) {
+                vm.reverse = (vm.orderby === key) ? !vm.reverse : false;
+                vm.orderby = key;
             };
-    }]);
+
+            vm.getRowCols = function (row) {
+                var orderedColumns = [];
+                vm.columns.forEach(function (column) {
+                    orderedColumns.push(
+                        {
+                            'value': column.key.split('.').reduce(index, row), // See function index() below
+                            'filter': column.filter,
+                            'prepend': column.prepend,
+                            'append': column.append
+                        }
+                    );
+
+                });
+                return orderedColumns;
+            };
+            // http://stackoverflow.com/questions/6393943/convert-javascript-string-in-dot-notation-into-an-object-reference
+            function index(obj, i) {
+                return obj[i]
+            }
+        };
+
+        var link = function (scope, elem, attrs, ngModelController) {
+            // When the contents of ngModel change, assign the data to our
+            // vm.data property for use in templates
+            ngModelController.$render = function () {
+                scope.vm.data = ngModelController.$modelValue;
+                scope.vm.orderby = scope.vm.initialOrderBy;
+            };
+
+            angular.element(elem[0].querySelectorAll('tbody')).css({
+                'max-height': scope.vm.maxTableHeight ? scope.vm.maxTableHeight + 'px' : 'inherit',
+            });
+
+            var ths = elem.find('thead').find('tr').children();
+
+            for (var i = 0; i < ths.length; i++) {
+                var th = ths[i];
+
+                scope.vm.columns.push({
+                    key: th.hasAttribute('key') ? th.getAttribute('key') : null,
+                    filter: th.hasAttribute('filter') ? th.getAttribute('filter') : null,
+                    prepend: th.hasAttribute('prepend') ? th.getAttribute('prepend') : null,
+                    append: th.hasAttribute('append') ? th.getAttribute('append') : null
+                });
+                scope.vm.headers.push({
+                    key: th.hasAttribute('key') ? th.getAttribute('key') : null,
+                    value: th.innerText
+                });
+            }
+        };
+
+        return {
+            restrict: 'E',
+            scope: {
+                loading: '=',
+                dataHasLoaded: '=',
+
+                tableClass: '@',
+                maxTableHeight: '@',
+
+                selectionMode: '@',
+                initialOrderBy: '@',
+
+                emptyDataString: '=?',
+                selectedItems: '=?',
+                useKeyboardNavigation: '=?',
+                onEnterKeypress: '=?',
+                onChange: '=?',
+                focusWhen: '=?'
+            },
+            require: 'ngModel',
+            link: link,
+            controller: controller,
+            controllerAs: 'vm',
+            bindToController: true,
+            templateUrl: 'mattingly/selectionTable/template/selectionTable.html',
+            transclude: true
+        };
+    }
+
+    angular.module('matting-ly.selectionTable')
+        .directive('selectionTable', selectionTable);
 
     // TemplateCache'd version of the selectionTable template
-    // angular.module("mattingly/selectionTable/template/selectionTable.html", []).run(['$templateCache', function($templateCache) {
-    //   $templateCache.put("mattingly/selectionTable/template/selectionTable.html",
-    //     "<table ng-show=\"vm.data.length\"" +
-    //         "fixed-header max-table-height=\"{{ vm.maxTableHeight }}\" table-render-events=\"{{ vm.tableRenderEvents }}\"" +
-    //         "class=\"table table-bordered table-striped animated fadeIn\" tabindex=\"0\">" +
-    //         "<thead>" +
-    //             "<tr ng-transclude></tr>" +
-    //         "</thead>" +
-    //         "<tbody>" +
-    //             "<tr ng-repeat=\"row in vm.data | orderBy:vm.orderby:vm.reverse\""+
-    //                 "selection-model" +
-    //                 "selection-model-type=\"'basic'\"" +
-    //                 "selection-model-mode=\"{{ vm.selectionMode }}\""+
-    //                 "selection-model-selected-items=\"vm.selectedItems\"" +
-    //                 "selection-model-on-enter=\"vm.onEnter(row)\"" +
-    //                 "selection-model-on-change=\"vm.onChange(row)\"" +
-    //                 "context-menu=\"vm.menuOptions\">" +
-    //                 "<td ng-repeat=\"col in columns = (columns || vm.getRowCols(row)) track by $index\">" +
-    //                     "{{ col.prepend }}{{ col.value | meta:col.filter }}{{ col.append }}" +
-    //                 "</td>" +
-    //             "</tr>" +
-    //         "</tbody>" +
-    //     "</table>" +
-    //     "");
-    // }]);
+    angular.module("mattingly/selectionTable/template/selectionTable.html", []).run(["$templateCache", function($templateCache) {
+        $templateCache.put("mattingly/selectionTable/template/selectionTable.html", "" +
+            "<table ng-show=\"vm.data.length\"\n" +
+            "       fixed-header\n" +
+            "       class=\"table table-bordered table-striped {{ vm.tableClass }}\" tabindex=\"0\" focus-when=\"{{ vm.data.length }}\">\n" +
+            "    <thead>\n" +
+            "        <tr ng-transclude></tr>\n" +
+            "    </thead>\n" +
+            "    <tbody>\n" +
+            "        <tr ng-repeat=\"row in vm.data | orderBy:vm.orderby:vm.reverse\"\n" +
+            "            selection-model\n" +
+            "            selection-model-type=\"'basic'\"\n" +
+            "            selection-model-mode=\"{{ vm.selectionMode }}\"\n" +
+            "            selection-model-selected-items=\"vm.selectedItems\"\n" +
+            "            selection-model-on-change=\"vm.onChange(row)\"\n" +
+            "            selection-model-on-enter-keypress=\"vm.onEnterKeypress(row)\"\n" +
+            "            selection-model-use-keyboard-navigation=\"vm.useKeyboardNavigation\"\n" +
+            "        >\n" +
+            "            <td ng-repeat=\"col in columns = (columns || vm.getRowCols(row)) track by $index\">\n" +
+            "                {{ col.prepend }}{{ col.value | meta:col.filter }}{{ col.append }}\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "    </tbody>\n" +
+            "</table>\n" +
+            "<div ng-hide=\"vm.data.length || vm.dataHasLoaded\">\n" +
+            "    <div class=\"alert alert-info text-center\"><strong>{{ vm.emptyDataString }}</strong></div>\n" +
+            "</div>\n" +
+        "");
+    }]);
+
+}(window.angular));
+(function(angular) {
+
+    /**
+     * Filter: meta
+     * @type {function}
+     *
+     * Filter for passing in a specified filter via interpolation.
+     * Use: {{ data.value | meta:data.filter }}
+     */
+
+    meta.$inject = ['$filter'];
+    function meta($filter) {
+        return function(value, filterSpec) {
+            var args = filterSpec.split(':');
+            var filterName = args.shift() || "filter";
+            if (filterName === 'undefined') {
+                filterName = "filter";
+            }
+            var filter = $filter(filterName);
+            args.unshift(value);
+            return filter.apply(null, args);
+        };
+    }
+    angular.module('matting-ly.selectionTable')
+        .filter('meta', meta);
+
+}(window.angular));
+(function(angular) {
+
+    function selectionTableColumn() {
+        var link = function (scope, elem, attrs, selectorTableController, transclude) {
+
+            transclude(scope, function (content) {
+                // Create TH with the same attributes as the <header> elements
+                var thString;
+
+                // TODO: Could this be handled better using $interpolate?
+                thString = '<th';
+                thString += ' key="' + scope.key + '"';
+                thString += ' filter="' + scope.filter + '"'
+                if (scope.append) {
+                    thString += ' append="' + scope.append + '"';
+                }
+                if (scope.prepend) {
+                    thString += ' prepend="' + scope.prepend + '"';
+                }
+                thString += '>';
+                thString += content.html();
+                thString += '</th>';
+
+                var th = angular.element(thString);
+
+                // On header click, call to parent controller's sort function with our key
+                th.on('click', function () {
+                    scope.$apply(function () {
+                        selectorTableController.sort(scope.key);
+                        th.addClass('sorted '+scope.reverse)
+                    });
+                });
+
+                elem.replaceWith(th);
+            });
+        };
+
+        return {
+            restrict: 'E',
+            transclude: true,
+            require: '^selectionTable',
+            scope: {
+                key: '@',
+                filter: '@',
+                append: '@',
+                prepend: '@'
+            },
+            link: link
+        }
+    }
+
+    angular.module('matting-ly.selectionTable')
+        .directive('selectionTableColumn', selectionTableColumn);
 
 })(window.angular);
 angular.module("ui.tinymce",[]).value("uiTinymceConfig",{}).directive("uiTinymce",["$rootScope","$compile","$timeout","$window","$sce","uiTinymceConfig",function(a,b,c,d,e,f){f=f||{};var g="ui-tinymce";return f.baseUrl&&(tinymce.baseURL=f.baseUrl),{require:["ngModel","^?form"],priority:599,link:function(h,i,j,k){function l(a){a?(m(),o&&o.getBody().setAttribute("contenteditable",!1)):(m(),o&&!o.settings.readonly&&o.getDoc()&&o.getBody().setAttribute("contenteditable",!0))}function m(){o||(o=tinymce.get(j.id))}if(d.tinymce){var n,o,p=k[0],q=k[1]||null,r={debounce:!0},s=function(b){var c=b.getContent({format:r.format}).trim();c=e.trustAsHtml(c),p.$setViewValue(c),a.$$phase||h.$digest()};j.$set("id",g+"-"+(new Date).valueOf()),n={},angular.extend(n,h.$eval(j.uiTinymce));var t=function(a){var b;return function(d){c.cancel(b),b=c(function(){return function(a){a.isDirty()&&(a.save(),s(a))}(d)},a)}}(400),u={setup:function(b){b.on("init",function(){p.$render(),p.$setPristine(),p.$setUntouched(),q&&q.$setPristine()}),b.on("ExecCommand change NodeChange ObjectResized",function(){return r.debounce?void t(b):(b.save(),void s(b))}),b.on("blur",function(){i[0].blur(),p.$setTouched(),a.$$phase||h.$digest()}),b.on("remove",function(){i.remove()}),f.setup&&f.setup(b,{updateView:s}),n.setup&&n.setup(b,{updateView:s})},format:n.format||"html",selector:"#"+j.id};angular.extend(r,f,n,u),c(function(){r.baseURL&&(tinymce.baseURL=r.baseURL);var a=tinymce.init(r);a&&"function"==typeof a.then?a.then(function(){l(h.$eval(j.ngDisabled))}):l(h.$eval(j.ngDisabled))}),p.$formatters.unshift(function(a){return a?e.trustAsHtml(a):""}),p.$parsers.unshift(function(a){return a?e.getTrustedHtml(a):""}),p.$render=function(){m();var a=p.$viewValue?e.getTrustedHtml(p.$viewValue):"";o&&o.getDoc()&&(o.setContent(a),o.fire("change"))},j.$observe("disabled",l),h.$on("$tinymce:refresh",function(a,c){var d=j.id;if(angular.isUndefined(c)||c===d){var e=i.parent(),f=i.clone();f.removeAttr("id"),f.removeAttr("style"),f.removeAttr("aria-hidden"),tinymce.execCommand("mceRemoveEditor",!1,d),e.append(b(f)(h))}}),h.$on("$destroy",function(){m(),o&&(o.remove(),o=null)})}}}}]);
@@ -1649,6 +1690,7 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
                 access: {restricted: false}
             })
     }
+
     angular.module('matting-ly.routing', ['ui.router'])
         .config(config);
 
@@ -1673,6 +1715,180 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
     angular.module('matting-ly')
         .controller('MainController', MainController);
+
+})(window.angular);
+(function(angular) {
+
+    LoginController.$inject = ['$scope', '$state', 'AuthService']
+    function LoginController($scope, $state, AuthService) {
+        $scope.model = {
+            error: '',
+            disabled: false,
+            loginForm: {
+                username: '',
+                password: ''
+            },
+            isLoggedIn: false
+        };
+
+        $scope.init = function() {
+            if (AuthService.isLoggedIn()) {
+               $state.go('admin.viewPosts');
+            } else {
+                AuthService.getAccountStatus()
+                    .then(function(){
+                        if (AuthService.isLoggedIn()) {
+                            $state.go('admin.viewPosts');
+                        }
+                    });
+            }
+        };
+
+        $scope.dropdownInit = function() {
+            AuthService.getAccountStatus()
+                .then(function(){
+                    $scope.model.isLoggedIn = AuthService.isLoggedIn();
+                });
+        };
+
+        $scope.login = function () {
+            $scope.model.error = '';
+            $scope.model.disabled = true;
+
+            // call login from service
+            AuthService.login($scope.model.loginForm.username, $scope.model.loginForm.password)
+                // handle success
+                .then(function () {
+                    $state.go('admin.viewPosts');
+                })
+                // handle error
+                .catch(function () {
+                    $scope.model.error = "Invalid username and/or password";
+                    $scope.model.disabled = false;
+                    $scope.model.loginForm = {};
+                });
+
+        };
+
+        $scope.logout = function() {
+            AuthService.logout()
+                // handle success
+                .then(function() {
+                    $state.go('public.home', {}, { reload: true });
+                })
+                // handle error
+                .catch(function() {
+                    $state.go('error.oops');
+                })
+        };
+    }
+
+    angular.module('matting-ly')
+        .controller('LoginController', LoginController);
+
+})(window.angular);
+(function(angular) {
+
+    AuthService.$inject = ['$q', '$timeout', '$http'];
+    function AuthService($q, $timeout, $http) {
+        var user = false;
+
+        function returnFullLoginStatus() {
+            getAccountStatus()
+                .then(function(){
+                    return isLoggedIn();
+                });
+        }
+
+        function isLoggedIn() {
+            return user;
+        }
+
+        function getAccountStatus() {
+            return $http.get('/auth/account')
+                // handle success
+                .success(function (data) {
+                    if (data._id) {
+                        user = true;
+                    } else {
+                        user = false;
+                    }
+                })
+                // handle error
+                .error(function (data) {
+                    user = false;
+                });
+        }
+
+        function login(username, password) {
+            var deferred = $q.defer();
+
+            $http.post('/auth/login', {
+                username: username,
+                password: password
+            }).success(function(data, status) {
+                if (status == 200 && data.status) {
+                    user = true;
+                    deferred.resolve();
+                } else {
+                    user = false;
+                    deferred.reject();
+                }
+            }).error(function(data) {
+                user = false;
+                deferred.reject();
+            });
+
+            return deferred.promise;
+        }
+
+        function logout() {
+            var deferred = $q.defer();
+
+            $http.get('/auth/logout')
+                .success(function(data) {
+                    user = false;
+                    deferred.resolve();
+                }).error(function(data) {
+                    user = false;
+                    deferred.reject();
+                });
+
+            return deferred.promise;
+        }
+
+        function register(username, password) {
+            var deferred = $q.defer();
+
+            $http.post('/auth/register', {
+                username: username,
+                password: password
+            }).success(function(data, status) {
+                if (status == 200 && data.status) {
+                    deferred.resolve();
+                } else {
+                    deferred.reject();
+                }
+            }).error(function(data) {
+                deferred.reject();
+            });
+
+            return deferred.promise;
+        }
+
+        // return available functions for use in the controllers
+        return ({
+            isLoggedIn: isLoggedIn,
+            getAccountStatus: getAccountStatus,
+            returnFullLoginStatus: returnFullLoginStatus,
+            login: login,
+            logout: logout,
+            register: register
+        });
+    }
+
+    angular.module('matting-ly')
+        .factory('AuthService', AuthService);
 
 })(window.angular);
 (function(angular) {
@@ -1882,179 +2098,5 @@ var duScrollDefaultEasing=function(e){"use strict";return.5>e?Math.pow(2*e,2)/2:
 
    angular.module('matting-ly')
         .directive('backButton', backButton);
-
-})(window.angular);
-(function(angular) {
-
-    LoginController.$inject = ['$scope', '$state', 'AuthService']
-    function LoginController($scope, $state, AuthService) {
-        $scope.model = {
-            error: '',
-            disabled: false,
-            loginForm: {
-                username: '',
-                password: ''
-            },
-            isLoggedIn: false
-        };
-
-        $scope.init = function() {
-            if (AuthService.isLoggedIn()) {
-               $state.go('admin.viewPosts');
-            } else {
-                AuthService.getAccountStatus()
-                    .then(function(){
-                        if (AuthService.isLoggedIn()) {
-                            $state.go('admin.viewPosts');
-                        }
-                    });
-            }
-        };
-
-        $scope.dropdownInit = function() {
-            AuthService.getAccountStatus()
-                .then(function(){
-                    $scope.model.isLoggedIn = AuthService.isLoggedIn();
-                });
-        };
-
-        $scope.login = function () {
-            $scope.model.error = '';
-            $scope.model.disabled = true;
-
-            // call login from service
-            AuthService.login($scope.model.loginForm.username, $scope.model.loginForm.password)
-                // handle success
-                .then(function () {
-                    $state.go('admin.viewPosts');
-                })
-                // handle error
-                .catch(function () {
-                    $scope.model.error = "Invalid username and/or password";
-                    $scope.model.disabled = false;
-                    $scope.model.loginForm = {};
-                });
-
-        };
-
-        $scope.logout = function() {
-            AuthService.logout()
-                // handle success
-                .then(function() {
-                    $state.go('public.home', {}, { reload: true });
-                })
-                // handle error
-                .catch(function() {
-                    $state.go('error.oops');
-                })
-        };
-    }
-
-    angular.module('matting-ly')
-        .controller('LoginController', LoginController);
-
-})(window.angular);
-(function(angular) {
-
-    AuthService.$inject = ['$q', '$timeout', '$http'];
-    function AuthService($q, $timeout, $http) {
-        var user = false;
-
-        function returnFullLoginStatus() {
-            getAccountStatus()
-                .then(function(){
-                    return isLoggedIn();
-                });
-        }
-
-        function isLoggedIn() {
-            return user;
-        }
-
-        function getAccountStatus() {
-            return $http.get('/auth/account')
-                // handle success
-                .success(function (data) {
-                    if (data._id) {
-                        user = true;
-                    } else {
-                        user = false;
-                    }
-                })
-                // handle error
-                .error(function (data) {
-                    user = false;
-                });
-        }
-
-        function login(username, password) {
-            var deferred = $q.defer();
-
-            $http.post('/auth/login', {
-                username: username,
-                password: password
-            }).success(function(data, status) {
-                if (status == 200 && data.status) {
-                    user = true;
-                    deferred.resolve();
-                } else {
-                    user = false;
-                    deferred.reject();
-                }
-            }).error(function(data) {
-                user = false;
-                deferred.reject();
-            });
-
-            return deferred.promise;
-        }
-
-        function logout() {
-            var deferred = $q.defer();
-
-            $http.get('/auth/logout')
-                .success(function(data) {
-                    user = false;
-                    deferred.resolve();
-                }).error(function(data) {
-                    user = false;
-                    deferred.reject();
-                });
-
-            return deferred.promise;
-        }
-
-        function register(username, password) {
-            var deferred = $q.defer();
-
-            $http.post('/auth/register', {
-                username: username,
-                password: password
-            }).success(function(data, status) {
-                if (status == 200 && data.status) {
-                    deferred.resolve();
-                } else {
-                    deferred.reject();
-                }
-            }).error(function(data) {
-                deferred.reject();
-            });
-
-            return deferred.promise;
-        }
-
-        // return available functions for use in the controllers
-        return ({
-            isLoggedIn: isLoggedIn,
-            getAccountStatus: getAccountStatus,
-            returnFullLoginStatus: returnFullLoginStatus,
-            login: login,
-            logout: logout,
-            register: register
-        });
-    }
-
-    angular.module('matting-ly')
-        .factory('AuthService', AuthService);
 
 })(window.angular);

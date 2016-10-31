@@ -183,6 +183,7 @@
                 access: {restricted: false}
             })
     }
+
     angular.module('matting-ly.routing', ['ui.router'])
         .config(config);
 

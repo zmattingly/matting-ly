@@ -6,7 +6,7 @@
             <section class="col-md-12 blog">
                 <div ng-show="model.postsHaveLoaded">
                     <h2>All Posts</h2>
-                    <selection-table class="selection-table" id="all-posts"
+                    <selection-table class="selection-table" id="all-posts" table-class="animated fadeIn"
                                      selection-mode="'single'" ng-model="model.allPosts"
                                      initial-order-by="date"
                                      selected-items="model.selectedPost"
@@ -14,6 +14,8 @@
                                      empty-data-string="model.postsEmptyDataString"
                                      use-keyboard-navigation="true"
                                      on-enter-keypress="selectAndGoToPost"
+                                     max-table-height="400"
+                                     focus-when="model.postsHaveLoaded"
                                 >
                         <selection-table-column key="heading">Heading</selection-table-column>
                         <selection-table-column key="date" filter="date:longDate">Date</selection-table-column>
