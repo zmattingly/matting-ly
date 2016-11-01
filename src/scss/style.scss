@@ -169,15 +169,16 @@ html {
         margin-bottom: 15px;
         @include respond-to(tiny-screens) {
             margin-top: -70px;
-            margin-bottom: 70 + 35  px;
+            margin-bottom: 90px;
+            //margin-bottom: 300px;
         }
         @include respond-to(small-screens) {
             margin-top: -40px;
-            margin-bottom: 40 + 20px;
+            margin-bottom: 60px;
         }
         @include respond-to(large-screens) {
             margin-top: -30px;
-            margin-bottom: 30 + 15px;
+            margin-bottom: 50px;
         }
 
         &:last-of-type {
