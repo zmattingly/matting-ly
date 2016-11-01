@@ -8,6 +8,9 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var angularFilesort = require('gulp-angular-filesort');
+// Karma Server for tests
+var Server = require('karma').Server;
+
 
 // Compile Sass
 gulp.task('sass', function() {
@@ -18,8 +21,23 @@ gulp.task('sass', function() {
         .pipe(gulp.dest('assets/css'));
 });
 
+// Lint JS
+gulp.task('lint', function() {
+  return gulp.src('src/js/**/*.js')
+    .pipe(jshint({laxcomma: true}))
+    .pipe(jshint.reporter('jshint-stylish'));
+});
+
+gulp.task('test', function (done) {
+  new Server({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
+});
+
+
 // Concatenate & Minify JS
-gulp.task('scripts', function() {
+gulp.task('scripts', ['lint'], function() {
     return gulp.src(['!src/js/**/*.spec.js', 'src/js/**/*.js'])
         .pipe(angularFilesort())
         .pipe(concat('all.js'))
